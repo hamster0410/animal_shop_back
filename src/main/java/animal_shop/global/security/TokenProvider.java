@@ -1,8 +1,8 @@
 package animal_shop.global.security;
 
-import animal_shop.domain.member.dto.MemberDTO;
-import animal_shop.domain.member.entity.Member;
-import animal_shop.domain.member.repository.MemberRepository;
+import animal_shop.community.member.dto.MemberDTO;
+import animal_shop.community.member.entity.Member;
+import animal_shop.community.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

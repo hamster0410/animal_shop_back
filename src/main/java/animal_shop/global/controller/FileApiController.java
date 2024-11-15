@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 @RestController
@@ -22,8 +23,11 @@ public class FileApiController {
     @Value("${file.upload-dir-post}")  // 파일 저장 경로를 application.properties에 설정
     private String postUploadDir;
 
-    @PostMapping("/image-upload")
-    public String uploadEditorImage(@RequestPart("image") final MultipartFile image) {
+    @Value("${file.upload-dir-profile}")  // 파일 저장 경로를 application.properties에 설정
+    private String profileUploadDir;
+
+    @PostMapping("/post-image-upload")
+    public String uploadPostImage(@RequestPart("image") final MultipartFile image) {
         if (image.isEmpty()) {
             return "";
         }
@@ -39,7 +43,32 @@ public class FileApiController {
             // 파일 저장 (write to disk)
             File uploadFile = new File(fileFullPath);
             image.transferTo(uploadFile);
-            return saveFilename;
+            return "post_" + saveFilename;
+
+        } catch (IOException e) {
+            // 예외 처리는 따로 해주는 게 좋습니다.
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/profile-image-upload")
+    public String uploadProfileImage(@RequestPart("image") final MultipartFile image) {
+        if (image.isEmpty()) {
+            return "";
+        }
+
+        String orgFilename = image.getOriginalFilename();                                         // 원본 파일명
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");           // 32자리 랜덤 문자열
+        String extension = orgFilename.substring(orgFilename.lastIndexOf(".") + 1);  // 확장자
+        String saveFilename = uuid + "." + extension;                                             // 디스크에 저장할 파일명
+        String fileFullPath = Paths.get(profileUploadDir, saveFilename).toString();                      // 디스크에 저장할 파일의 전체 경로
+
+
+        try {
+            // 파일 저장 (write to disk)
+            File uploadFile = new File(fileFullPath);
+            image.transferTo(uploadFile);
+            return "profile_" +saveFilename;
 
         } catch (IOException e) {
             // 예외 처리는 따로 해주는 게 좋습니다.
@@ -50,7 +79,14 @@ public class FileApiController {
     @GetMapping(value = "/image-print", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public byte[] printEditorImage(@RequestParam("filename") final String filename) {
         // 업로드된 파일의 전체 경로
-        String fileFullPath = Paths.get(postUploadDir, filename).toString();
+        StringTokenizer st = new StringTokenizer(filename,"_");
+        String dir="";
+        String type = st.nextToken();
+        if(type.equals("post")) dir = postUploadDir;
+        else if(type.equals("profile")) dir = profileUploadDir;
+        else throw new RuntimeException("path is not valid");
+
+        String fileFullPath = Paths.get(dir, st.nextToken()).toString();
 
         // 파일이 없는 경우 예외 throw
         File uploadedFile = new File(fileFullPath);
