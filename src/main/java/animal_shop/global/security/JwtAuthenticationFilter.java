@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -37,11 +39,15 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
         if (accessToken != null && !accessToken.equalsIgnoreCase("null")) {
             // Token validation
             String userId = tokenProvider.validateAndGetUserId(accessToken);
-            log.info("Authenticated user ID: " + userId);
+            String role = tokenProvider.getRoleFromToken(accessToken);
+            log.info("Authenticated user ID: " + userId + ", Role: " + role);
+
+            List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_" + role);
 
             // Authentication setup
-            AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
+            AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(securityContext);

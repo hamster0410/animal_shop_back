@@ -95,4 +95,13 @@ public class  TokenProvider {
                 .build().parseClaimsJws(refreshToken)
                 .getBody().getSubject();
     }
+
+    public String getRoleFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .build().parseClaimsJws(token)
+                .getBody();
+        return claims.get("role", String.class);
+    }
+
 }
