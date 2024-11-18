@@ -50,5 +50,23 @@ public class MyPageController {
                     .body(responseDTO);
         }
     }
+    @GetMapping("/seller-register")
+    public ResponseEntity<?> sellerRegister(@RequestHeader("Authorization") String token){
+        ResponseDTO responseDTO;
+
+        try{
+            memberService.enroll(token);
+            System.out.println("here3");
+            responseDTO = ResponseDTO.builder().message("enroll success").build();
+            return ResponseEntity.ok().body(responseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
 
 }

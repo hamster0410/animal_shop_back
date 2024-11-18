@@ -4,7 +4,9 @@ import animal_shop.community.member.Role;
 import animal_shop.community.member.dto.MemberDTO;
 import animal_shop.community.member.dto.TokenDTO;
 import animal_shop.community.member.entity.Member;
+import animal_shop.community.member.entity.SellerCandidate;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.community.member.repository.SellerCandidateRepository;
 import animal_shop.global.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class MemberService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private SellerCandidateRepository sellerCandidateRepository;
 
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -171,4 +176,19 @@ public class MemberService {
     }
 
 
+    public void enroll(String token) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+
+        if(!sellerCandidateRepository.findByMember(member).isEmpty()){
+            throw new IllegalArgumentException("Member is already Seller " + member.getNickname());
+        }
+        SellerCandidate s = SellerCandidate.builder()
+                .member(member)
+                .build();
+
+        sellerCandidateRepository.save(s);
+    }
 }
