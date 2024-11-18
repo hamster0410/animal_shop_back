@@ -14,6 +14,8 @@ public class SellerDTO {
 
     private String member; // 댓글을 단 사용자
 
+    private String username;
+
     private String category;
 
     private String contents;
@@ -30,5 +32,6 @@ public class SellerDTO {
         this.contents = sellerCandidate.getContents();
         this.bln = sellerCandidate.getBln();
         this.member = sellerCandidate.getMember().getNickname();
+        this.username = sellerCandidate.getMember().getUsername();
     }
 }
