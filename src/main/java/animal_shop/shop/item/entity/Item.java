@@ -2,15 +2,16 @@ package animal_shop.shop.item.entity;
 
 
 import animal_shop.community.member.entity.Member;
-import animal_shop.community.post.entity.Post;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.ItemSellStatus;
 import animal_shop.shop.option.entity.Option;
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.util.List;
 
 @Entity
+@Builder
 public class Item extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +21,9 @@ public class Item extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ElementCollection
+    @CollectionTable(name ="options",joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "options")
     private List<Option> options;
 
     @ManyToOne
