@@ -1,6 +1,7 @@
 package animal_shop.community.member.controller;
 
 import animal_shop.community.member.dto.MemberDTO;
+import animal_shop.community.member.dto.SellerRegisterDTO;
 import animal_shop.community.member.service.MemberService;
 import animal_shop.global.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -50,13 +51,12 @@ public class MyPageController {
                     .body(responseDTO);
         }
     }
-    @GetMapping("/seller-register")
-    public ResponseEntity<?> sellerRegister(@RequestHeader("Authorization") String token){
+    @PostMapping("/seller-register")
+    public ResponseEntity<?> sellerRegister(@RequestHeader("Authorization") String token, @RequestBody SellerRegisterDTO sellerRegisterDTO){
         ResponseDTO responseDTO;
 
         try{
-            memberService.enroll(token);
-            System.out.println("here3");
+            memberService.enroll(token,sellerRegisterDTO);
             responseDTO = ResponseDTO.builder().message("enroll success").build();
             return ResponseEntity.ok().body(responseDTO);
 

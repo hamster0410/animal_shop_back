@@ -19,4 +19,8 @@ public class SellerCandidate {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member; // 댓글을 단 사용자
+
+    private String category;
+
+    private String contents;
 }

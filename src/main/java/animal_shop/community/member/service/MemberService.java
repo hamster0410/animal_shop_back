@@ -2,6 +2,7 @@ package animal_shop.community.member.service;
 
 import animal_shop.community.member.Role;
 import animal_shop.community.member.dto.MemberDTO;
+import animal_shop.community.member.dto.SellerRegisterDTO;
 import animal_shop.community.member.dto.TokenDTO;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.entity.SellerCandidate;
@@ -176,7 +177,7 @@ public class MemberService {
     }
 
 
-    public void enroll(String token) {
+    public void enroll(String token, SellerRegisterDTO sellerRegisterDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
         Member member = memberRepository.findById(Long.valueOf(userId))
@@ -187,6 +188,8 @@ public class MemberService {
         }
         SellerCandidate s = SellerCandidate.builder()
                 .member(member)
+                .category(sellerRegisterDTO.getCategory())
+                .contents(sellerRegisterDTO.getContents())
                 .build();
 
         sellerCandidateRepository.save(s);
