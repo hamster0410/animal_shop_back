@@ -51,4 +51,22 @@ public class AdminController {
                     .body(responseDTO);
         }
     }
+
+    @PatchMapping("/seller-revoke")
+    public ResponseEntity<?> sellerRevoke(@RequestHeader("Authorization") String token,@RequestParam(value = "username") String username){
+        ResponseDTO responseDTO;
+
+        try{
+            adminService.revoke_seller(token, username);
+            responseDTO = ResponseDTO.builder().message("revoke success").build();
+            return ResponseEntity.ok().body(responseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
 }

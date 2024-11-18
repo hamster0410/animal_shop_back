@@ -177,7 +177,7 @@ public class MemberService {
     }
 
 
-    public void enroll(String token, SellerRegisterDTO sellerRegisterDTO) {
+    public void enroll_seller(String token, SellerRegisterDTO sellerRegisterDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
         Member member = memberRepository.findById(Long.valueOf(userId))
@@ -196,4 +196,6 @@ public class MemberService {
 
         sellerCandidateRepository.save(s);
     }
+
+
 }
