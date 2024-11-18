@@ -13,4 +13,7 @@ public class SellerRegisterDTO {
 
     private String category;
     private String contents;
+    private String phone_number;
+    private String BLN;
+
 }

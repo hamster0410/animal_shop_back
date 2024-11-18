@@ -42,7 +42,7 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated()
                           .requestMatchers("/post/write","/*/*/edit","/*/*/delete","/auth/mypage",
                                             "/heart/*","/comment/create/*","/comment/update/*","/comment/delete/*").authenticated()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                     .anyRequest().permitAll()
                 );
 

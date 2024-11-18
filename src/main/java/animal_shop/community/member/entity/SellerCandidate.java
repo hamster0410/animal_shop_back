@@ -20,7 +20,14 @@ public class SellerCandidate {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member; // 댓글을 단 사용자
 
+    @Column(nullable = false)
     private String category;
 
     private String contents;
+
+    @Column(nullable = false)
+    private String phone_number;
+
+    //사업자 등록 번호
+    private String BLN;
 }
