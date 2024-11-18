@@ -2,8 +2,10 @@ package animal_shop.shop.item.entity;
 
 
 import animal_shop.community.member.entity.Member;
+import animal_shop.community.post.entity.Post;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.ItemSellStatus;
+import animal_shop.shop.option.entity.Option;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,7 +21,8 @@ public class Item extends BaseTimeEntity{
     private String name;
 
     @Column(nullable = false)
-    private Long price;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
