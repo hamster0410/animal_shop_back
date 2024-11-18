@@ -152,6 +152,7 @@ public class MemberService {
                     .username(member.get().getUsername())
                     .mail(member.get().getMail())
                     .nickname(member.get().getNickname())
+                    .role(member.get().getRole())
                     .build();
         }
         return null;
@@ -177,7 +178,7 @@ public class MemberService {
     }
 
 
-    public void enroll(String token, SellerRegisterDTO sellerRegisterDTO) {
+    public void enroll_seller(String token, SellerRegisterDTO sellerRegisterDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
         Member member = memberRepository.findById(Long.valueOf(userId))
@@ -196,4 +197,6 @@ public class MemberService {
 
         sellerCandidateRepository.save(s);
     }
+
+
 }

@@ -56,7 +56,7 @@ public class MyPageController {
         ResponseDTO responseDTO;
 
         try{
-            memberService.enroll(token,sellerRegisterDTO);
+            memberService.enroll_seller(token,sellerRegisterDTO);
             responseDTO = ResponseDTO.builder().message("enroll success").build();
             return ResponseEntity.ok().body(responseDTO);
 
@@ -68,5 +68,7 @@ public class MyPageController {
                     .body(responseDTO);
         }
     }
+
+
 
 }

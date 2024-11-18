@@ -24,6 +24,7 @@ public class Item extends BaseTimeEntity{
     @ElementCollection
     @CollectionTable(name ="options",joinColumns = @JoinColumn(name = "item_id"))
     @Column(name = "options")
+
     private List<Option> options;
 
     @ManyToOne
