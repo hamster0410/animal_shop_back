@@ -44,7 +44,7 @@ public class AdminService {
                .build();
     }
 
-    public void permitSeller(String token, String username) {
+    public void permit_seller(String token, String username) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
 
@@ -72,5 +72,22 @@ public class AdminService {
                     .orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
         user.setRole(Role.USER);
         memberRepository.save(user);
+    }
+
+    public void delete_seller(String token, String username) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+
+        //admin인지 아닌지 판별
+        if(!admin.getRole().toString().equals("ADMIN")){
+            throw new IllegalArgumentException("member is not admin ");
+        }
+
+        Member user = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+
+        SellerCandidate sellerCandidate = sellerCandidateRepository.findByMember(user).get(0);
+
+        sellerCandidateRepository.delete(sellerCandidate);
     }
 }

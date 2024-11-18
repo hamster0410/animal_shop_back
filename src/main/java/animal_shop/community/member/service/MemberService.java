@@ -152,6 +152,7 @@ public class MemberService {
                     .username(member.get().getUsername())
                     .mail(member.get().getMail())
                     .nickname(member.get().getNickname())
+                    .role(member.get().getRole())
                     .build();
         }
         return null;

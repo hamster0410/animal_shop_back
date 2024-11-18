@@ -37,7 +37,7 @@ public class AdminController {
     public ResponseEntity<?> sellerOk(@RequestHeader(value = "Authorization") String token, @RequestParam String username){
         ResponseDTO responseDTO = null;
         try{
-            adminService.permitSeller(token,username);
+            adminService.permit_seller(token,username);
             responseDTO = ResponseDTO.builder()
                     .message("seller permit success")
                     .build();
@@ -59,6 +59,24 @@ public class AdminController {
         try{
             adminService.revoke_seller(token, username);
             responseDTO = ResponseDTO.builder().message("revoke success").build();
+            return ResponseEntity.ok().body(responseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @DeleteMapping("/seller-delete")
+    public ResponseEntity<?> sellerDelete(@RequestHeader("Authorization") String token,@RequestParam(value = "username") String username){
+        ResponseDTO responseDTO;
+
+        try{
+            adminService.delete_seller(token, username);
+            responseDTO = ResponseDTO.builder().message("delete success").build();
             return ResponseEntity.ok().body(responseDTO);
 
         }catch(Exception e){
