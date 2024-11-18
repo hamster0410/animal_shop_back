@@ -1,11 +1,18 @@
 package animal_shop.shop.option.entity;
 
-import animal_shop.shop.item.entity.Item;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
 
+
+@AllArgsConstructor
+@ToString
+@Builder
 @Entity
 public class Option {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,8 +20,5 @@ public class Option {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private Long price;
-
-
+    private Integer price;
 }
