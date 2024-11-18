@@ -1,15 +1,12 @@
-package animal_shop.shop.option.entity;
+package animal_shop.shop.item.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
-
 
 @AllArgsConstructor
 @ToString
 @Builder
+@Getter
 @Entity
 public class Option {
 
@@ -17,8 +14,16 @@ public class Option {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @Setter
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
+
+
     @Column(nullable = false)
     private String name;
 
     private Integer price;
+
+    // 생성자, Getter, Setter
 }

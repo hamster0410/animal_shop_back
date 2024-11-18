@@ -4,7 +4,6 @@ package animal_shop.shop.item.entity;
 import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.ItemSellStatus;
-import animal_shop.shop.option.entity.Option;
 import jakarta.persistence.*;
 import lombok.Builder;
 
@@ -21,10 +20,9 @@ public class Item extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name ="options",joinColumns = @JoinColumn(name = "item_id"))
-    @Column(name = "options")
-
+    // @OneToMany 관계로 수정
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
     private List<Option> options;
 
     @ManyToOne
