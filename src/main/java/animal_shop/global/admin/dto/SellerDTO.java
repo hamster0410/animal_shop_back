@@ -21,14 +21,14 @@ public class SellerDTO {
     private String phone_number;
 
     //사업자 등록 번호
-    private String BLN;
+    private String bln;
 
 
     public SellerDTO(SellerCandidate sellerCandidate) {
         this.phone_number = sellerCandidate.getPhone_number();
         this.category = sellerCandidate.getCategory();
         this.contents = sellerCandidate.getContents();
-        this.BLN = sellerCandidate.getBLN();
+        this.bln = sellerCandidate.getBln();
         this.member = sellerCandidate.getMember().getNickname();
     }
 }

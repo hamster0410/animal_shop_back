@@ -29,5 +29,5 @@ public class SellerCandidate {
     private String phone_number;
 
     //사업자 등록 번호
-    private String BLN;
+    private String bln;
 }
