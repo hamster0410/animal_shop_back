@@ -20,8 +20,9 @@ public class Item extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ElementCollection
+    @CollectionTable(name = "options", joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "option")
     private List<Option> options;
 
     @ManyToOne

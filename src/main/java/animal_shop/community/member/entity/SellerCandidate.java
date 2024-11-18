@@ -25,9 +25,9 @@ public class SellerCandidate {
 
     private String contents;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String phone_number;
 
-    //사업자 등록 번호
+    @Column(nullable = false,unique = true)
     private String bln;
 }
