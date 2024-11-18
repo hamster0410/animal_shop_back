@@ -21,13 +21,31 @@ public class AdminController {
     public ResponseEntity<?> requestPage(@RequestHeader(value = "Authorization") String token, @RequestParam(value = "page", defaultValue = "1") int page){
         ResponseDTO responseDTO = null;
         try{
-            System.out.println("check 1");
             SellerResponseDTO sellerDTOS = adminService.request_list(page-1);
 
             return ResponseEntity.ok().body(sellerDTOS);
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
-                    .error("main_list fail").build();
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @PatchMapping("/seller-ok")
+    public ResponseEntity<?> sellerOk(@RequestHeader(value = "Authorization") String token, @RequestParam String username){
+        ResponseDTO responseDTO = null;
+        try{
+            adminService.permitSeller(token,username);
+            responseDTO = ResponseDTO.builder()
+                    .message("seller permit success")
+                    .build();
+
+            return ResponseEntity.ok().body(responseDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);

@@ -45,6 +45,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private String refreshtoken;
 
     @Enumerated(EnumType.STRING)
+    @Setter
     private Role role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
