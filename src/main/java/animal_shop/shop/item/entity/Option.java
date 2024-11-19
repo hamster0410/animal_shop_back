@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Builder
 @Getter
@@ -23,7 +24,7 @@ public class Option {
     @Column(nullable = false)
     private String name;
 
-    private Integer price;
+    private Long price;
 
     // 생성자, Getter, Setter
 }

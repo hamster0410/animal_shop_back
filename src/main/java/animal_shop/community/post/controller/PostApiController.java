@@ -30,7 +30,6 @@ public class PostApiController {
     @GetMapping({"/", "/best"})
     public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
         try {
-            System.out.println("postapicontroller start");
             List<PostListDTO> paging = postService.getBestPost(pageId - 1);
             Long postCount = postService.getPostCount();
             PostResponseDTO postResponseDTO = PostResponseDTO
