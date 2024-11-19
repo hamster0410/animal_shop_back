@@ -25,6 +25,8 @@ public class SellerDTO {
     //사업자 등록 번호
     private String bln;
 
+    private boolean state;
+
 
     public SellerDTO(SellerCandidate sellerCandidate) {
         this.phone_number = sellerCandidate.getPhone_number();
@@ -33,5 +35,6 @@ public class SellerDTO {
         this.bln = sellerCandidate.getBln();
         this.member = sellerCandidate.getMember().getNickname();
         this.username = sellerCandidate.getMember().getUsername();
+        this.state = sellerCandidate.getMember().getRole().toString().equals("SELLER");
     }
 }

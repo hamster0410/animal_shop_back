@@ -17,7 +17,7 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping("/item/new")
-    public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization") String token, @RequestBody ItemDTOList itemDTOList) {
+    public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization")String token, @RequestBody ItemDTOList itemDTOList){
         ResponseDTO responseDTO = null;
 
         try {
@@ -70,6 +70,7 @@ public class ItemController {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
                     .build();
+
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }

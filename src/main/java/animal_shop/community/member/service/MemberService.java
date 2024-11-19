@@ -192,7 +192,7 @@ public class MemberService {
                 .category(sellerRegisterDTO.getCategory())
                 .contents(sellerRegisterDTO.getContents())
                 .phone_number(sellerRegisterDTO.getPhone_number())
-                .bln(sellerRegisterDTO.getBLN())
+                .bln(sellerRegisterDTO.getBln())
                 .build();
 
         sellerCandidateRepository.save(s);
