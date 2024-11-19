@@ -46,4 +46,14 @@ public class ShopService {
                 .build();
 
     }
+
+    public MainDTOBestResponse category_contents(int page, String species, String category) {
+        Pageable pageable = (Pageable) PageRequest.of(page,20);
+        Page<Item> category_goods = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,category,pageable);
+        return MainDTOBestResponse.builder()
+                .best_goods(category_goods.stream().map(MainDTO::new).toList())
+                .total_count(category_goods.getTotalElements())
+                .build();
+
+    }
 }

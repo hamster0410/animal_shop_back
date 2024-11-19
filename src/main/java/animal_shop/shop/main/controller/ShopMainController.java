@@ -6,10 +6,7 @@ import animal_shop.shop.main.dto.MainDTOResponse;
 import animal_shop.shop.main.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/shop")
@@ -40,6 +37,24 @@ public class ShopMainController {
         ResponseDTO responseDTO;
         try{
             MainDTOBestResponse mainDTOBestResponse = shopService.best_contents(page -1);
+
+            return ResponseEntity.ok().body(mainDTOBestResponse);
+
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+    @GetMapping("/product-category/{species}/{category}")
+    public ResponseEntity<?> shop_category(@RequestParam(value = "page", defaultValue = "1")int page,
+                                           @PathVariable(value = "species") String species,
+                                           @PathVariable(value = "category") String category){
+        ResponseDTO responseDTO;
+        try{
+            MainDTOBestResponse mainDTOBestResponse = shopService.category_contents(page -1,species,category);
 
             return ResponseEntity.ok().body(mainDTOBestResponse);
 
