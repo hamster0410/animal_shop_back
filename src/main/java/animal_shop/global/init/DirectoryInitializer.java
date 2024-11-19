@@ -24,11 +24,15 @@ public class DirectoryInitializer {
     @Value("${file.upload-dir-profile}")  // 게시글 파일 업로드 경로
     private String profileUploadDir;
 
+    @Value("${file.upload-dir-item}")  // 게시글 파일 업로드 경로
+    private String itemUploadDir;
+
     @PostConstruct
     public void init() {
         createDirectoryIfNotExists(commentUploadDir);
         createDirectoryIfNotExists(postUploadDir);
         createDirectoryIfNotExists(profileUploadDir);
+        createDirectoryIfNotExists(itemUploadDir);
     }
 
     private void createDirectoryIfNotExists(String dirPath) {
