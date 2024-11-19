@@ -1,7 +1,10 @@
 package animal_shop.shop.item.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +19,8 @@ public class Option {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "item_id", nullable = true) // nullable을 true로 변경
     @Setter
-    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
 

@@ -34,7 +34,7 @@ public class AdminController {
     }
 
     @PatchMapping("/seller-ok")
-    public ResponseEntity<?> sellerOk(@RequestHeader(value = "Authorization") String token, @RequestParam String username){
+    public ResponseEntity<?> sellerOk(@RequestHeader(value = "Authorization") String token, @RequestParam(value = "username") String username){
         ResponseDTO responseDTO = null;
         try{
             adminService.permit_seller(token,username);

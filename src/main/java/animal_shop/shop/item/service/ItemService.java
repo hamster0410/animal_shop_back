@@ -4,6 +4,7 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.dto.ItemDTOList;
+import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.entity.Option;
 import animal_shop.shop.item.repository.ItemRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -66,17 +68,18 @@ public class ItemService {
         optionRepository.saveAll(options); // 여러 개의 Option 저장
     }
 
-
+    @Transactional
     public void update(String token, ItemDTOList itemDTOList) {
         // 1. 사용자 인증 (SELLER 권한 확인)
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
-        if(!member.getRole().toString().equals("SELLER")){
+        if (!member.getRole().toString().equals("SELLER")) {
             throw new IllegalStateException("is not seller");
         }
 
+//        System.out.println(itemDTOList.getId());
         // 2. 수정할 아이템 인증 (아이템 ID로 조회)
         Item item = itemRepository.findById(itemDTOList.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Item not found"));
@@ -89,10 +92,94 @@ public class ItemService {
         item.setSpecies(itemDTOList.getSpecies());
         item.setThumbnail_url(itemDTOList.getThumbnailUrls());
         item.setImage_url(itemDTOList.getImageUrl());
-        item.setOptions(itemDTOList.getOption()); // 옵션 수정
 
-        // 4. 수정된 아이템 저장
+        // 기존 옵션 삭제 및 새 옵션 추가
+        item.getOptions().clear(); // 기존 옵션 제거
+        for (Option newOption : itemDTOList.getOption()) {
+            newOption.setItem(item); // 새 옵션에 아이템 연결
+            item.getOptions().add(newOption); // 아이템의 옵션 리스트에 추가
+        }
+
+        // 아이템 저장
         itemRepository.save(item);
+        System.out.println("Item and Options updated successfully");
     }
 
+
+
+//
+
+//        List<Option> newOptions = itemDTOList.getOption();
+//        System.out.println("here 1");
+//        for (Option o : newOptions) {
+//            o.setItem(item); // 새 옵션에 item 연결
+//            System.out.println(o.getPrice() + " " + o.getName());
+//            optionRepository.save(o);
+//        }
+//        item.setOptions(newOptions); // 새 옵션 리스트 설정
+//
+//// 수정된 아이템 저장 (옵션도 함께 저장됨)
+//        itemRepository.save(item);
+//        System.out.println("Item and Options saved successfully");
+//    }
+
+
+    @Transactional
+    public void delete(String token, String itemId) {
+        //1. 사용자 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+        if (!member.getRole().toString().equals("SELLER")) {
+            throw new IllegalStateException("is not seller");
+        }
+        //삭제할 아이템 찾기
+        Item item = itemRepository.findById(Long.valueOf(itemId))
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+        //아이템 삭제
+        itemRepository.delete(item);
+
+    }
+
+    //개별 조회
+    @Transactional(readOnly = true)
+    public ItemDetailDTO selectItem(String token, String itemId) {
+        //1. 사용자인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        // 2. 판매자 자격조건
+        if (!member.getRole().toString().equals("SELLER")) {
+            throw new IllegalStateException("is not seller");
+        }
+        //3. 상품 조회하기
+        Item item = itemRepository.findById(Long.valueOf(itemId))
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+        //4. 엔티티 -> DTO로 변환
+        return new ItemDetailDTO(item);
+    }
+
+    //전체 조회
+    @Transactional(readOnly = true)
+    public List<ItemDetailDTO> selectAll(String token) {
+        // 1. 사용자 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+        // 2. 판매자 자격조건
+        if (!member.getRole().toString().equals("SELLER")) {
+            throw new IllegalStateException("is not seller");
+        }
+
+        // 3. 전체 상품 조회하기
+        List<Item> items = itemRepository.findByMemberId(Long.valueOf(userId));
+
+        // 4. 엔티티 -> DTO로 변환
+        return items.stream()
+                .map(ItemDetailDTO::new)  // 각 Item을 ItemDetailDTO로 변환
+                .collect(Collectors.toList());
+    }
 }

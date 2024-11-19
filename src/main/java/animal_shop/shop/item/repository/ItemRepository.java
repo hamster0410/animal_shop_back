@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ItemRepository extends JpaRepository<Item,Long> {
     Page<Item> findBySpecies(Pageable pageable, String species);
@@ -26,4 +28,7 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             @Param("species") String species,
             @Param("category") String category,
             Pageable pageable);
+
+    List<Item> findByMemberId(Long memberId);
+
 }

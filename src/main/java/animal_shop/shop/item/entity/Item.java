@@ -7,6 +7,7 @@ import animal_shop.shop.item.ItemSellStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,9 +26,12 @@ public class Item extends BaseTimeEntity{
     private String name;
 
     // @OneToMany 관계로 수정
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private List<Option> options;
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "item_id")
+//    private List<Option> options;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
+
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
