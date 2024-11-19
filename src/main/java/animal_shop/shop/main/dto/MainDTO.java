@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class MainDTO {
+    private Long id;
     private String name;
     private String nickname;
     private String thumbnail_url;
@@ -13,6 +14,7 @@ public class MainDTO {
     private Long comment_count;
 
     public MainDTO(Item item){
+        this.id = item.getId();
         this.name = item.getName();
         this.nickname = item.getMember().getNickname();
         this.thumbnail_url = item.getThumbnail_url().get(0);

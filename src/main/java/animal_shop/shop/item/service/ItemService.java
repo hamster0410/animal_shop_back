@@ -4,6 +4,7 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.dto.ItemDTOList;
+import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.entity.Option;
 import animal_shop.shop.item.repository.ItemRepository;
@@ -95,4 +96,10 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    public ItemDetailDTO findById(String itemId) {
+        Item item = itemRepository.findById(Long.valueOf(itemId))
+                .orElseThrow(() -> new IllegalArgumentException("item not found"));
+
+        return new ItemDetailDTO(item);
+    }
 }

@@ -1,77 +1,34 @@
 package animal_shop.shop.item.controller;
 
 import animal_shop.global.dto.ResponseDTO;
-import animal_shop.shop.item.dto.ItemDTOList;
+import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/seller")
+@RequestMapping("/item")
 public class ItemController {
 
     @Autowired
-    private ItemService itemService;
+    ItemService itemService;
 
-    @PostMapping("/item/new")
-    public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization") String token, @RequestBody ItemDTOList itemDTOList) {
+    @GetMapping("/detail/{itemId}")
+    public ResponseEntity<?> item_detail(@RequestParam(value = "itemId")String itemId){
         ResponseDTO responseDTO = null;
+        try{
+            ItemDetailDTO itemDetailDTO = itemService.findById(itemId);
 
-        try {
-            itemService.save(token, itemDTOList);
-            responseDTO = ResponseDTO.builder()
-                    .message("save success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
-
-        } catch (Exception e) {
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
-                    .build();
-
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-
-
-    @GetMapping("/mypage")
-    public ResponseEntity<?> getItems(
-            @RequestHeader(value = "Authorization") String token,
-            @RequestBody ItemDTOList itemDTOList) {
-        ResponseDTO responseDTO = null;
-        try {
-            itemService.update(token, itemDTOList);
-            responseDTO = ResponseDTO.builder()
-                    .message("update success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(itemDetailDTO);
+        }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-
-    @PatchMapping("/item/update")
-    public ResponseEntity<?> updateItem(
-            @RequestHeader(value = "Authorization") String token,
-            @RequestBody ItemDTOList itemDTOList) {
-        ResponseDTO responseDTO = null;
-        try {
-            itemService.update(token, itemDTOList);
-            responseDTO = ResponseDTO.builder()
-                    .message("update success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
-                    .build();
-
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-
 }
