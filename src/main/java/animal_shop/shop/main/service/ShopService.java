@@ -1,10 +1,13 @@
 package animal_shop.shop.main.service;
 
 
+import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.main.dto.MainDTO;
+import animal_shop.shop.main.dto.MainDTOBestResponse;
 import animal_shop.shop.main.dto.MainDTOResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,5 +34,16 @@ public class ShopService {
                 .dog_hot(dog_hot)
                 .new_goods(new_goods)
                 .build();
+    }
+
+    public MainDTOBestResponse best_contents(int page) {
+        Pageable pageable = (Pageable) PageRequest.of(page,20);
+
+        Page<Item> best = itemRepository.findAll(pageable);
+        return MainDTOBestResponse.builder()
+                .best_goods(best.stream().map(MainDTO::new).toList())
+                .total_count(best.getTotalElements())
+                .build();
+
     }
 }

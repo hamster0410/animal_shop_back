@@ -42,7 +42,6 @@ public class ItemService {
         // Option 리스트 가져오기
         List<Option> options = itemDTOList.getOption();
 
-        System.out.println("item status " + itemDTOList.getSell_status());
         // Item 객체 생성
         Item item = Item.builder()
                 .name(itemDTOList.getName())
