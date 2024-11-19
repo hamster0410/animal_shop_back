@@ -68,6 +68,7 @@ public class MemberService {
 
     public TokenDTO login(MemberDTO mDTO) {
         System.out.println("check");
+        System.out.println("wow");
         final String AccessToken = tokenProvider.AccessTokenCreate(String.valueOf(mDTO.getId()));
         final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
         saveRefreshToken(mDTO,RefreshToken);

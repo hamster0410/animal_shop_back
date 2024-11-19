@@ -1,0 +1,20 @@
+# 최상위 디렉터리의 모든 파일 및 디렉터리 무시
+/*
+
+# src 디렉터리 및 그 하위 디렉터리 추적 허용
+!/src/
+!/src/main/
+!/src/main/java/
+
+# 빌드 디렉터리 무시
+/target/
+/build/
+
+# IDE 관련 파일 무시
+.idea/
+*.iml
+
+# 기타 시스템 파일 무시
+*.log
+.DS_Store
+Thumbs.db
