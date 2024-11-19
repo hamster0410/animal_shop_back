@@ -4,7 +4,9 @@ import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.entity.Option;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class ItemDetailDTO {
@@ -12,7 +14,7 @@ public class ItemDetailDTO {
 
    private String name;
 
-   private List<Option> options;
+   private List<OptionDTO> options;
 
    private String seller;
 
@@ -30,7 +32,12 @@ public class ItemDetailDTO {
    public ItemDetailDTO(Item item) {
        this.id = item.getId();
        this.name = item.getName();
-       this.options = item.getOptions();
+       List<OptionDTO> list = new ArrayList<>();
+       for (Option option : item.getOptions()) {
+           OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice());
+           list.add(optionDTO);
+       }
+       this.options = list;
        this.seller = item.getMember().getNickname();
        this.species = item.getSpecies();
        this.comment_count = item.getComment_count();

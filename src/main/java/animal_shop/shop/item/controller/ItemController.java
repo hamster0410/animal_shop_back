@@ -5,10 +5,7 @@ import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/item")
@@ -18,7 +15,7 @@ public class ItemController {
     ItemService itemService;
 
     @GetMapping("/detail/{itemId}")
-    public ResponseEntity<?> item_detail(@RequestParam(value = "itemId")String itemId){
+    public ResponseEntity<?> item_detail(@PathVariable(value = "itemId")String itemId){
         ResponseDTO responseDTO = null;
         try{
             ItemDetailDTO itemDetailDTO = itemService.findById(itemId);
