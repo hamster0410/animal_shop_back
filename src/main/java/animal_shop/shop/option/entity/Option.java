@@ -1,9 +1,6 @@
 package animal_shop.shop.option.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -11,6 +8,7 @@ import lombok.*;
 @ToString
 @Builder
 @Entity
+@Getter
 public class Option {
 
     @Id
@@ -20,5 +18,7 @@ public class Option {
     @Column(nullable = false)
     private String name;
 
-    private Integer price;
+    private Long price;
+
+
 }
