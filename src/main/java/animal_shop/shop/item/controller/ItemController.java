@@ -33,4 +33,45 @@ public class ItemController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+
+    @GetMapping("/mypage")
+    public ResponseEntity<?> getItems(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody ItemDTOList itemDTOList) {
+        ResponseDTO responseDTO = null;
+        try {
+            itemService.update(token, itemDTOList);
+            responseDTO = ResponseDTO.builder()
+                    .message("update success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PatchMapping("/item/update")
+    public ResponseEntity<?> updateItem(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody ItemDTOList itemDTOList) {
+        ResponseDTO responseDTO = null;
+        try {
+            itemService.update(token, itemDTOList);
+            responseDTO = ResponseDTO.builder()
+                    .message("update success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 }

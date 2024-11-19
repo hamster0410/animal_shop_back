@@ -15,6 +15,8 @@ import java.util.List;
 @ToString
 public class ItemDTOList {
 
+    private Long id;
+
     private List<Option> option;
 
     private String name;

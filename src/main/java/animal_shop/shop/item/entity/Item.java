@@ -5,16 +5,14 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.ItemSellStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item extends BaseTimeEntity{
