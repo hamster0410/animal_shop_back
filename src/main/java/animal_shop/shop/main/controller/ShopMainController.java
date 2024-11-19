@@ -48,20 +48,19 @@ public class ShopMainController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @GetMapping("/product-category/{species}/{category}")
+    @GetMapping("/product-category")
     public ResponseEntity<?> shop_category(@RequestParam(value = "page", defaultValue = "1")int page,
-                                           @PathVariable(value = "species") String species,
-                                           @PathVariable(value = "category") String category){
+                                           @RequestParam(value = "species",required = false) String species,
+                                           @RequestParam(value = "category", required = false) String category){
         ResponseDTO responseDTO;
         try{
-            MainDTOBestResponse mainDTOBestResponse = shopService.category_contents(page -1,species,category);
-
+            MainDTOBestResponse mainDTOBestResponse = shopService.category_contents(page - 1,species,category);
             return ResponseEntity.ok().body(mainDTOBestResponse);
 
         }catch (Exception e){
 
             responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
+                    .error(e.getLocalizedMessage())
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }

@@ -1,9 +1,15 @@
 package animal_shop.shop.main.dto;
 
 import animal_shop.shop.item.entity.Item;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MainDTO {
     private Long id;
     private String name;
