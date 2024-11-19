@@ -65,4 +65,32 @@ public class ItemService {
         // Option 저장
         optionRepository.saveAll(options); // 여러 개의 Option 저장
     }
+    public void update(String token, ItemDTOList itemDTOList) {
+        // 1. 사용자 인증 (SELLER 권한 확인)
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+        if(!member.getRole().toString().equals("SELLER")){
+            throw new IllegalStateException("is not seller");
+        }
+
+        // 2. 수정할 아이템 인증 (아이템 ID로 조회)
+        Item item = itemRepository.findById(itemDTOList.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+        // 3. 아이템 속성 수정
+        item.setName(itemDTOList.getName());
+        item.setCategory(itemDTOList.getCategory());
+        item.setStock_number(itemDTOList.getStock_number());
+        item.setItemSellStatus(itemDTOList.getSell_status());
+        item.setSpecies(itemDTOList.getSpecies());
+        item.setThumbnail_url(itemDTOList.getThumbnailUrls());
+        item.setImage_url(itemDTOList.getImageUrl());
+        item.setOptions(itemDTOList.getOption()); // 옵션 수정
+
+        // 4. 수정된 아이템 저장
+        itemRepository.save(item);
+    }
+
 }
