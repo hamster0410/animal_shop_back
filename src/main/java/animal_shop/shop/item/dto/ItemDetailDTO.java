@@ -1,5 +1,6 @@
 package animal_shop.shop.item.dto;
 
+import animal_shop.shop.item.ItemSellStatus;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.entity.Option;
 import lombok.Data;
@@ -29,6 +30,10 @@ public class ItemDetailDTO {
 
    private String image_url;
 
+   private ItemSellStatus sell_status;
+
+   private Long stock_number;
+
 
    public ItemDetailDTO(Item item) {
        this.id = item.getId();
@@ -38,6 +43,8 @@ public class ItemDetailDTO {
            OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice());
            list.add(optionDTO);
        }
+       this.sell_status = item.getItemSellStatus();
+       this.stock_number = item.getStock_number();
        this.item_detail = item.getItemDetail();
        this.options = list;
        this.category = item.getCategory();
