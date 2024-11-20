@@ -2,6 +2,7 @@ package animal_shop.shop.item.controller;
 
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.item.dto.ItemDetailDTO;
+import animal_shop.shop.item.dto.RequestItemQueryDTO;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,4 +29,12 @@ public class ItemController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+//    @GetMapping("/query/new")
+//    public ResponseEntity<?> item_query_new(
+//            @RequestHeader(value = "Authorization", required = false) String token,
+//            @RequestBody RequestItemQueryDTO requestItemQueryDTO
+//            ){
+//
+//    }
 }
