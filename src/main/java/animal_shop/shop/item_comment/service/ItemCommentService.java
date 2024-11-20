@@ -1,12 +1,7 @@
 package animal_shop.shop.item_comment.service;
 
-import animal_shop.community.comment.dto.CommentDTO;
-import animal_shop.community.comment.dto.CommentResponseDTO;
-import animal_shop.community.comment.entity.Comment;
-import animal_shop.community.heart_comment.entity.CommentHeart;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.service.MemberService;
-import animal_shop.community.post.entity.Post;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
@@ -14,7 +9,7 @@ import animal_shop.shop.item_comment.dto.ItemCommentDTO;
 import animal_shop.shop.item_comment.dto.ItemCommentDTOResponse;
 import animal_shop.shop.item_comment.dto.RequsetItemCommentDTO;
 import animal_shop.shop.item_comment.entity.ItemComment;
-import animal_shop.shop.item_comment.repository.ItemCommentReposiotry;
+import animal_shop.shop.item_comment.repository.ItemCommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +23,7 @@ import java.util.List;
 public class ItemCommentService {
 
     @Autowired
-    ItemCommentReposiotry itemCommentReposiotry;
+    ItemCommentRepository itemCommentRepository;
 
     @Autowired
     ItemRepository itemRepository;
@@ -47,7 +42,7 @@ public class ItemCommentService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalArgumentException("item not found"));
 
         //해당 상품의 댓글들 조회
-        Page<ItemComment> comments = itemCommentReposiotry.findByItem(item, pageable);
+        Page<ItemComment> comments = itemCommentRepository.findByItem(item, pageable);
 
         //댓글 좋아요 기능
 //        if(token!=null){
@@ -76,10 +71,11 @@ public class ItemCommentService {
 
     public void createComment(String token, Long itemId, RequsetItemCommentDTO requestItemCommentDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
+
         Member member = memberService.getByUserId(Long.valueOf(userId));
-        System.out.println("here1");
+
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalArgumentException("item not found"));
-        System.out.println("here3");
+
         ItemComment comment = ItemComment.builder()
                 .contents(requestItemCommentDTO.getContents())
                 .item(item)
@@ -87,10 +83,59 @@ public class ItemCommentService {
                 .countHeart(0L)
                 .member(member)
                 .build();
-        System.out.println("here3");
+
         item.setComment_count(item.getComment_count()+1);
-        System.out.println("here4");
-        itemCommentReposiotry.save(comment);
+        itemRepository.save(item);
+
+        itemCommentRepository.save(comment);
     }
 
+    public ItemCommentDTO updateComment(String token, Long commentId, RequsetItemCommentDTO requestItemCommentDTO) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+
+        ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("comment not found"));
+        comment.setContents(requestItemCommentDTO.getContents());
+        comment.setRating(requestItemCommentDTO.getRating());
+
+        itemCommentRepository.save(comment);
+
+        return new ItemCommentDTO(comment);
+    }
+
+    public void deleteComment(String token, Long commentId) {
+        Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
+        ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("comment not found"));
+
+        Item item = comment.getItem();
+        item.setComment_count(item.getComment_count()-1);
+        itemRepository.save(item);
+
+        if(userId.equals(comment.getMember().getId())){
+            itemCommentRepository.delete(comment);
+        }else{
+            throw new IllegalArgumentException("comment is not present");
+        }
+    }
+
+    public boolean checkCommentWriter(String token, Long commentId) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("comment not found : " + commentId));
+        if(String.valueOf(comment.getMember().getId()).equals(userId)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    public void increaseHeart(ItemComment itemComment) {
+        itemComment.setCountHeart(itemComment.getCountHeart() + 1);
+        itemCommentRepository .save(itemComment);
+    }
+
+
+    public void decreaseHeart(ItemComment itemComment) {
+        itemComment.setCountHeart(itemComment.getCountHeart() - 1);
+        itemCommentRepository .save(itemComment);
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ItemCommentReposiotry extends JpaRepository<ItemComment,Long> {
+public interface ItemCommentRepository extends JpaRepository<ItemComment,Long> {
     Page<ItemComment> findByItem(Item item, Pageable pageable);
 
 }
