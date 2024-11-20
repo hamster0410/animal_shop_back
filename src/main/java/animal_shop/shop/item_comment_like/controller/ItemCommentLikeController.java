@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/item_comment_like")
 public class ItemCommentLikeController {
-
     @Autowired
     ItemCommentLikeService itemCommentLikeService;
 
