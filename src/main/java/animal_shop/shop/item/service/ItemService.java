@@ -52,6 +52,7 @@ public class ItemService {
         Item item = Item.builder()
                 .name(itemDTOList.getName())
                 .category(itemDTOList.getCategory())
+                .itemDetail(itemDTOList.getItem_detail())
                 .comment_count(0L)
                 .species(itemDTOList.getSpecies())
                 .stock_number(itemDTOList.getStock_number())
