@@ -33,7 +33,5 @@ public class ItemCommentDTO {
         this.createdDate = comment.getCreatedDate();
         this.rating = comment.getRating();
         this.countHeart = comment.getCountHeart();
-        this.heart = comment.isHeart();
-
     }
 }

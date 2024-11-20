@@ -4,12 +4,12 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.entity.Item;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 추가
 public class ItemComment extends BaseTimeEntity {
     @Id
@@ -31,5 +31,4 @@ public class ItemComment extends BaseTimeEntity {
 
     private Long countHeart;
 
-    private boolean heart;
 }
