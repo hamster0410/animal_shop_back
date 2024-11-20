@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ShopService {
     @Autowired
     ItemRepository itemRepository;
 
+    @Transactional(readOnly = true)
     public MainDTOResponse main_contents() {
         Pageable pageable = (Pageable) PageRequest.of(0,4);
 
@@ -38,6 +40,7 @@ public class ShopService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public MainDTOBestResponse best_contents(int page) {
         Pageable pageable = (Pageable) PageRequest.of(page,20);
 
@@ -48,6 +51,7 @@ public class ShopService {
                 .build();
 
     }
+    @Transactional(readOnly = true)
     public MainDTOBestResponse category_contents(int page, String species, String category) {
         if (page < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must be >= 0");

@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "orders")
-public class Order extends BaseTimeEntity {
+public class Order{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

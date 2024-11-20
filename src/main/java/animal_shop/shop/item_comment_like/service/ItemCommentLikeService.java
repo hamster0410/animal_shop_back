@@ -9,6 +9,7 @@ import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
 import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ItemCommentLikeService {
@@ -24,7 +25,7 @@ public class ItemCommentLikeService {
     @Autowired
     private ItemCommentRepository itemCommentRepository;
 
-
+    @Transactional
     public void addHeart(String token, Long commentId) {
         //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -45,6 +46,7 @@ public class ItemCommentLikeService {
         itemCommentLikeRepository.save(commentLike);
     }
 
+    @Transactional
     public void deleteHeart(String token, Long commentId) {
         //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
