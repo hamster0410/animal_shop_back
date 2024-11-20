@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Table(name="HEART")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 추가
-public class Heart {
+public class Heart{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
