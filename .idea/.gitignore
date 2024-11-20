@@ -1,9 +1,0 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-
-#주요정보
-application.properties
-
-# Java 바이트코드
-*.class
