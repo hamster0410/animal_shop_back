@@ -91,13 +91,16 @@ public class ItemService {
 
         // 3. 아이템 속성 수정
         item.setName(itemDTOList.getName());
+        item.setItemDetail(itemDTOList.getItem_detail());
         item.setCategory(itemDTOList.getCategory());
         item.setStock_number(itemDTOList.getStock_number());
         item.setItemSellStatus(itemDTOList.getSell_status());
         item.setSpecies(itemDTOList.getSpecies());
         item.setThumbnail_url(itemDTOList.getThumbnailUrls());
         item.setImage_url(itemDTOList.getImageUrl());
+
         item.getOptions().clear(); // 기존 옵션 제거
+
         for (Option newOption : itemDTOList.getOption()) {
             newOption.setItem(item); // 새 옵션에 아이템 연결
             item.getOptions().add(newOption); // 아이템의 옵션 리스트에 추가
