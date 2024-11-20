@@ -13,6 +13,8 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 //    Page<Item> findBySpecies(Pageable pageable, String species);
     Page<Item> findAllByOrderByCreatedDateDesc(Pageable pageable);
 
+    Page<Item> findByMemberId(Long memberId,Pageable pageable);
+
     // fetch join을 사용한 쿼리
     @Query("SELECT i FROM Item i " +
             "LEFT JOIN FETCH i.thumbnail_url " +  // thumbnail_url 컬렉션을 fetch join으로 가져옴

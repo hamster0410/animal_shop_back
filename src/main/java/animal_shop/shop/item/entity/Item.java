@@ -25,8 +25,7 @@ public class Item extends BaseTimeEntity{
     private String name;
 
     // @OneToMany 관계로 수정
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options;
 
     @ManyToOne

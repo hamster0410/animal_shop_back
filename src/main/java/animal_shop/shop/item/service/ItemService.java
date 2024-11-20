@@ -4,16 +4,21 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.dto.ItemDTOList;
+import animal_shop.shop.item.dto.ItemDTOListResponse;
 import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.entity.Option;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.item.repository.OptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -68,6 +73,7 @@ public class ItemService {
     }
 
 
+    @Transactional
     public void update(String token, ItemDTOList itemDTOList) {
         // 1. 사용자 인증 (SELLER 권한 확인)
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -90,10 +96,80 @@ public class ItemService {
         item.setSpecies(itemDTOList.getSpecies());
         item.setThumbnail_url(itemDTOList.getThumbnailUrls());
         item.setImage_url(itemDTOList.getImageUrl());
-        item.setOptions(itemDTOList.getOption()); // 옵션 수정
+        item.getOptions().clear(); // 기존 옵션 제거
+        for (Option newOption : itemDTOList.getOption()) {
+            newOption.setItem(item); // 새 옵션에 아이템 연결
+            item.getOptions().add(newOption); // 아이템의 옵션 리스트에 추가
+        }
 
         // 4. 수정된 아이템 저장
         itemRepository.save(item);
+    }
+
+    @Transactional
+    public void delete(String token, String itemId) {
+        //1. 사용자 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+        if (!member.getRole().toString().equals("SELLER")) {
+            throw new IllegalStateException("is not seller");
+        }
+        //삭제할 아이템 찾기
+        Item item = itemRepository.findById(Long.valueOf(itemId))
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+        //아이템 삭제
+        itemRepository.delete(item);
+
+    }
+
+    //개별 조회
+    @Transactional(readOnly = true)
+    public ItemDetailDTO selectItem(String token, String itemId) {
+        //1. 사용자인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        // 2. 판매자 자격조건
+        if (!member.getRole().toString().equals("SELLER")) {
+            throw new IllegalStateException("is not seller");
+        }
+        //3. 상품 조회하기
+        Item item = itemRepository.findById(Long.valueOf(itemId))
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+        //4. 엔티티 -> DTO로 변환
+        return new ItemDetailDTO(item);
+    }
+
+    //전체 조회
+    @Transactional(readOnly = true)
+    public ItemDTOListResponse selectAll(String token, int page) {
+        // 1. 사용자 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+        // 2. 판매자 자격조건
+        if (!member.getRole().toString().equals("SELLER")) {
+            throw new IllegalStateException("is not seller");
+        }
+
+        Pageable pageable = (Pageable) PageRequest.of(page,20);
+
+
+        // 3. 전체 상품 조회하기
+        Page<Item> items = itemRepository.findByMemberId(Long.valueOf(userId),pageable);
+
+        ItemDTOListResponse itemDTOListResponse = ItemDTOListResponse.builder()
+                .itemDTOLists(items.stream()
+                        .map(ItemDetailDTO::new)
+                        .collect(Collectors.toList()))
+                .total_count(items.getTotalElements())
+                .build();
+        return itemDTOListResponse;
+        // 4. 엔티티 -> DTO로 변환
     }
 
     public ItemDetailDTO findById(String itemId) {
