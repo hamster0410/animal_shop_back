@@ -16,13 +16,12 @@ public class ItemController {
     ItemService itemService;
 
     @GetMapping("/detail/{itemId}")
-    public ResponseEntity<?> item_detail(@PathVariable(value = "itemId")String itemId){
+    public ResponseEntity<?> item_detail(@PathVariable(value = "itemId") String itemId) {
         ResponseDTO responseDTO = null;
-        try{
+        try {
             ItemDetailDTO itemDetailDTO = itemService.findById(itemId);
-
             return ResponseEntity.ok().body(itemDetailDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
                     .build();
@@ -30,11 +29,20 @@ public class ItemController {
         }
     }
 
-//    @GetMapping("/query/new")
-//    public ResponseEntity<?> item_query_new(
-//            @RequestHeader(value = "Authorization", required = false) String token,
-//            @RequestBody RequestItemQueryDTO requestItemQueryDTO
-//            ){
-//
-//    }
+    @PostMapping("/query/new")
+    public ResponseEntity<?> item_query_new(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody RequestItemQueryDTO requestItemQueryDTO) {
+        ResponseDTO responseDTO = null;
+        try {
+            itemService.register_enquery(token, requestItemQueryDTO);
+            return ResponseEntity.ok().body(requestItemQueryDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
+

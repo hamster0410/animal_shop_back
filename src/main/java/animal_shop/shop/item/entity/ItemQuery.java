@@ -2,10 +2,10 @@ package animal_shop.shop.item.entity;
 
 import animal_shop.community.member.entity.Member;
 import jakarta.persistence.*;
-
-import java.util.List;
+import lombok.Data;
 
 @Entity
+@Data
 public class ItemQuery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
