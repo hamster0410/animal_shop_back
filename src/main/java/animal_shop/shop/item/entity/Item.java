@@ -55,6 +55,13 @@ public class Item extends BaseTimeEntity{
 
     private String image_url;
 
+    public void removeStock(int stockNumber){
+        Long restStock = this.stock_number - stockNumber;
+        if(restStock<0){
+            throw new RuntimeException("상품의 재고가 부족 합니다. (현재 재고 수량 :" + this.stock_number + ")");
+        }this.stock_number = restStock;
+    }
+
 
 }
 
