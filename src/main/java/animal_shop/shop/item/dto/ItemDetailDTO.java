@@ -37,6 +37,7 @@ public class ItemDetailDTO {
            list.add(optionDTO);
        }
        this.options = list;
+       this.category = item.getCategory();
        this.seller = item.getMember().getNickname();
        this.species = item.getSpecies();
        this.comment_count = item.getComment_count();
