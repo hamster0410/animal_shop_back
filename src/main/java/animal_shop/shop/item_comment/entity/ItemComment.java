@@ -5,15 +5,19 @@ import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.entity.Item;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 추가
 public class ItemComment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="item_comment_id")
     private Long id;
+
+    private String contents;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
@@ -25,7 +29,7 @@ public class ItemComment extends BaseTimeEntity {
 
     private Long rating;
 
-    private Long count_heart;
+    private Long countHeart;
 
     private boolean heart;
 }

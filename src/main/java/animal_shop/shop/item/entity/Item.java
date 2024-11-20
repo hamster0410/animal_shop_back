@@ -24,6 +24,8 @@ public class Item extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
+    private String itemDetail;
+
     // @OneToMany 관계로 수정
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options;

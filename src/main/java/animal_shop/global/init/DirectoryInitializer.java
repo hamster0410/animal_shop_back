@@ -27,12 +27,16 @@ public class DirectoryInitializer {
     @Value("${file.upload-dir-item}")  // 게시글 파일 업로드 경로
     private String itemUploadDir;
 
+    @Value("${file.upload-dir-item-comment}")  // 게시글 파일 업로드 경로
+    private String itemCommentUploadDir;
+
     @PostConstruct
     public void init() {
         createDirectoryIfNotExists(commentUploadDir);
         createDirectoryIfNotExists(postUploadDir);
         createDirectoryIfNotExists(profileUploadDir);
         createDirectoryIfNotExists(itemUploadDir);
+        createDirectoryIfNotExists(itemCommentUploadDir);
     }
 
     private void createDirectoryIfNotExists(String dirPath) {

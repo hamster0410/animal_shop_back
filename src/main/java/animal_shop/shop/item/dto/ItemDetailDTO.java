@@ -15,6 +15,8 @@ public class ItemDetailDTO {
 
    private List<OptionDTO> options;
 
+   private String item_detail;
+
    private String seller;
 
    private String species;
@@ -36,6 +38,7 @@ public class ItemDetailDTO {
            OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice());
            list.add(optionDTO);
        }
+       this.item_detail = item.getItemDetail();
        this.options = list;
        this.category = item.getCategory();
        this.seller = item.getMember().getNickname();

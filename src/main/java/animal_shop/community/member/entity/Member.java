@@ -6,6 +6,7 @@ import animal_shop.community.comment.entity.Comment;
 import animal_shop.community.heart_post.entity.Heart;
 import animal_shop.community.member.Role;
 import animal_shop.community.post.entity.Post;
+import animal_shop.shop.item_comment.entity.ItemComment;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,6 +57,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemComment> item_comments;
 
     private String profile;
 
