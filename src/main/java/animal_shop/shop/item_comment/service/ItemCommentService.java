@@ -10,6 +10,8 @@ import animal_shop.shop.item_comment.dto.ItemCommentDTOResponse;
 import animal_shop.shop.item_comment.dto.RequsetItemCommentDTO;
 import animal_shop.shop.item_comment.entity.ItemComment;
 import animal_shop.shop.item_comment.repository.ItemCommentRepository;
+import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
+import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +36,9 @@ public class ItemCommentService {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    ItemCommentLikeRepository itemCommentLikeRepository;
+
     public ItemCommentDTOResponse getCommentsByItemId(Long itemId, String token, int page) {
 
         List<ItemCommentDTO> commentDTOS = new ArrayList<>();
@@ -45,20 +50,20 @@ public class ItemCommentService {
         Page<ItemComment> comments = itemCommentRepository.findByItem(item, pageable);
 
         //댓글 좋아요 기능
-//        if(token!=null){
-//            String userId = tokenProvider.extractIdByAccessToken(token);
-//            for(Comment comment : comments){
-//                CommentDTO commentDTO = new CommentDTO(comment);
-//                CommentHeart commentheart = commentHeartRepository.findByMemberIdAndCommentId(comment.getId(), Long.valueOf(userId));
-//                commentDTO.setHeart(commentheart!=null);
-//                commentDTOS.add(commentDTO);
-//            }
-//        }else{
+            if(token!=null){
+                String userId = tokenProvider.extractIdByAccessToken(token);
+                for(ItemComment comment : comments){
+                    ItemCommentDTO commentDTO = new ItemCommentDTO(comment);
+                    ItemCommentLike commentLike = itemCommentLikeRepository.findByItemCommentIdAndMemberId(comment.getId(), Long.valueOf(userId));
+                    commentDTO.setHeart(commentLike!=null);
+                    commentDTOS.add(commentDTO);
+                }
+            }else{
             commentDTOS = comments.stream()
                     .map(ItemCommentDTO::new)  // Comment 객체를 CommentDTO로 변환
                     .toList();
 
-//        }
+        }
 
 
         return ItemCommentDTOResponse
@@ -127,15 +132,4 @@ public class ItemCommentService {
         }
     }
 
-
-    public void increaseHeart(ItemComment itemComment) {
-        itemComment.setCountHeart(itemComment.getCountHeart() + 1);
-        itemCommentRepository .save(itemComment);
-    }
-
-
-    public void decreaseHeart(ItemComment itemComment) {
-        itemComment.setCountHeart(itemComment.getCountHeart() - 1);
-        itemCommentRepository .save(itemComment);
-    }
 }
