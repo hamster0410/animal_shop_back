@@ -3,6 +3,7 @@ package animal_shop.shop.item.controller;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.dto.RequestItemQueryDTO;
+import animal_shop.shop.item.repository.ItemQueryRepository;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +45,25 @@ public class ItemController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @PostMapping("/query/delete/{questionId}")
+    public ResponseEntity<?> item_delete(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable(value = "questionId")String questionId){
+
+        ResponseDTO responseDTO = null;
+        try{
+            itemService.delete_query(token,questionId);
+            responseDTO = ResponseDTO.builder()
+                    .message("delete success!")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return  ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 }
 
