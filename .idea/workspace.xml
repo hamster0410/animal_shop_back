@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - 구매, 구매이력 확인">
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/dto/RequestItemQueryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/dto/RequestItemQueryDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/service/ItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order_item/entity/OrderItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order_item/entity/OrderItem.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="board" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;hamster0410&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/hamster0410/animal_shop.git&quot;,
+    &quot;accountId&quot;: &quot;7615117e-f688-4b89-b662-c7d5be59c567&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/animal_shop/shop/main/service/ShopService.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2on7vi6BPnHhX78wP9zbUrNZLCc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Animal_ShopApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.FinalprojectApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.animal_shop [:animal_shop.Animal_ShopApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.animal_shop [:com.example.finalproject.FinalProjectApplication.main()].executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.animal_shop [:com.example.finalproject.FinalprojectApplication.main()].executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.animal_shop [:com.example.firstproject.FirstprojectApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/KOSTA/IdeaProjects/animal_shop&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\KOSTA\IdeaProjects\animal_shop\src\main\java\animal_shop\domain\heart_comment" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Animal_ShopApplication">
+    <configuration name="Animal_ShopApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="animal_shop.Animal_ShopApplication" />
+      <module name="board.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="animal_shop.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FinalProjectApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.finalproject.FinalProjectApplication" />
+      <module name="firstproject.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.finalproject.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FinalprojectApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.finalproject.FinalprojectApplication" />
+      <module name="firstproject.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.finalproject.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="animal_shop" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="animal_shop" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Animal_ShopApplication" />
+        <item itemvalue="Application.FinalProjectApplication" />
+        <item itemvalue="Application.FinalprojectApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="" />
+      <created>1731493717300</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731493717300</updated>
+    </task>
+    <task id="LOCAL-00001" summary="fix - domain이름 변경, 프로필 이미지 추가">
+      <option name="closed" value="true" />
+      <created>1731637313617</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1731637313617</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat - 유저-판매자등록">
+      <option name="closed" value="true" />
+      <created>1731890845441</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731890845441</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat - 유저-판매자등록">
+      <option name="closed" value="true" />
+      <created>1731893181556</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731893181556</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat - option-item 엔티티 수정">
+      <option name="closed" value="true" />
+      <created>1731893495838</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1731893495838</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat - 관리자 - 요청리스트">
+      <option name="closed" value="true" />
+      <created>1731897960124</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1731897960124</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix - 사용자-판매요청 수정">
+      <option name="closed" value="true" />
+      <created>1731898643944</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1731898643944</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix - SellerDTO 수정">
+      <option name="closed" value="true" />
+      <created>1731899542026</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731899542026</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat - admin 유저 seller 허가">
+      <option name="closed" value="true" />
+      <created>1731904679635</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1731904679635</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix - 사업자와 전화번호 not null, unique">
+      <option name="closed" value="true" />
+      <created>1731916023589</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1731916023589</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat - 판매자 기능 철회">
+      <option name="closed" value="true" />
+      <created>1731917817232</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1731917817232</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat - 판매자 등록 삭제 및 마이페이지 수정">
+      <option name="closed" value="true" />
+      <created>1731918616953</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1731918616953</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix - 상품 등록 수정">
+      <option name="closed" value="true" />
+      <created>1731927698582</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1731927698582</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fix - 상품 등록 수정">
+      <option name="closed" value="true" />
+      <created>1731927747819</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1731927747819</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fix - 상품 등록 수정">
+      <option name="closed" value="true" />
+      <created>1731975727480</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1731975727480</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fix - 상품 등록 수정">
+      <option name="closed" value="true" />
+      <created>1731975757659</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1731975757659</updated>
+    </task>
+    <task id="LOCAL-00016" summary="feat - 쇼핑몰 메인페이지">
+      <option name="closed" value="true" />
+      <created>1731980578923</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1731980578923</updated>
+    </task>
+    <task id="LOCAL-00017" summary="feat - 쇼핑몰 메인페이지">
+      <option name="closed" value="true" />
+      <created>1731980589022</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1731980589022</updated>
+    </task>
+    <task id="LOCAL-00018" summary="feat - 쇼핑몰 전체페이지">
+      <option name="closed" value="true" />
+      <created>1731983336367</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1731983336367</updated>
+    </task>
+    <task id="LOCAL-00019" summary="feat - itemDIr경로">
+      <option name="closed" value="true" />
+      <created>1731983906553</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1731983906553</updated>
+    </task>
+    <task id="LOCAL-00020" summary="feat - 쇼핑몰카테고리">
+      <option name="closed" value="true" />
+      <created>1731987029776</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1731987029776</updated>
+    </task>
+    <task id="LOCAL-00021" summary="feat - 쇼핑몰카테고리">
+      <option name="closed" value="true" />
+      <created>1731994806698</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1731994806698</updated>
+    </task>
+    <task id="LOCAL-00022" summary="feat - 상품 수정">
+      <option name="closed" value="true" />
+      <created>1731996142316</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1731996142316</updated>
+    </task>
+    <task id="LOCAL-00023" summary="feat - 상품 디테일">
+      <option name="closed" value="true" />
+      <created>1732001806970</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1732001806970</updated>
+    </task>
+    <task id="LOCAL-00024" summary="feat - 상품 디테일">
+      <option name="closed" value="true" />
+      <created>1732002767054</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1732002767054</updated>
+    </task>
+    <task id="LOCAL-00025" summary="feat - 쇼핑몰 카테고리 조회">
+      <option name="closed" value="true" />
+      <created>1732011813735</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1732011813735</updated>
+    </task>
+    <task id="LOCAL-00026" summary="feat - 쇼핑몰 카테고리 조회">
+      <option name="closed" value="true" />
+      <created>1732011835815</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1732011835815</updated>
+    </task>
+    <task id="LOCAL-00027" summary="feat - 쇼핑몰 카테고리 수정,삭제,조회">
+      <option name="closed" value="true" />
+      <created>1732064384137</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1732064384137</updated>
+    </task>
+    <task id="LOCAL-00028" summary="fix - 상세페이지 카테고리 수정">
+      <option name="closed" value="true" />
+      <created>1732064802038</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1732064802038</updated>
+    </task>
+    <task id="LOCAL-00029" summary="fix - 상품 설명 컬럼 추가">
+      <option name="closed" value="true" />
+      <created>1732066740986</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1732066740986</updated>
+    </task>
+    <task id="LOCAL-00030" summary="fix - dto 재고 추가">
+      <option name="closed" value="true" />
+      <created>1732066954366</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1732066954366</updated>
+    </task>
+    <task id="LOCAL-00031" summary="feat - 상품 댓글 조회,생성">
+      <option name="closed" value="true" />
+      <created>1732069806627</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1732069806627</updated>
+    </task>
+    <task id="LOCAL-00032" summary="feat - 상품 댓글 수정,삭제,확인">
+      <option name="closed" value="true" />
+      <created>1732071643450</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1732071643450</updated>
+    </task>
+    <task id="LOCAL-00033" summary="fix - 상품 등록 수정">
+      <option name="closed" value="true" />
+      <created>1732072186146</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1732072186146</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fix - 상품 댓글 좋아요">
+      <option name="closed" value="true" />
+      <created>1732077737667</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1732077737667</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fix - 상품 댓글 좋아요">
+      <option name="closed" value="true" />
+      <created>1732078149322</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1732078149322</updated>
+    </task>
+    <task id="LOCAL-00036" summary="fix - 상품 댓글 좋아요">
+      <option name="closed" value="true" />
+      <created>1732085530407</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1732085530407</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fix - 쿼리 엔티티">
+      <option name="closed" value="true" />
+      <created>1732086432803</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1732086432803</updated>
+    </task>
+    <task id="LOCAL-00038" summary="fix - 상품 업데이트">
+      <option name="closed" value="true" />
+      <created>1732086620385</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1732086620385</updated>
+    </task>
+    <task id="LOCAL-00039" summary="feat - 구매 구현 중">
+      <option name="closed" value="true" />
+      <created>1732098878813</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1732098878813</updated>
+    </task>
+    <task id="LOCAL-00040" summary="feat - 구매">
+      <option name="closed" value="true" />
+      <created>1732101839993</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1732101839993</updated>
+    </task>
+    <task id="LOCAL-00041" summary="feat - 구매">
+      <option name="closed" value="true" />
+      <created>1732101854339</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1732101854339</updated>
+    </task>
+    <task id="LOCAL-00042" summary="feat - 구매">
+      <option name="closed" value="true" />
+      <created>1732101983878</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1732101983878</updated>
+    </task>
+    <task id="LOCAL-00043" summary="feat - 구매">
+      <option name="closed" value="true" />
+      <created>1732102023471</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1732102023471</updated>
+    </task>
+    <task id="LOCAL-00044" summary="fix - 댓글 삭제 에러 수정">
+      <option name="closed" value="true" />
+      <created>1732155560790</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1732155560790</updated>
+    </task>
+    <task id="LOCAL-00045" summary="feat - 구매, 구매이력 확인">
+      <option name="closed" value="true" />
+      <created>1732157347658</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1732157347658</updated>
+    </task>
+    <task id="LOCAL-00046" summary="feat - 구매, 구매이력 확인">
+      <option name="closed" value="true" />
+      <created>1732157464941</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1732157464941</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat - admin 유저 seller 허가" />
+    <MESSAGE value="fix - 사업자와 전화번호 not null, unique" />
+    <MESSAGE value="feat - 판매자 기능 철회" />
+    <MESSAGE value="feat - 판매자 등록 삭제 및 마이페이지 수정" />
+    <MESSAGE value="feat - 쇼핑몰 메인페이지" />
+    <MESSAGE value="feat - 쇼핑몰 전체페이지" />
+    <MESSAGE value="feat - itemDIr경로" />
+    <MESSAGE value="feat - 쇼핑몰카테고리" />
+    <MESSAGE value="feat - 상품 수정" />
+    <MESSAGE value="feat - 상품 디테일" />
+    <MESSAGE value="feat - 쇼핑몰 카테고리 조회" />
+    <MESSAGE value="feat - 쇼핑몰 카테고리 수정,삭제,조회" />
+    <MESSAGE value="fix - 상세페이지 카테고리 수정" />
+    <MESSAGE value="fix - 상품 설명 컬럼 추가" />
+    <MESSAGE value="fix - dto 재고 추가" />
+    <MESSAGE value="feat - 상품 댓글 조회,생성" />
+    <MESSAGE value="feat - 상품 댓글 수정,삭제,확인" />
+    <MESSAGE value="fix - 상품 등록 수정" />
+    <MESSAGE value="fix - 상품 댓글 좋아요" />
+    <MESSAGE value="fix - 쿼리 엔티티" />
+    <MESSAGE value="fix - 상품 업데이트" />
+    <MESSAGE value="feat - 구매 구현 중" />
+    <MESSAGE value="feat - 구매" />
+    <MESSAGE value="fix - 댓글 삭제 에러 수정" />
+    <MESSAGE value="feat - 구매, 구매이력 확인" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat - 구매, 구매이력 확인" />
+  </component>
+</project>
