@@ -22,6 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -92,8 +95,8 @@ public class CartService {
 
         Pageable pageable = (Pageable) PageRequest.of(page,10);
 
-        Page<CartDetailDTO> cartDetailDTOList;
-
+        List<CartDetailDTO> cartDetailDTOList = new ArrayList<>();
+        Page<CartItem> cartItems = null;
         String userId = tokenProvider.extractIdByAccessToken(token);
         Cart cart = cartRepository.findByMemberId(Long.valueOf(userId));
 
@@ -103,18 +106,16 @@ public class CartService {
             return cartDetailDTOResponse;
         }
 
-        cartDetailDTOList = cartItemRepository.findCartDetailDtoList(cart.getId(),pageable);
-        for(CartDetailDTO c: cartDetailDTOList){
-            CartItem cartItem = cartItemRepository.findById(c.getCartItemId())
-                    .orElseThrow(() -> new IllegalArgumentException("car item not found"));
-            c.setImgUrl(cartItem.getItem().getThumbnail_url().get(0));
-            c.setOption_name(cartItem.getOption().getName());
-            c.setOption_price(cartItem.getOption().getPrice());
+//        cartDetailDTOList = cartItemRepository.findCartDetailDtoList(cart.getId(),pageable);
+        cartItems = cartItemRepository.findByCartIdOrderByCreatedDateDesc(cart.getId(),pageable);
+        for(CartItem ci: cartItems){
+            CartDetailDTO cartDetailDTO = new CartDetailDTO(ci);
+            cartDetailDTOList.add(cartDetailDTO);
         }
 
         cartDetailDTOResponse = CartDetailDTOResponse.builder()
-                .cartDetailDTOList(cartDetailDTOList.stream().toList())
-                .total_count(cartDetailDTOList.getTotalElements())
+                .cartDetailDTOList(cartDetailDTOList)
+                .total_count(cartItems.getTotalElements())
                 .build();
         return cartDetailDTOResponse;
 

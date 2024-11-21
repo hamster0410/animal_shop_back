@@ -1,5 +1,6 @@
 package animal_shop.shop.cart.dto;
 
+import animal_shop.shop.cart_item.entity.CartItem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +19,13 @@ public class CartDetailDTO {
 
     private String imgUrl;
 
-    private CartDetailDTO(Long cartItemId, String itemNm, int count){
-        this.cartItemId = cartItemId;
-        this.itemNm = itemNm;
-        this.count = count;
+    public CartDetailDTO(CartItem cartItem){
+        this.cartItemId = cartItem.getId();
+        this.itemNm = cartItem.getItem().getName();
+        this.count = cartItem.getCount();
+        this.option_name = cartItem.getOption().getName();
+        this.option_price = cartItem.getOption().getPrice();
+        this.imgUrl = cartItem.getItem().getThumbnail_url().get(0);
     }
 
 }

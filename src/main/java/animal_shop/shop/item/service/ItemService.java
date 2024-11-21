@@ -3,11 +3,7 @@
     import animal_shop.community.member.entity.Member;
     import animal_shop.community.member.repository.MemberRepository;
     import animal_shop.global.security.TokenProvider;
-    import animal_shop.shop.item.controller.ItemController;
-    import animal_shop.shop.item.dto.ItemDTOList;
-    import animal_shop.shop.item.dto.ItemDTOListResponse;
-    import animal_shop.shop.item.dto.ItemDetailDTO;
-    import animal_shop.shop.item.dto.RequestItemQueryDTO;
+    import animal_shop.shop.item.dto.*;
     import animal_shop.shop.item.entity.Item;
     import animal_shop.shop.item.entity.ItemQuery;
     import animal_shop.shop.item.entity.Option;
@@ -18,6 +14,7 @@
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.PageRequest;
     import org.springframework.data.domain.Pageable;
+    import org.springframework.data.domain.Sort;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
 
@@ -233,6 +230,33 @@
 
             //3.문의 내용 삭제
             itemQueryRepository.delete(itemQuery);
+        }
+
+        @Transactional
+        public QueryResponse find_orders(String token, int page) {
+            //1.사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() ->new RuntimeException("member is not found"));
+
+            // 2. 판매자 자격조건
+            if (!member.getRole().toString().equals("SELLER")) {
+                throw new IllegalStateException("is not seller");
+            }
+            //3. 페이징 정보 생성
+            Pageable pageable = PageRequest.of(page,10, Sort.by("createdDate").descending());
+            Page<ItemQuery> itemQueries = itemQueryRepository.findOrdersBySellerId(member.getId(), pageable);
+
+            //4.주문 목록 조회
+            List<ResponseItemQueryDTO> requestItemQueryDTOList = itemQueries
+                    .getContent()
+                    .stream()
+                    .map(ResponseItemQueryDTO::new).toList();
+
+            return QueryResponse.builder()
+                    .responseItemQueryDTOList(requestItemQueryDTOList)
+                    .total_count(itemQueries.getTotalElements())
+                    .build();
         }
 
     }

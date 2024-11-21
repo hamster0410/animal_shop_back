@@ -1,12 +1,13 @@
 package animal_shop.shop.item.entity;
 
 import animal_shop.community.member.entity.Member;
+import animal_shop.global.dto.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-public class ItemQuery {
+public class ItemQuery extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="item_query_id")

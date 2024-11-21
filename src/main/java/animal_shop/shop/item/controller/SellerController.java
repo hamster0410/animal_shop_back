@@ -4,6 +4,7 @@ import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.item.dto.ItemDTOList;
 import animal_shop.shop.item.dto.ItemDTOListResponse;
 import animal_shop.shop.item.dto.ItemDetailDTO;
+import animal_shop.shop.item.dto.QueryResponse;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -133,6 +134,22 @@ public class SellerController {
                     .error("An unexpected error occurred")
                     .build();
             return ResponseEntity.internalServerError().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/query/list")
+    public ResponseEntity<?> seller_CI(@RequestHeader(value = "Authorization") String token,
+                                       @RequestParam(value = "page", defaultValue = "1") int page) {
+        ResponseDTO responseDTO = null;
+        try {
+            QueryResponse orderPage = itemService.find_orders(token, page-1);
+
+            return ResponseEntity.ok().body(orderPage);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 
