@@ -1,0 +1,9 @@
+# 모든 것을 기본적으로 무시
+/*
+
+# src/main/java 디렉터리 아래는 제외 (즉, 추적 대상 포함)
+!./src/
+!./src/main/
+!./src/main/java/
+# src/main/java 아래 모든 파일과 디렉터리 포함
+!./src/main/java/**
