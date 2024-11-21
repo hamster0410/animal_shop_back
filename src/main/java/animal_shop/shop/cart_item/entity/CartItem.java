@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Getter  @Setter
 @Table(name = "cart_item")
 public class CartItem extends BaseTimeEntity {
 

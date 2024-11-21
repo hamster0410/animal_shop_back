@@ -214,7 +214,7 @@
             itemQuery.setProduct(item.getName());
             itemQuery.setContents(requestItemQueryDTO.getContents());
             itemQuery.setOption_name(requestItemQueryDTO.getOption_name());
-            itemQuery.setOption_name(requestItemQueryDTO.getOption_price());
+            itemQuery.setOption_price(requestItemQueryDTO.getOption_price());
 
             // 3. 데이터베이스 등록
             itemQueryRepository.save(itemQuery);

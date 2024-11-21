@@ -49,4 +49,24 @@ public class OrderController {
         }
     }
 
+    @PatchMapping("/order/cancel/{orderId}")
+    public ResponseEntity<?> cancelOrder (@RequestHeader(value = "Authorization") String token,
+                                          @PathVariable(value = "orderId") Long orderId){
+        ResponseDTO responseDTO;
+        try{
+            orderService.cancelOrder(token, orderId);
+            responseDTO = ResponseDTO.builder()
+                    .message("cancel success")
+                    .build();
+
+            return ResponseEntity.ok().body(responseDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 }

@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class Animal_ShopApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Animal_ShopApplication.class, args  );
+		SpringApplication.run(Animal_ShopApplication.class, args
+		);
 	}
 
 }

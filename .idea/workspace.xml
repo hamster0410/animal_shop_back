@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - 구매, 구매이력 확인">
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/dto/RequestItemQueryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/dto/RequestItemQueryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/Item.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/service/ItemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order_item/entity/OrderItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order_item/entity/OrderItem.java" afterDir="false" />
+    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - ignore테스트">
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/dto/CartDetailDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/dto/CartDetailDTOResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/repository/CartItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/Animal_ShopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/Animal_ShopApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/entity/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/entity/Cart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/entity/CartItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/entity/CartItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/controller/OrderController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +97,7 @@
     &quot;last_opened_file_path&quot;: &quot;C:/Users/KOSTA/IdeaProjects/animal_shop&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;
   }
 }</component>
@@ -169,30 +175,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731493717300</updated>
-    </task>
-    <task id="LOCAL-00001" summary="fix - domain이름 변경, 프로필 이미지 추가">
-      <option name="closed" value="true" />
-      <created>1731637313617</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1731637313617</updated>
-    </task>
-    <task id="LOCAL-00002" summary="feat - 유저-판매자등록">
-      <option name="closed" value="true" />
-      <created>1731890845441</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1731890845441</updated>
-    </task>
-    <task id="LOCAL-00003" summary="feat - 유저-판매자등록">
-      <option name="closed" value="true" />
-      <created>1731893181556</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1731893181556</updated>
     </task>
     <task id="LOCAL-00004" summary="feat - option-item 엔티티 수정">
       <option name="closed" value="true" />
@@ -538,12 +520,58 @@
       <option name="project" value="LOCAL" />
       <updated>1732157464941</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="feat - 문의사항수정">
+      <option name="closed" value="true" />
+      <created>1732158615286</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1732158615286</updated>
+    </task>
+    <task id="LOCAL-00048" summary="feat - 문의사항수정">
+      <option name="closed" value="true" />
+      <created>1732160288818</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1732160288818</updated>
+    </task>
+    <task id="LOCAL-00049" summary="feat - 문의사항수정">
+      <option name="closed" value="true" />
+      <created>1732160578024</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1732160578024</updated>
+    </task>
+    <task id="LOCAL-00050" summary="feat - 문의사항수정">
+      <option name="closed" value="true" />
+      <created>1732160829426</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1732160829426</updated>
+    </task>
+    <task id="LOCAL-00051" summary="feat - ignore테스트">
+      <option name="closed" value="true" />
+      <created>1732160950552</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1732160950552</updated>
+    </task>
+    <task id="LOCAL-00052" summary="feat - ignore테스트">
+      <option name="closed" value="true" />
+      <created>1732163559548</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1732163559548</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat - admin 유저 seller 허가" />
-    <MESSAGE value="fix - 사업자와 전화번호 not null, unique" />
     <MESSAGE value="feat - 판매자 기능 철회" />
     <MESSAGE value="feat - 판매자 등록 삭제 및 마이페이지 수정" />
     <MESSAGE value="feat - 쇼핑몰 메인페이지" />
@@ -567,6 +595,8 @@
     <MESSAGE value="feat - 구매" />
     <MESSAGE value="fix - 댓글 삭제 에러 수정" />
     <MESSAGE value="feat - 구매, 구매이력 확인" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat - 구매, 구매이력 확인" />
+    <MESSAGE value="feat - 문의사항수정" />
+    <MESSAGE value="feat - ignore테스트" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat - ignore테스트" />
   </component>
 </project>
