@@ -1,7 +1,7 @@
 package animal_shop.shop.order.controller;
 
 import animal_shop.global.dto.ResponseDTO;
-import animal_shop.shop.order.dto.OrderDTO;
+import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.service.OrderService;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ public class OrderController {
 
     @PostMapping(value = "/order")
     public ResponseEntity<?> order(@RequestHeader(value = "Authorization") String token,
-                                   @RequestBody OrderDTO orderDTO){
+                                   @RequestBody OrderDTOList orderDTOList){
         ResponseDTO responseDTO;
 
         try{
-            Long orderId = orderService.order(orderDTO,token);
+            Long orderId = orderService.order(orderDTOList,token);
             return ResponseEntity.ok().body(orderId);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()

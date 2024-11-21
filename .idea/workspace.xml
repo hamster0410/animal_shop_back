@@ -4,19 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - 장바구니 담기, 리스트 출력">
-      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/dto/QueryResponse.java" afterDir="false" />
+    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - 판매자 상품 문의 리스트 확인">
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/dto/OrderDTOList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/dto/CartDetailDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/dto/CartDetailDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/service/CartService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart_item/repository/CartItemRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart_item/repository/CartItemRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/dto/CartDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/dto/CartDetailDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/repository/CartItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/repository/CartItemRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/controller/SellerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/controller/SellerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/ItemQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/ItemQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/repository/ItemQueryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/repository/ItemQueryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/service/ItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/item/service/ItemService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/item/service/ItemService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/dto/OrderDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/dto/OrderDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/order/service/OrderService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,14 +171,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731493717300</updated>
-    </task>
-    <task id="LOCAL-00006" summary="fix - 사용자-판매요청 수정">
-      <option name="closed" value="true" />
-      <created>1731898643944</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1731898643944</updated>
     </task>
     <task id="LOCAL-00007" summary="fix - SellerDTO 수정">
       <option name="closed" value="true" />
@@ -570,11 +556,18 @@
       <option name="project" value="LOCAL" />
       <updated>1732175877766</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="feat - 판매자 상품 문의 리스트 확인">
+      <option name="closed" value="true" />
+      <created>1732181621803</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1732181621803</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat - 쇼핑몰 메인페이지" />
     <MESSAGE value="feat - 쇼핑몰 전체페이지" />
     <MESSAGE value="feat - itemDIr경로" />
     <MESSAGE value="feat - 쇼핑몰카테고리" />
@@ -599,6 +592,7 @@
     <MESSAGE value="feat - ignore테스트" />
     <MESSAGE value="fix - itemQuery 등록" />
     <MESSAGE value="feat - 장바구니 담기, 리스트 출력" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat - 장바구니 담기, 리스트 출력" />
+    <MESSAGE value="feat - 판매자 상품 문의 리스트 확인" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat - 판매자 상품 문의 리스트 확인" />
   </component>
 </project>

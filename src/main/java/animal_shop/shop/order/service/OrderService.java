@@ -6,6 +6,7 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.dto.OrderDTO;
+import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order_item.dto.OrderHistDTO;
@@ -40,9 +41,9 @@ public class OrderService {
     @Autowired
     private TokenProvider tokenProvider;
 
-    public Long order(OrderDTO orderDTO, String token){
+    public Long order(OrderDTOList orderDTOList, String token){
         //내가 주문할 상품 찾기
-        Item item = itemRepository.findById(orderDTO.getItemId())
+        Item item = itemRepository.findById(orderDTOList.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item not found"));
 
 
@@ -53,11 +54,15 @@ public class OrderService {
 
         //주문할 상품 엔티티와 수량을 이용해 주문을 생성함
         List<OrderItem> orderItemList = new ArrayList<>();
-        OrderItem orderItem =
-                OrderItem.createOrderItem(item, orderDTO);
+        List<OrderDTO> orderDTOS = orderDTOList.getOption_items();
+        for(OrderDTO o : orderDTOS){
+            OrderItem orderItem =
+                    OrderItem.createOrderItem(item, o);
 
-        //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
-        orderItemList.add(orderItem);
+            //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
+            orderItemList.add(orderItem);
+        }
+
 
         Order order = Order.createOrder(member, orderItemList);
         //생성한 주문 엔티티를 저장함
