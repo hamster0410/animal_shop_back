@@ -2,5 +2,5 @@
 *
 
 # 무시하지 않을 디렉터리 및 파일
-!./src/main/java/
+!./src/main/java/**
 
