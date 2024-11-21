@@ -19,7 +19,7 @@ public class ResponseItemQueryDTO {
     //디비로부터 정보 끄집어내는 함수
     public ResponseItemQueryDTO(ItemQuery itemQuery){
         customer = itemQuery.getCustomer().getNickname();
-        product = itemQuery.getProduct();
+        product = itemQuery.getItem().getName();
         contents = itemQuery.getContents();
         option_name = itemQuery.getOption_name();
         option_price = itemQuery.getOption_price();

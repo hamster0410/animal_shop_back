@@ -208,7 +208,7 @@
 
             itemQuery.setSeller(seller);
             itemQuery.setCustomer(member);
-            itemQuery.setProduct(item.getName());
+            itemQuery.setItem(item);
             itemQuery.setContents(requestItemQueryDTO.getContents());
             itemQuery.setOption_name(requestItemQueryDTO.getOption_name());
             itemQuery.setOption_price(requestItemQueryDTO.getOption_price());

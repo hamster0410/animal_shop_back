@@ -21,7 +21,9 @@ public class ItemQuery extends BaseTimeEntity {
     @JoinColumn(name = "customer_id", nullable = false)
     private Member customer;
 
-    private String product;
+    @ManyToOne
+    @JoinColumn(name ="item_id", nullable = false)
+    private Item item;
 
     private String contents;
 
