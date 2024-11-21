@@ -6,8 +6,7 @@
 
     @Data
     public class RequestItemQueryDTO {
-        private String seller;
-        private String product;
+        private String item_id;
         private String contents;
         private String reply;
         private String option_name;

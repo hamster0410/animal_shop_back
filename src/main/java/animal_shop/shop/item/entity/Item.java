@@ -62,6 +62,10 @@ public class Item extends BaseTimeEntity{
         }this.stock_number = restStock;
     }
 
+    public void addStock(int stockNumber){
+        this.stock_number += stock_number;
+    }
+
 
 }
 

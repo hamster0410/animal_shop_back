@@ -203,11 +203,15 @@
             ItemQuery itemQuery = new ItemQuery();
 
             // RequestItemQueryDTO의 데이터를 ItemQuery 엔티티로 변환
-            Member seller = memberRepository.findByNickname(requestItemQueryDTO.getSeller());
+
+            Item item = itemRepository.findById(Long.valueOf(requestItemQueryDTO.getItem_id()))
+                    .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+            Member seller = item.getMember();
 
             itemQuery.setSeller(seller);
             itemQuery.setCustomer(member);
-            itemQuery.setProduct(requestItemQueryDTO.getProduct());
+            itemQuery.setProduct(item.getName());
             itemQuery.setContents(requestItemQueryDTO.getContents());
             itemQuery.setOption_name(requestItemQueryDTO.getOption_name());
             itemQuery.setOption_name(requestItemQueryDTO.getOption_price());

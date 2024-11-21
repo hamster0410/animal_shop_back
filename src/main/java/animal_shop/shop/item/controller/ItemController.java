@@ -45,7 +45,7 @@ public class ItemController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @PostMapping("/query/delete/{questionId}")
+    @DeleteMapping("/query/delete/{questionId}")
     public ResponseEntity<?> item_delete(
             @RequestHeader(value = "Authorization") String token,
             @PathVariable(value = "questionId")String questionId){
