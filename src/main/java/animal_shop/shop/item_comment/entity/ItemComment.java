@@ -3,8 +3,12 @@ package animal_shop.shop.item_comment.entity;
 import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.entity.Item;
+import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +31,9 @@ public class ItemComment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "itemComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemCommentLike> likes = new ArrayList<>();
 
     private Long rating;
 
