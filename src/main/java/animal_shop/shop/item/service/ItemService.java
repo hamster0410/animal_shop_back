@@ -215,4 +215,20 @@
             // 3. 데이터베이스 등록
             itemQueryRepository.save(itemQuery);
         }
+        @Transactional
+        public void delete_query(String token,
+                                 String questionId) {
+            // 1. 사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+            //2. 문의 내용 확인
+            ItemQuery itemQuery = itemQueryRepository.findById(Long.valueOf(questionId))
+                    .orElseThrow(()->new IllegalArgumentException("dont find iq"));
+
+            //3.문의 내용 삭제
+            itemQueryRepository.delete(itemQuery);
+        }
+
     }
