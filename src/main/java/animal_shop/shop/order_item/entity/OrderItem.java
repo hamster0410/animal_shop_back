@@ -26,6 +26,7 @@ public class OrderItem extends BaseTimeEntity {
     private Order order;
 
     private int order_price;
+
     private String order_name;
 
     private int count;
@@ -36,7 +37,6 @@ public class OrderItem extends BaseTimeEntity {
         orderItem.setCount(orderDTO.getCount());
         orderItem.setOrder_price(orderDTO.getOption_price());
         orderItem.setOrder_name(orderDTO.getOption_name());
-
         item.removeStock(orderDTO.getCount());
         return orderItem;
     }

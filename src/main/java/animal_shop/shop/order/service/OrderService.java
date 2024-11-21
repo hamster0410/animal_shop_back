@@ -12,9 +12,7 @@ import animal_shop.shop.order_item.dto.OrderHistDTO;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
 import animal_shop.shop.order_item.dto.OrderItemDTO;
 import animal_shop.shop.order_item.entity.OrderItem;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,22 +43,24 @@ public class OrderService {
     public Long order(OrderDTO orderDTO, String token){
         //내가 주문할 상품 찾기
         Item item = itemRepository.findById(orderDTO.getItemId())
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new IllegalArgumentException("item not found"));
+
 
         //주문한 사람이 누구인지 나타냄
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
 
         //주문할 상품 엔티티와 수량을 이용해 주문을 생성함
         List<OrderItem> orderItemList = new ArrayList<>();
         OrderItem orderItem =
                 OrderItem.createOrderItem(item, orderDTO);
 
+        //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
+        orderItemList.add(orderItem);
+
         Order order = Order.createOrder(member, orderItemList);
         //생성한 주문 엔티티를 저장함
-        orderItem.setOrder(order);
-
         orderRepository.save(order);
 
         return order.getId();
@@ -78,13 +78,11 @@ public class OrderService {
         List<OrderHistDTO> orderHistDTOs = new ArrayList<>();
 
         for(Order order : orders){
-            System.out.println(order.getOrderItems());
             OrderHistDTO orderHistDTO = new OrderHistDTO(order);
-            List<OrderItem> orderItems = order.getOrderItems();;
+            List<OrderItem> orderItems = order.getOrderItems();
+
             for(OrderItem orderItem : orderItems){
-
-                System.out.println(orderItem.getItem().getThumbnail_url());
-
+                System.out.println(orderItem.getOrder_name() + " " + orderItem.getOrder_price());
                 OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, orderItem.getItem().getThumbnail_url().get(0));
 
                 orderHistDTO.addOrderItemDTO(orderItemDTO);
