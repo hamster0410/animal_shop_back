@@ -13,4 +13,6 @@ public class CartItemDTO {
 
     @Min(value=1, message = "최소 1개 이상 담아 주세요.")
     private int count;
+
+    private Long optionId;
 }

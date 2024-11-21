@@ -3,6 +3,7 @@ package animal_shop.shop.cart_item.entity;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.cart.entity.Cart;
 import animal_shop.shop.item.entity.Item;
+import animal_shop.shop.item.entity.Option;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,13 +26,18 @@ public class CartItem extends BaseTimeEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "option_id")
+    private Option option;
+
     private int count;
 
-    public static CartItem createCartItem(Cart cart, Item item, int count){
+    public static CartItem createCartItem(Cart cart, Item item, int count, Option option){
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setItem(item);
         cartItem.setCount(count);
+        cartItem.setOption(option);
         return cartItem;
     }
 

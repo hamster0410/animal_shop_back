@@ -9,6 +9,6 @@ import java.util.List;
 @Builder
 public class CartDetailDTOResponse {
     private List<CartDetailDTO> cartDetailDTOList;
-    private int total_count;
+    private Long total_count;
 
 }

@@ -16,6 +16,7 @@ public class OrderDTO {
     @Max(value = 999, message = "최대 주문 수량은 999개 입니다.")
     private int count;
 
+    //option_id로 받지 않는 이유는 ?
     private String option_name;
 
     private int option_price;
