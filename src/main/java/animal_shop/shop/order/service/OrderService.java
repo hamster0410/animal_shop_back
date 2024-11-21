@@ -95,4 +95,17 @@ public class OrderService {
                 .total_count(total_count)
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public void cancelOrder(String token, Long orderId){
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member curMember = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("order not found"));
+        if(!curMember.getUsername().equals(order.getMember().getUsername())){
+            throw new IllegalArgumentException("validate false");
+        }
+        order.cancelOrder();
+    }
 }
