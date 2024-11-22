@@ -19,6 +19,8 @@ public class CartDetailDTO {
 
     private String imgUrl;
 
+    public CartDetailDTO() {}
+
     public CartDetailDTO(CartItem cartItem){
         this.cartItemId = cartItem.getId();
         this.itemNm = cartItem.getItem().getName();

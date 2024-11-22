@@ -126,37 +126,38 @@ public class CartService {
 
     public CartItemDetailResponse getCartItemDetail(Long cartItemId, CartItemDetailRequest cartItemDetailRequest) {
 
-
+        System.out.println("here 1");
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new IllegalArgumentException("cart Item not found"));
         List<CartItemOptionDTO> ciod = new ArrayList<>();
-
+        List<CartItemOptionDTO> optionList = new ArrayList<>();
+        System.out.println("here 2");
         //장바구니 특정 아이템의 옵션들
         List<Option> options = cartItem.getItem().getOptions();
-
+        System.out.println("here 3");
         //현재 장바구니의 아이템 목록들 조회
         for(CartDetailDTO cartDetailDTO : cartItemDetailRequest.getCartDetailDTOList()){
 
+            System.out.println("here 4");
             //만약 내가 고치려고 하는 아이템이 장바구니의 아이템과 같으면
            if(cartDetailDTO.getCartItemId().equals(cartItemId)){
-
+               System.out.println(cartDetailDTO.getCartItemId() + " " + cartItemId);
                //해당아이템에 전체 옵션을 조회한다.
                for(Option o : options){
 
                    //내가 선택한 옵션인 경우에는 건너 뛴다.
-                   if(o.equals(cartItem.getOption())) continue;
+                   if(o.equals(cartItem.getOption())) {
+                       System.out.println("my option " + cartItem.getOption());
+                       continue;
+                   }
 
                    //이미 있는 아이템의 옵션은 제거한다.
                    if(o.getName().equals(cartDetailDTO.getOption_name())){
-                       options.remove(o);
+                       System.out.println("remove target option " + o.getName() + " " + cartDetailDTO.getOption_name());
+                       optionList.add(new CartItemOptionDTO(o));
                    }
                }
            }
-        }
-
-        List<CartItemOptionDTO> optionList = new ArrayList<>();
-        for(Option o : options){
-            optionList.add(new CartItemOptionDTO(o));
         }
 
         return CartItemDetailResponse.builder()

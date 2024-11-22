@@ -41,7 +41,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/auth/signup", "/auth/signin","/auth/token","/auth/mypage").permitAll()
 //                        .anyRequest().authenticated()
                             .requestMatchers("/post/write","/*/*/edit","/*/*/delete","/auth/mypage","/mypage/*",
-                                            "seller/*","shop/*",
+                                            "seller/*",
                                             "/heart/*","/comment/create/*","/comment/update/*","/comment/delete/*").authenticated()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                     .anyRequest().permitAll()

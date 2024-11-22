@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="fix - itemQuery수정">
+    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - itemquery">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/global/security/TokenProvider.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/global/security/TokenProvider.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/controller/CartController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/controller/CartController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/dto/CartDetailDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/dto/CartDetailDTO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/service/CartService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/global/security/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/global/security/TokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart_item/dto/CartItemDetailRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart_item/dto/CartItemDetailRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart_item/dto/CartItemOptionDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart_item/dto/CartItemOptionDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/dto/CartDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/dto/CartDetailDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemDetailRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemDetailRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemOptionDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemOptionDTO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,25 +81,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Animal_ShopApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.FinalprojectApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.animal_shop [:animal_shop.Animal_ShopApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.animal_shop [:com.example.finalproject.FinalProjectApplication.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.animal_shop [:com.example.finalproject.FinalprojectApplication.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.animal_shop [:com.example.firstproject.FirstprojectApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/KOSTA/IdeaProjects/animal_shop&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Animal_ShopApplication.executor": "Run",
+    "Application.FinalprojectApplication.executor": "Run",
+    "Gradle.animal_shop [:animal_shop.Animal_ShopApplication.main()].executor": "Run",
+    "Gradle.animal_shop [:com.example.finalproject.FinalProjectApplication.main()].executor": "Debug",
+    "Gradle.animal_shop [:com.example.finalproject.FinalprojectApplication.main()].executor": "Debug",
+    "Gradle.animal_shop [:com.example.firstproject.FirstprojectApplication.main()].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/KOSTA/IdeaProjects/animal_shop",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\KOSTA\IdeaProjects\animal_shop\src\main\java\animal_shop\domain\heart_comment" />
@@ -170,14 +174,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731493717300</updated>
-    </task>
-    <task id="LOCAL-00009" summary="fix - 사업자와 전화번호 not null, unique">
-      <option name="closed" value="true" />
-      <created>1731916023589</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1731916023589</updated>
     </task>
     <task id="LOCAL-00010" summary="feat - 판매자 기능 철회">
       <option name="closed" value="true" />
@@ -563,11 +559,18 @@
       <option name="project" value="LOCAL" />
       <updated>1732183519364</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="feat - itemquery">
+      <option name="closed" value="true" />
+      <created>1732259887523</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1732259887523</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat - 쇼핑몰카테고리" />
     <MESSAGE value="feat - 상품 수정" />
     <MESSAGE value="feat - 상품 디테일" />
     <MESSAGE value="feat - 쇼핑몰 카테고리 조회" />
@@ -592,6 +595,7 @@
     <MESSAGE value="feat - 판매자 상품 문의 리스트 확인" />
     <MESSAGE value="feat - 다중 구매 허용" />
     <MESSAGE value="fix - itemQuery수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix - itemQuery수정" />
+    <MESSAGE value="feat - itemquery" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat - itemquery" />
   </component>
 </project>
