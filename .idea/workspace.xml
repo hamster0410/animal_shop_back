@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="feat - 다중 구매 허용">
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/ItemQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/item/entity/ItemQuery.java" afterDir="false" />
+    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="fix - itemQuery수정">
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemDetailRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemDetailResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemOptionDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/global/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/global/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/global/security/TokenProvider.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/global/security/TokenProvider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/global/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/global/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/global/security/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/global/security/TokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/controller/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/controller/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,14 +175,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731493717300</updated>
-    </task>
-    <task id="LOCAL-00008" summary="feat - admin 유저 seller 허가">
-      <option name="closed" value="true" />
-      <created>1731904679635</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1731904679635</updated>
     </task>
     <task id="LOCAL-00009" summary="fix - 사업자와 전화번호 not null, unique">
       <option name="closed" value="true" />
@@ -559,11 +560,18 @@
       <option name="project" value="LOCAL" />
       <updated>1732182845039</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="fix - itemQuery수정">
+      <option name="closed" value="true" />
+      <created>1732183519364</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1732183519364</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat - itemDIr경로" />
     <MESSAGE value="feat - 쇼핑몰카테고리" />
     <MESSAGE value="feat - 상품 수정" />
     <MESSAGE value="feat - 상품 디테일" />
@@ -588,6 +596,7 @@
     <MESSAGE value="feat - 장바구니 담기, 리스트 출력" />
     <MESSAGE value="feat - 판매자 상품 문의 리스트 확인" />
     <MESSAGE value="feat - 다중 구매 허용" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat - 다중 구매 허용" />
+    <MESSAGE value="fix - itemQuery수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix - itemQuery수정" />
   </component>
 </project>
