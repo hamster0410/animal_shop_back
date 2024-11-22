@@ -1,10 +1,7 @@
 package animal_shop.shop.item.controller;
 
 import animal_shop.global.dto.ResponseDTO;
-import animal_shop.shop.item.dto.ItemDTOList;
-import animal_shop.shop.item.dto.ItemDTOListResponse;
-import animal_shop.shop.item.dto.ItemDetailDTO;
-import animal_shop.shop.item.dto.QueryResponse;
+import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -152,6 +149,24 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    //소비자 문의에 대한 판매자의 답변
+    @PostMapping("/query/comment")
+    public ResponseEntity<?>query_comment(@RequestHeader(value ="Authorization")String token,
+                                          @RequestBody RequestItemQueryDTO requestItemQueryDTO){
+        ResponseDTO responseDTO = null;
+        try {
+            itemService.query_comment(token,requestItemQueryDTO);
 
+            responseDTO = ResponseDTO.builder()
+                    .message("register Comment")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
 }

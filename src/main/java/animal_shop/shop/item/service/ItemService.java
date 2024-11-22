@@ -1,5 +1,6 @@
     package animal_shop.shop.item.service;
 
+    import animal_shop.community.comment.entity.Comment;
     import animal_shop.community.member.entity.Member;
     import animal_shop.community.member.repository.MemberRepository;
     import animal_shop.global.security.TokenProvider;
@@ -257,6 +258,57 @@
                     .responseItemQueryDTOList(requestItemQueryDTOList)
                     .total_count(itemQueries.getTotalElements())
                     .build();
+        }
+
+        @Transactional
+        public QueryResponse select_query(String token, String itemId, int page) {
+            // 1. 사용자 인증(소비자)
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new IllegalArgumentException("Member is not found!"));
+
+            // 2. 페이징 요청 생성
+            Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
+
+            // 3. 문의사항 조회
+            Long itemIdLong = Long.valueOf(itemId);
+            Page<ItemQuery> itemQueries = itemQueryRepository.findByItemId(itemIdLong, pageable);
+
+            // 4. DTO 변환
+            List<ResponseItemQueryDTO> responseItemQueryDTOList = itemQueries
+                    .getContent()
+                    .stream()
+                    .map(ResponseItemQueryDTO::new)
+                    .toList();
+            // 5. QueryResponse 생성 및 반환
+            return QueryResponse.builder()
+                    .responseItemQueryDTOList(responseItemQueryDTOList)
+                    .total_count(itemQueries.getTotalElements())
+                    .build();
+        }
+        @Transactional
+        public void query_comment(String token, RequestItemQueryDTO requestItemQueryDTO) {
+            //1.사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(()->new IllegalArgumentException("Member is not found"));
+            //2.판매자 인증
+            if (!member.getRole().toString().equals("SELLER")) {
+                throw new IllegalStateException("is not seller");
+            }
+            //3. 문의사항 조회
+            ItemQuery itemQuery = itemQueryRepository.findById(Long.valueOf(requestItemQueryDTO.getItem_id()))
+                    .orElseThrow(()->new IllegalArgumentException("Don't find Query"));
+
+            //3.문의사항DTO -> Entitiy로 변환(댓글은 따로 관리한다라?)
+            itemQuery.setOption_name(requestItemQueryDTO.getOption_name());
+            itemQuery.setOption_price(requestItemQueryDTO.getOption_price());
+            itemQuery.setReply(requestItemQueryDTO.getReply());
+
+            //4. 답변 작성(답변 DB를 만드는게 어떨까)
+//            Comment comment = new Comment();
+
+            //5. 상태 업데이트
         }
 
     }

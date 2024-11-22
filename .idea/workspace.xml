@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="fix - itemQuery수정">
-      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemDetailRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemDetailResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart_item/dto/CartItemOptionDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/global/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/global/config/SecurityConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/global/security/TokenProvider.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/global/security/TokenProvider.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/global/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/global/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/controller/CartController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/controller/CartController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/cart/service/CartService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/global/security/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/global/security/TokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/controller/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/controller/CartController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

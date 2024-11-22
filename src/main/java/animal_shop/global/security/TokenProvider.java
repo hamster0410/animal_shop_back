@@ -31,7 +31,7 @@ public class  TokenProvider {
     public String AccessTokenCreate(String memberId) {
         Date expiryDate = Date.from(
                 Instant.now()
-                        .plus(15, ChronoUnit.SECONDS)
+                        .plus(15, ChronoUnit.HOURS)
         );
         Long id = Long.valueOf(memberId);
         Member member = memberRepository.findById(id).orElseThrow();

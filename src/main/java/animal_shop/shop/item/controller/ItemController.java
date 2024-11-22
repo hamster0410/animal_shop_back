@@ -2,6 +2,7 @@ package animal_shop.shop.item.controller;
 
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.item.dto.ItemDetailDTO;
+import animal_shop.shop.item.dto.QueryResponse;
 import animal_shop.shop.item.dto.RequestItemQueryDTO;
 import animal_shop.shop.item.repository.ItemQueryRepository;
 import animal_shop.shop.item.service.ItemService;
@@ -62,6 +63,22 @@ public class ItemController {
                     .error(e.getMessage())
                     .build();
             return  ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+    @GetMapping("/query/list/{item_id}")
+    public ResponseEntity<?> search_query(
+            @RequestHeader(value = "Authorization")String token,
+            @PathVariable(value = "item_id")String itemId,
+            @RequestParam(value = "page", defaultValue = "1")int page){
+        ResponseDTO responseDTO = null;
+        try{
+            QueryResponse queryResponse = itemService.select_query(token, itemId, page-1);
+            return ResponseEntity.ok().body(queryResponse);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 

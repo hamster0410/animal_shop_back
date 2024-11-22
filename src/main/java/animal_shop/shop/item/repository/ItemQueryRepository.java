@@ -9,4 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ItemQueryRepository extends JpaRepository<ItemQuery,Long> {
 
     Page<ItemQuery> findOrdersBySellerId(Long sellerId, Pageable pageable);
+
+    Page<ItemQuery> findByItemId(Long itemId, Pageable pageable);
+
 }
