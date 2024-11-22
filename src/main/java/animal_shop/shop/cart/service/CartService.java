@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -123,47 +124,37 @@ public class CartService {
         return cartDetailDTOResponse;
 
     }
-
     public CartItemDetailResponse getCartItemDetail(Long cartItemId, CartItemDetailRequest cartItemDetailRequest) {
-
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new IllegalArgumentException("cart Item not found"));
-        List<CartItemOptionDTO> ciod = new ArrayList<>();
-        //장바구니 특정 아이템의 옵션들
-        List<Option> options = cartItem.getItem().getOptions();
+                .orElseThrow(() -> new IllegalArgumentException("Cart item not found"));
 
-        List<Long> keys = new ArrayList<>();
-        for(Option o : options){
-            keys.add(o.getId());
-        }
+        // 기존 아이템 옵션 가져오기 및 DTO 변환
+        List<CartItemOptionDTO> options = cartItem.getItem().getOptions().stream()
+                .map(CartItemOptionDTO::new)
+                .collect(Collectors.toList());
 
-        //현재 장바구니의 아이템 목록들 조회
-        for(CartDetailDTO cartDetailDTO : cartItemDetailRequest.getCartDetailDTOList()){
+        // 제거할 옵션 이름 추출
+        List<String> optionNamesToRemove = cartItemDetailRequest.getCartDetailDTOList().stream()
+                .filter(cartDetailDTO -> cartDetailDTO.getItemNm().equals(cartItem.getItem().getName()))
+                .map(CartDetailDTO::getOption_name)
+                .collect(Collectors.toList());
 
-            System.out.println(cartDetailDTO.getCartItemId());
-            //만약 내가 고치려고 하는 아이템이 장바구니의 아이템과 같으면
-           if(cartDetailDTO.get .equals(cartItemId)){
-               System.out.println("it's same" + cartDetailDTO.getCartItemId());
-               System.out.println(cartDetailDTO.getCartItemId() + " " + cartItemId);
-               //해당아이템에 전체 옵션을 조회한다.
-               for(Option o : options){
-                   //이미 있는 아이템의 옵션은 제거한다.
-                   if(o.getName().equals(cartDetailDTO.getOption_name())){
-                       System.out.println(o.getName() + " " + cartDetailDTO.getOption_name());
-                       keys.remove(o.getId());
-                   }
-               }
-           }
-        }
-        keys.add(cartItem.getOption().getId());
-        System.out.println(keys);
+        // 옵션 필터링
+        options = options.stream()
+                .filter(option -> !optionNamesToRemove.contains(option.getName()))
+                .collect(Collectors.toList());
+
+        // 현재 선택된 옵션 추가
+        options.add(new CartItemOptionDTO(cartItem.getOption()));
 
         return CartItemDetailResponse.builder()
                 .cartItemId(cartItemId)
                 .cartItemImg(cartItem.getItem().getThumbnail_url().get(0))
                 .cartItemName(cartItem.getItem().getName())
+                .options(options)
                 .total_count(cartItemDetailRequest.getTotal_count())
                 .build();
     }
+
 }
 
