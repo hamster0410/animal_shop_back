@@ -126,46 +126,42 @@ public class CartService {
 
     public CartItemDetailResponse getCartItemDetail(Long cartItemId, CartItemDetailRequest cartItemDetailRequest) {
 
-        System.out.println("here 1");
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new IllegalArgumentException("cart Item not found"));
         List<CartItemOptionDTO> ciod = new ArrayList<>();
-        List<CartItemOptionDTO> optionList = new ArrayList<>();
-        System.out.println("here 2");
         //장바구니 특정 아이템의 옵션들
         List<Option> options = cartItem.getItem().getOptions();
-        System.out.println("here 3");
+
+        List<Long> keys = new ArrayList<>();
+        for(Option o : options){
+            keys.add(o.getId());
+        }
+
         //현재 장바구니의 아이템 목록들 조회
         for(CartDetailDTO cartDetailDTO : cartItemDetailRequest.getCartDetailDTOList()){
 
-            System.out.println("here 4");
+            System.out.println(cartDetailDTO.getCartItemId());
             //만약 내가 고치려고 하는 아이템이 장바구니의 아이템과 같으면
-           if(cartDetailDTO.getCartItemId().equals(cartItemId)){
+           if(cartDetailDTO.get .equals(cartItemId)){
+               System.out.println("it's same" + cartDetailDTO.getCartItemId());
                System.out.println(cartDetailDTO.getCartItemId() + " " + cartItemId);
                //해당아이템에 전체 옵션을 조회한다.
                for(Option o : options){
-
-                   //내가 선택한 옵션인 경우에는 건너 뛴다.
-                   if(o.equals(cartItem.getOption())) {
-                       optionList.add(new CartItemOptionDTO(o));
-                       continue;
-                   }
-
                    //이미 있는 아이템의 옵션은 제거한다.
                    if(o.getName().equals(cartDetailDTO.getOption_name())){
-                       optionList.add(new CartItemOptionDTO(o));
-                   }else{
-                       continue;
+                       System.out.println(o.getName() + " " + cartDetailDTO.getOption_name());
+                       keys.remove(o.getId());
                    }
                }
            }
         }
+        keys.add(cartItem.getOption().getId());
+        System.out.println(keys);
 
         return CartItemDetailResponse.builder()
                 .cartItemId(cartItemId)
                 .cartItemImg(cartItem.getItem().getThumbnail_url().get(0))
                 .cartItemName(cartItem.getItem().getName())
-                .options(optionList)
                 .total_count(cartItemDetailRequest.getTotal_count())
                 .build();
     }
