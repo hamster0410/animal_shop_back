@@ -150,12 +150,13 @@ public class SellerController {
         }
     }
     //소비자 문의에 대한 판매자의 답변
-    @PostMapping("/query/comment")
+    @PatchMapping("/query/comment/{queryId}")
     public ResponseEntity<?>query_comment(@RequestHeader(value ="Authorization")String token,
-                                          @RequestBody RequestItemQueryDTO requestItemQueryDTO){
+                                          @PathVariable(value="queryId") Long queryId,
+                                          @RequestBody SellerReplyDTO sellerReplyDTO){
         ResponseDTO responseDTO = null;
         try {
-            itemService.query_comment(token,requestItemQueryDTO);
+            itemService.query_comment(token,queryId,sellerReplyDTO);
 
             responseDTO = ResponseDTO.builder()
                     .message("register Comment")
