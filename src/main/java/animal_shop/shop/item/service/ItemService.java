@@ -287,7 +287,7 @@
                     .build();
         }
         @Transactional
-        public void query_comment(String token, RequestItemQueryDTO requestItemQueryDTO) {
+        public void query_comment(String token, Long queryId, SellerReplyDTO sellerReplyDTO) {
             //1.사용자 인증
             String userId = tokenProvider.extractIdByAccessToken(token);
             Member member = memberRepository.findById(Long.valueOf(userId))
@@ -296,19 +296,17 @@
             if (!member.getRole().toString().equals("SELLER")) {
                 throw new IllegalStateException("is not seller");
             }
+
             //3. 문의사항 조회
-            ItemQuery itemQuery = itemQueryRepository.findById(Long.valueOf(requestItemQueryDTO.getItem_id()))
-                    .orElseThrow(()->new IllegalArgumentException("Don't find Query"));
+            ItemQuery itemQuery = itemQueryRepository.findById(queryId).orElseThrow(()->new IllegalArgumentException("Don't find Query"));
+            //3.문의사항DTO -> Entitiy로 변환
 
-            //3.문의사항DTO -> Entitiy로 변환(댓글은 따로 관리한다라?)
-            itemQuery.setOption_name(requestItemQueryDTO.getOption_name());
-            itemQuery.setOption_price(requestItemQueryDTO.getOption_price());
-            itemQuery.setReply(requestItemQueryDTO.getReply());
+            //4. 답변 작성
 
-            //4. 답변 작성(답변 DB를 만드는게 어떨까)
-//            Comment comment = new Comment();
+            itemQuery.setReply(sellerReplyDTO.getReply());
 
-            //5. 상태 업데이트
+            //5. 등록
+            itemQueryRepository.save(itemQuery);
         }
 
     }
