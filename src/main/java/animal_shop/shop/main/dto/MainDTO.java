@@ -18,6 +18,7 @@ public class MainDTO {
     private Long price;
     private Long rating;
     private Long comment_count;
+    private long option_count;
 
     public MainDTO(Item item){
         this.id = item.getId();
@@ -27,5 +28,6 @@ public class MainDTO {
         this.price = item.getOptions().get(0).getPrice();
         this.rating = 0L;
         this.comment_count = 0L;
+        this.option_count = item.getOptions().size();
     }
 }

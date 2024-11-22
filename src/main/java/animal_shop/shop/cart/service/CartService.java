@@ -147,14 +147,15 @@ public class CartService {
 
                    //내가 선택한 옵션인 경우에는 건너 뛴다.
                    if(o.equals(cartItem.getOption())) {
-                       System.out.println("my option " + cartItem.getOption());
+                       optionList.add(new CartItemOptionDTO(o));
                        continue;
                    }
 
                    //이미 있는 아이템의 옵션은 제거한다.
                    if(o.getName().equals(cartDetailDTO.getOption_name())){
-                       System.out.println("remove target option " + o.getName() + " " + cartDetailDTO.getOption_name());
                        optionList.add(new CartItemOptionDTO(o));
+                   }else{
+                       continue;
                    }
                }
            }
