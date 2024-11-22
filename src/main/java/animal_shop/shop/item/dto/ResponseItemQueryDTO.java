@@ -11,6 +11,7 @@ public class ResponseItemQueryDTO {
 
     private String customer;
     private String product;
+    private Long item_query_id;
     private String contents;
     private String option_name;
     private String option_price;
@@ -21,6 +22,7 @@ public class ResponseItemQueryDTO {
         customer = itemQuery.getCustomer().getNickname();
         product = itemQuery.getItem().getName();
         contents = itemQuery.getContents();
+        item_query_id = itemQuery.getId();
         option_name = itemQuery.getOption_name();
         option_price = itemQuery.getOption_price();
         createdDate = itemQuery.getCreatedDate();

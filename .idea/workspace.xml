@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="fix - shop경로 인증 에러">
+    <list default="true" id="d5c6dbc7-54f9-4d61-aa80-191eb04fc374" name="Changes" comment="fix - 아이템 옵션 수 출력">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/global/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/global/config/SecurityConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/cart/service/CartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/main/dto/MainDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/main/dto/MainDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/main/dto/MainDTO$MainDTOBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/animal_shop/shop/main/dto/MainDTO$MainDTOBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/animal_shop/shop/main/service/ShopService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/animal_shop/shop/main/service/ShopService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,14 +168,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731493717300</updated>
-    </task>
-    <task id="LOCAL-00011" summary="feat - 판매자 등록 삭제 및 마이페이지 수정">
-      <option name="closed" value="true" />
-      <created>1731918616953</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1731918616953</updated>
     </task>
     <task id="LOCAL-00012" summary="fix - 상품 등록 수정">
       <option name="closed" value="true" />
@@ -562,11 +553,18 @@
       <option name="project" value="LOCAL" />
       <updated>1732261316273</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="fix - 아이템 옵션 수 출력">
+      <option name="closed" value="true" />
+      <created>1732265814815</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1732265814815</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat - 상품 디테일" />
     <MESSAGE value="feat - 쇼핑몰 카테고리 조회" />
     <MESSAGE value="feat - 쇼핑몰 카테고리 수정,삭제,조회" />
     <MESSAGE value="fix - 상세페이지 카테고리 수정" />
@@ -591,6 +589,7 @@
     <MESSAGE value="fix - itemQuery수정" />
     <MESSAGE value="feat - itemquery" />
     <MESSAGE value="fix - shop경로 인증 에러" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix - shop경로 인증 에러" />
+    <MESSAGE value="fix - 아이템 옵션 수 출력" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix - 아이템 옵션 수 출력" />
   </component>
 </project>
