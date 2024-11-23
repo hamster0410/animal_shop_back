@@ -3,6 +3,7 @@ package animal_shop.shop.cart.controller;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
 import animal_shop.shop.cart.dto.CartItemDTO;
+import animal_shop.shop.cart.dto.CartItemUpdateDTO;
 import animal_shop.shop.cart.service.CartService;
 import animal_shop.shop.cart_item.dto.CartItemDetailRequest;
 import animal_shop.shop.cart_item.dto.CartItemDetailResponse;
@@ -69,6 +70,25 @@ public class CartController {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
-//
+    }
+
+    @PatchMapping("cart/update/{cartItemId}")
+    public ResponseEntity<?> cartItemUpdate(@RequestHeader(value = "Authorization")String token,
+                                            @PathVariable(value = "cartItemId") Long cartItemId,
+                                            @RequestBody CartItemUpdateDTO cartItemUpdateDTO){
+        ResponseDTO responseDTO;
+        try{
+            cartService.updateCartItemDetail(cartItemId, cartItemUpdateDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("CartItem change success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
     }
 }

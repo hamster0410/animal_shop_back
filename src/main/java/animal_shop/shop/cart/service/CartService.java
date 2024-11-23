@@ -6,6 +6,7 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart.dto.CartDetailDTO;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
 import animal_shop.shop.cart.dto.CartItemDTO;
+import animal_shop.shop.cart.dto.CartItemUpdateDTO;
 import animal_shop.shop.cart.entity.Cart;
 import animal_shop.shop.cart.repository.CartRepository;
 import animal_shop.shop.cart_item.dto.CartItemDetailRequest;
@@ -156,5 +157,18 @@ public class CartService {
                 .build();
     }
 
+    public void updateCartItemDetail(Long cartItemId, CartItemUpdateDTO cartItemUpdateDTO) {
+        if(!cartItemId.equals(cartItemUpdateDTO.getCartItemId())){
+            throw new IllegalArgumentException("item is not same");
+        }
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new IllegalArgumentException("item is not found"));
+        Option option = optionRepository.findById(cartItemUpdateDTO.getOptionId())
+                .orElseThrow(() -> new IllegalArgumentException("option is not found"));
+
+        cartItem.setOption(option);
+        cartItem.setCount(cartItemUpdateDTO.getCount());
+        cartItemRepository.save(cartItem);
+    }
 }
 
