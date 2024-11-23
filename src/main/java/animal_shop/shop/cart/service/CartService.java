@@ -53,6 +53,7 @@ public class CartService {
     @Autowired
     private TokenProvider tokenProvider;
 
+
     public Long addCart(CartItemDTO cartItemDTO, String token){
         Item item = itemRepository.findById(cartItemDTO.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item not found"));
@@ -176,5 +177,14 @@ public class CartService {
                 .orElseThrow(() -> new IllegalArgumentException("item is not found"));
         cartItemRepository.delete(cartItem);
     }
+
+    public void emptyCart(CartDetailDTOResponse cartDetailDTOResponse){
+        List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
+        for(CartDetailDTO cartDetailDTO : cartDetailDTOList){
+            deleteCartItemDetail(cartDetailDTO.getCartItemId());
+        }
+    }
+
+
 }
 

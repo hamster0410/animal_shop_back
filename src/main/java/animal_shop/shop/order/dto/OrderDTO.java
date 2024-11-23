@@ -16,4 +16,10 @@ public class OrderDTO {
     private String option_name;
 
     private int option_price;
+
+    public OrderDTO(int count, String optionName, int optionPrice) {
+        this.count = count;
+        this.option_name = optionName;
+        this.option_price = optionPrice;
+    }
 }

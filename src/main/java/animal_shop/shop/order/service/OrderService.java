@@ -3,6 +3,8 @@ package animal_shop.shop.order.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.cart.dto.CartDetailDTO;
+import animal_shop.shop.cart.dto.CartDetailDTOResponse;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.dto.OrderDTO;
@@ -112,5 +114,33 @@ public class OrderService {
             throw new IllegalArgumentException("validate false");
         }
         order.cancelOrder();
+    }
+
+    public void orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
+        List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
+
+        //카트 비었을때 에러처리
+        if(cartDetailDTOList.isEmpty()){
+            throw new IllegalArgumentException("cart is null");
+        }
+
+        //주문한 사람이 누구인지 나타냄
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
+
+        //카트아이템에서 정보를 끄집어 내서 order에 저장
+        List<OrderItem> orderItemList = new ArrayList<>();
+        for( CartDetailDTO c : cartDetailDTOList){
+            Item item = itemRepository.findById(c.getItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("item is not found"));
+            OrderDTO orderDTO = new OrderDTO(c.getCount(), c.getOption_name(), Math.toIntExact(c.getOption_price()));
+            OrderItem orderItem = OrderItem.createOrderItem(item,orderDTO);
+            orderItemList.add(orderItem);
+        }
+
+        Order order = Order.createOrder(member,orderItemList);
+
+        orderRepository.save(order);
     }
 }
