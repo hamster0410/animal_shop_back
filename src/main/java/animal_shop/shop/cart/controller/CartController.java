@@ -72,7 +72,7 @@ public class CartController {
         }
     }
 
-    @PatchMapping("cart/update/{cartItemId}")
+    @PatchMapping("/update/{cartItemId}")
     public ResponseEntity<?> cartItemUpdate(@RequestHeader(value = "Authorization")String token,
                                             @PathVariable(value = "cartItemId") Long cartItemId,
                                             @RequestBody CartItemUpdateDTO cartItemUpdateDTO){
@@ -81,6 +81,25 @@ public class CartController {
             cartService.updateCartItemDetail(cartItemId, cartItemUpdateDTO);
             responseDTO = ResponseDTO.builder()
                     .message("CartItem change success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @DeleteMapping("/delete/{cartItemId}")
+    public ResponseEntity<?> cartItemDelete(@RequestHeader(value = "Authorization")String token,
+                                            @PathVariable(value = "cartItemId") Long cartItemId){
+        ResponseDTO responseDTO;
+        try{
+            cartService.deleteCartItemDetail(cartItemId);
+            responseDTO = ResponseDTO.builder()
+                    .message("CartItem delete success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         }catch(Exception e){

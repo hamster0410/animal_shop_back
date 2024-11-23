@@ -170,5 +170,11 @@ public class CartService {
         cartItem.setCount(cartItemUpdateDTO.getCount());
         cartItemRepository.save(cartItem);
     }
+
+    public void deleteCartItemDetail( Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new IllegalArgumentException("item is not found"));
+        cartItemRepository.delete(cartItem);
+    }
 }
 
