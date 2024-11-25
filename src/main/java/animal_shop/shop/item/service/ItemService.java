@@ -309,4 +309,32 @@
             itemQueryRepository.save(itemQuery);
         }
 
+        @Transactional
+        public void delete_reply(String token, Long queryId) {
+            // 1. 사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new IllegalArgumentException("Member is not found"));
+
+            // 2. 판매자 인증
+            if (!member.getRole().toString().equals("SELLER")) {
+                throw new IllegalStateException("User is not a seller");
+            }
+
+            // 3. 문의사항 조회
+            ItemQuery itemQuery = itemQueryRepository.findById(queryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Query not found"));
+
+            // 4. 답변이 이미 없는 경우 예외 처리
+            if (itemQuery.getReply() == null) {
+                throw new IllegalStateException("Reply is already deleted");
+            }
+
+            // 5. 답변 삭제 (reply 필드 null 처리)
+            itemQuery.setReply(null);
+
+            // 6. 수정된 엔티티 저장
+            itemQueryRepository.save(itemQuery);
+        }
+
     }
