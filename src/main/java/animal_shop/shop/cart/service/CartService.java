@@ -53,7 +53,7 @@ public class CartService {
     @Autowired
     private TokenProvider tokenProvider;
 
-
+    @Transactional
     public Long addCart(CartItemDTO cartItemDTO, String token){
         Item item = itemRepository.findById(cartItemDTO.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item not found"));
@@ -96,7 +96,7 @@ public class CartService {
             return cartItem.getId();
         }
     }
-
+    @Transactional
     public CartDetailDTOResponse getCartList(String token, int page) {
 
         Pageable pageable = (Pageable) PageRequest.of(page,10);
@@ -126,6 +126,7 @@ public class CartService {
         return cartDetailDTOResponse;
 
     }
+    @Transactional
     public CartItemDetailResponse getCartItemDetail(Long cartItemId, CartItemDetailRequest cartItemDetailRequest) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new IllegalArgumentException("Cart item not found"));
@@ -157,7 +158,7 @@ public class CartService {
                 .total_count(cartItemDetailRequest.getTotal_count())
                 .build();
     }
-
+    @Transactional
     public void updateCartItemDetail(Long cartItemId, CartItemUpdateDTO cartItemUpdateDTO) {
         if(!cartItemId.equals(cartItemUpdateDTO.getCartItemId())){
             throw new IllegalArgumentException("item is not same");
@@ -171,13 +172,13 @@ public class CartService {
         cartItem.setCount(cartItemUpdateDTO.getCount());
         cartItemRepository.save(cartItem);
     }
-
+    @Transactional
     public void deleteCartItemDetail( Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new IllegalArgumentException("item is not found"));
         cartItemRepository.delete(cartItem);
     }
-
+    @Transactional
     public void emptyCart(CartDetailDTOResponse cartDetailDTOResponse){
         List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
         for(CartDetailDTO cartDetailDTO : cartDetailDTOList){

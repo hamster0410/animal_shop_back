@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class MemberService {
 
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
+    @Transactional
     public int create(MemberDTO memberDTO){
         //동일 id 검사
         if(memberRepository.existsByUsername(memberDTO.getUsername())){
@@ -65,7 +66,7 @@ public class MemberService {
 
         return 0;
     }
-
+    @Transactional
     public TokenDTO login(MemberDTO mDTO) {
 
         final String AccessToken = tokenProvider.AccessTokenCreate(String.valueOf(mDTO.getId()));
@@ -73,7 +74,7 @@ public class MemberService {
         saveRefreshToken(mDTO,RefreshToken);
         return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(RefreshToken).build();
     }
-
+    @Transactional
     public void modify(MemberDTO memberDTO, String token) {
         System.out.println("Member Service modify");
 
@@ -99,7 +100,7 @@ public class MemberService {
             memberRepository.save(member.get());
         }
     }
-
+    @Transactional
     public void delete(String token) {
         System.out.println("Member Service delete");
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
@@ -110,7 +111,7 @@ public class MemberService {
             throw new RuntimeException("User is not exists");
         }
     }
-
+    @Transactional
     public MemberDTO getByCredentials(final MemberDTO memberDTO){
         System.out.println("Member Service getByCredentials");
         final Optional<Member> originalMember = memberRepository.findByUsername(memberDTO.getUsername());
@@ -124,7 +125,7 @@ public class MemberService {
         }
         return null;
     }
-
+    @Transactional
     public void saveRefreshToken(MemberDTO mDTO, String refreshToken) {
         System.out.println("Member Service saveRefreshToken");
         final Optional<Member> originalMember = memberRepository.findByUsername(mDTO.getUsername());
@@ -134,13 +135,13 @@ public class MemberService {
             memberRepository.save(originalMember.get());
         }
     }
-
+    @Transactional
     public Member getByUserId(Long userId) {
         System.out.println("Member Service getByUserId");
         Optional<Member> member = memberRepository.findById(userId);
         return member.orElse(null);
     }
-
+    @Transactional
     public MemberDTO getByToken(String token) {
         System.out.println("Member Service getByToken");
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
@@ -158,7 +159,7 @@ public class MemberService {
         return null;
     }
 
-
+    @Transactional
     public TokenDTO getNewAccessToken(TokenDTO tokenDTO) {
         System.out.println("Member Service getNewAccessToken");
 
@@ -177,7 +178,7 @@ public class MemberService {
         throw new RuntimeException("Invalid Refresh Token");
     }
 
-
+    @Transactional
     public void enroll_seller(String token, SellerRegisterDTO sellerRegisterDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
 

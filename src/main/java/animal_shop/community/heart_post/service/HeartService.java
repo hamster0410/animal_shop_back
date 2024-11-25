@@ -10,6 +10,7 @@ import animal_shop.global.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -27,7 +28,7 @@ public class HeartService {
 
     @Autowired
     private HeartRepository heartRepository;
-
+    @Transactional
     public void addHeart(String token, Long postId) {
         //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -45,7 +46,7 @@ public class HeartService {
 
         heartRepository.save(heart);
     }
-
+    @Transactional
     public void deleteHeart(String token, Long postId) {
         System.out.println("[HeartService] deleteHeart");
         //member 찾기
@@ -61,7 +62,7 @@ public class HeartService {
 
         heartRepository.delete(heart);
     }
-
+    @Transactional
     public boolean findByPostAndMember(Long postId, String userId) {
         Heart heart = heartRepository.findByMemberIdAndPostId(postId, Long.valueOf(userId));
         return heart != null;

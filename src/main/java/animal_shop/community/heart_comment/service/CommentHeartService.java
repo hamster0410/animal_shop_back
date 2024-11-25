@@ -10,6 +10,7 @@ import animal_shop.global.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class CommentHeartService {
     @Autowired
     private CommentService commentService;
 
+    @Transactional
     public void addHeart(String token, Long commentId) {
         //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -44,7 +46,7 @@ public class CommentHeartService {
 
         commentHeartRepository.save(commentHeart);
     }
-
+    @Transactional
     public void deleteHeart(String token, Long commentId) {
         System.out.println("[HeartService] deleteHeart");
         //member 찾기
@@ -60,7 +62,7 @@ public class CommentHeartService {
 
         commentHeartRepository.delete(commentHeart);
     }
-
+    @Transactional
     public boolean findByCommentAndMember(Long commentId, String userId) {
         CommentHeart commentHeart = commentHeartRepository.findByMemberIdAndCommentId(commentId, Long.valueOf(userId));
         return commentHeart != null;

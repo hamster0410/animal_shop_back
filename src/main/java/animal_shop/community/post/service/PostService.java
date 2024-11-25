@@ -136,6 +136,7 @@ public class PostService {
     }
 
     //현재 접속한 사람이 게시글을 작성한 사람인지 확인
+    @Transactional
     public boolean checkPostWriter(String token,  Long postId) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
@@ -147,6 +148,7 @@ public class PostService {
     }
 
     //게시글 수정
+    @Transactional
     public PostSaveDTO updatePost(String token, Long postId, PostRequest params){
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
@@ -161,7 +163,7 @@ public class PostService {
         postRepository.save(post);
         return post.toDto();
     }
-
+    @Transactional
     public void deletePost(String token, Long postId) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
@@ -169,34 +171,34 @@ public class PostService {
             postRepository.delete(post);
     }
 
-
+    @Transactional
     public Post getByPostId(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         return  post;
     }
-
+    @Transactional
     public void increaseHeart(Post post) {
         post.setCountHeart(post.getCountHeart() + 1);
         postRepository.save(post);
     }
 
-
+    @Transactional
     public void decreaseHeart(Post post) {
         post.setCountHeart(post.getCountHeart() - 1);
         postRepository.save(post);
     }
-
+    @Transactional
     public void increaseComment(Post post) {
         post.setCountComment(post.getCountComment() + 1);
         postRepository.save(post);
     }
 
-
+    @Transactional
     public void decreaseComment(Post post) {
         post.setCountComment(post.getCountComment() - 1);
         postRepository.save(post);
     }
-
+    @Transactional
     public Long getPostCount() {
         return postRepository.count();
     }

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ItemCommentService {
 
     @Autowired
     ItemCommentLikeRepository itemCommentLikeRepository;
-
+    @Transactional
     public ItemCommentDTOResponse getCommentsByItemId(Long itemId, String token, int page) {
 
         List<ItemCommentDTO> commentDTOS = new ArrayList<>();
@@ -73,7 +74,7 @@ public class ItemCommentService {
                 .build();
 
     }
-
+    @Transactional
     public void createComment(String token, Long itemId, RequsetItemCommentDTO requestItemCommentDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
@@ -95,7 +96,7 @@ public class ItemCommentService {
 
         itemCommentRepository.save(comment);
     }
-
+    @Transactional
     public ItemCommentDTO updateComment(String token, Long commentId, RequsetItemCommentDTO requestItemCommentDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
@@ -108,7 +109,7 @@ public class ItemCommentService {
 
         return new ItemCommentDTO(comment);
     }
-
+    @Transactional
     public void deleteComment(String token, Long commentId) {
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
         ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("comment not found"));
@@ -123,7 +124,7 @@ public class ItemCommentService {
             throw new IllegalArgumentException("comment is not present");
         }
     }
-
+    @Transactional
     public boolean checkCommentWriter(String token, Long commentId) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("comment not found : " + commentId));
