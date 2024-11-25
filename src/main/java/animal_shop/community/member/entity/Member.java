@@ -64,7 +64,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PetEntity.Pet> pets;
+    private List<PetEntity> pets;
 
     private String profile;
 

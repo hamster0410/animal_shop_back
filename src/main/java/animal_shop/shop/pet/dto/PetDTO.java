@@ -2,9 +2,10 @@ package animal_shop.shop.pet.dto;
 
 import animal_shop.shop.pet.entity.PetEntity;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+
+@Data
 @Builder
 public class PetDTO {
 
@@ -20,13 +21,13 @@ public class PetDTO {
     private String description; // 자기소개
     private String profileImageUrl;  //이미지URl
 
-    public static PetDTO PetEntity(PetEntity petEntity){
-        return  PetDTO.builder()
+    public static PetDTO fromEntity(PetEntity petEntity) {
+        return PetDTO.builder()
                 .id(petEntity.getId())
                 .name(petEntity.getName())
                 .species(petEntity.getSpecies())
                 .breed(petEntity.getBreed())
-                .isNeutered(petEntity.getIsNeutered() != null ? petEntity.getIsNeutered() : false)
+                .isNeutered(petEntity.getIsNeutered())
                 .age(petEntity.getAge())
                 .gender(petEntity.getGender())
                 .weight(petEntity.getWeight())
@@ -35,5 +36,9 @@ public class PetDTO {
                 .profileImageUrl(petEntity.getProfileImageUrl())
                 .build();
 
+    }
+
+    public boolean getIsNeutered() {
+        return isNeutered;
     }
 }
