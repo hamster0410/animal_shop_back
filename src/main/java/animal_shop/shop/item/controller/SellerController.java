@@ -178,7 +178,7 @@ public class SellerController {
             itemService.delete_reply(token,queryId);
 
             responseDTO = ResponseDTO.builder()
-                    .message("delete comment")
+                    .message("delete reply")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         }catch (Exception e){
@@ -188,6 +188,8 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+
 
 
 }
