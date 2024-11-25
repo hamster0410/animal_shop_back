@@ -1,6 +1,7 @@
 package animal_shop.global.kakaopay.controller;
 
 import animal_shop.global.kakaopay.dto.KakaoApproveResponse;
+import animal_shop.global.kakaopay.dto.KakaoCancelRequest;
 import animal_shop.global.kakaopay.dto.KakaoCancelResponse;
 import animal_shop.global.kakaopay.dto.KakaoReadyRequest;
 import animal_shop.global.kakaopay.service.KakaoPayService;
@@ -27,9 +28,9 @@ public class KakaoPayController {
      * 결제 성공
      */
     @GetMapping("/success")
-    public ResponseEntity afterPayRequest(@RequestParam("pg_token") String pgToken) {
+    public ResponseEntity afterPayRequest(@RequestParam("tid") String tid,@RequestParam("pg_token") String pgToken) {
 
-        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken);
+        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(tid, pgToken);
 
         return new ResponseEntity<>(kakaoApprove, HttpStatus.OK);
     }
@@ -56,9 +57,9 @@ public class KakaoPayController {
      * 환불
      */
     @PostMapping("/refund")
-    public ResponseEntity refund() {
+    public ResponseEntity refund(@RequestBody KakaoCancelRequest kakaoCancelRequest) {
 
-        KakaoCancelResponse kakaoCancelResponse = kakaoPayService.kakaoCancel();
+        KakaoCancelResponse kakaoCancelResponse = kakaoPayService.kakaoCancel(kakaoCancelRequest);
 
         return new ResponseEntity<>(kakaoCancelResponse, HttpStatus.OK);
     }
