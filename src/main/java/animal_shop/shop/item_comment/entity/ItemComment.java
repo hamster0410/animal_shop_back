@@ -37,8 +37,8 @@ public class ItemComment extends BaseTimeEntity {
 
     @ElementCollection
     @CollectionTable(name = "item_comment_thumbnail_urls", joinColumns = @JoinColumn(name = "item_comment_id"))
-    @Column(name = "thumbnail_url")
-    private List<String> thumbnail_url;
+    @Column(name = "comment_thumbnail_url")
+    private List<String> comment_thumbnail_url;
 
     private Long rating;
 
