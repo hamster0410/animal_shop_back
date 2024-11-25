@@ -169,5 +169,25 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @PatchMapping("/query/reply/{queryId}")
+    ResponseEntity<?> delete_reply(@RequestHeader(value = "Authorization")String token,
+                                     @PathVariable(value = "queryId")Long queryId)
+    {
+        ResponseDTO responseDTO = null;
+        try{
+            itemService.delete_reply(token,queryId);
+
+            responseDTO = ResponseDTO.builder()
+                    .message("delete comment")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 
 }
