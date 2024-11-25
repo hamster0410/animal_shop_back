@@ -14,6 +14,8 @@ public class ItemDetailDTO {
 
    private String name;
 
+   private Long itemId;
+
    private List<OptionDTO> options;
 
    private String item_detail;
@@ -38,6 +40,7 @@ public class ItemDetailDTO {
    public ItemDetailDTO(Item item) {
        this.id = item.getId();
        this.name = item.getName();
+       this.itemId = item.getId();
        List<OptionDTO> list = new ArrayList<>();
        for (Option option : item.getOptions()) {
            OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice());
