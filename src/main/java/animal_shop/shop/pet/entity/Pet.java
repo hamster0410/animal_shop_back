@@ -38,6 +38,8 @@ public class Pet {
 
     private String profileImageUrl; // 동물 프로필 이미지 (URL 형식)
 
+    private String registrationCode;
+
     // Enum: 종 (개, 고양이, 소동물 등)
     public enum PetSpecies {
         DOG, CAT, SMALL_ANIMAL

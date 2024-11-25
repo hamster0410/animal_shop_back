@@ -47,4 +47,22 @@ public class PetController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @PatchMapping("update/{petId}")
+    ResponseEntity<?> update_pet(@RequestHeader(value = "Authorization") String token,
+                                 @PathVariable(value = "petId") String petId,
+                                 @RequestBody PetDTO petDTO) {
+        ResponseDTO responseDTO = null;
+        try {
+            petService.updatePet(token, petId, petDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("update success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
