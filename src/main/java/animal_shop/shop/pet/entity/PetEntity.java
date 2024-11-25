@@ -4,10 +4,12 @@ import animal_shop.community.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
+
+
+@Entity
+@Data
 public class PetEntity {
-    @Entity
-    @Data
-    public static class Pet {
 
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,4 +51,4 @@ public class PetEntity {
             MALE, FEMALE
         }
     }
-}
+

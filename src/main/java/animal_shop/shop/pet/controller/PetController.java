@@ -5,7 +5,9 @@ import animal_shop.shop.pet.service.PetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class PetController {
     @PatchMapping("register/new")
     ResponseEntity<?> register_pet(@RequestHeader(value = "Authorization")String token) {
