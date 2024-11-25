@@ -1,7 +1,6 @@
 
 package animal_shop.shop.item_comment.dto;
 
-import animal_shop.community.comment.entity.Comment;
 import animal_shop.shop.item_comment.entity.ItemComment;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +17,7 @@ public class ItemCommentDTO {
     private String nickname; // 댓글을 단 사용자
     private LocalDateTime createdDate;
     private Long rating;
+    private List<String> thumbnailUrl;
     private Long countHeart = 0L; // 기본값으로 0으로 초기화
     private boolean heart;
 
@@ -33,5 +33,6 @@ public class ItemCommentDTO {
         this.createdDate = comment.getCreatedDate();
         this.rating = comment.getRating();
         this.countHeart = comment.getCountHeart();
+        this.thumbnailUrl = comment.getThumbnail_url();
     }
 }

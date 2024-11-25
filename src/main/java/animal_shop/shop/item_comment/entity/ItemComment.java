@@ -35,6 +35,11 @@ public class ItemComment extends BaseTimeEntity {
     @OneToMany(mappedBy = "itemComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCommentLike> likes = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "item_comment_thumbnail_urls", joinColumns = @JoinColumn(name = "item_comment_id"))
+    @Column(name = "thumbnail_url")
+    private List<String> thumbnail_url;
+
     private Long rating;
 
     private Long countHeart;
