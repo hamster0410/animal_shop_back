@@ -160,7 +160,7 @@ public class CommentService {
         }
 
     }
-    @Transactional
+
     public List<String> saveImage(List<MultipartFile> imageFiles,String userId) throws IOException {
         List<String> returnFiles = new ArrayList<>();
         Date date = new Date();
@@ -174,7 +174,6 @@ public class CommentService {
                 imageFile.transferTo(destinationFile);
 
                 // 이미지 URL 설정 (예: http://localhost:8080/images/파일명)
-                System.out.println("unique filename" + uniqueFileName + imageFile.getContentType());
                 returnFiles.add(uniqueFileName);
             }
         }

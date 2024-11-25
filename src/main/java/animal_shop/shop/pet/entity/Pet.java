@@ -6,10 +6,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class PetEntity {
+public class Pet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 동물 ID
 
     @ManyToOne

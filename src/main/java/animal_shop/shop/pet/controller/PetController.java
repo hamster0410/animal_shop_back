@@ -30,9 +30,9 @@ public class PetController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @DeleteMapping("delete/{pet_id}")
+    @DeleteMapping("delete/{petId}")
     ResponseEntity<?> delete_pet(@RequestHeader(value="Authorization")String token,
-                                 @PathVariable(value="pet_id")String pet_id){
+                                 @PathVariable(value="petId")String pet_id){
         ResponseDTO responseDTO = null;
         try{
             petService.deletePet(token,pet_id);

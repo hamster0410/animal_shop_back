@@ -7,7 +7,7 @@ import animal_shop.community.heart_post.entity.Heart;
 import animal_shop.community.member.Role;
 import animal_shop.community.post.entity.Post;
 import animal_shop.shop.item_comment.entity.ItemComment;
-import animal_shop.shop.pet.entity.PetEntity;
+import animal_shop.shop.pet.entity.Pet;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,7 +64,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PetEntity> pets;
+    private List<Pet> pets;
 
     private String profile;
 
