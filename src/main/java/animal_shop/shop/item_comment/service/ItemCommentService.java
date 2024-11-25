@@ -86,6 +86,7 @@ public class ItemCommentService {
                 .item(item)
                 .rating(requestItemCommentDTO.getRating())
                 .countHeart(0L)
+                .thumbnail_url(requestItemCommentDTO.getThumbnailUrls())
                 .member(member)
                 .build();
 
@@ -101,6 +102,7 @@ public class ItemCommentService {
         ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("comment not found"));
         comment.setContents(requestItemCommentDTO.getContents());
         comment.setRating(requestItemCommentDTO.getRating());
+        comment.setThumbnail_url(requestItemCommentDTO.getThumbnailUrls());
 
         itemCommentRepository.save(comment);
 

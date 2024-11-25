@@ -10,4 +10,5 @@ import java.util.List;
 public class ItemCommentDTOResponse {
     private List<ItemCommentDTO> comments;
     private long total_count;
+    private List<String> thumbnailUrl;
 }

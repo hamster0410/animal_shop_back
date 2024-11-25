@@ -14,6 +14,8 @@ public class ItemDetailDTO {
 
    private String name;
 
+   private Long optionId;
+
    private List<OptionDTO> options;
 
    private String item_detail;
@@ -40,7 +42,7 @@ public class ItemDetailDTO {
        this.name = item.getName();
        List<OptionDTO> list = new ArrayList<>();
        for (Option option : item.getOptions()) {
-           OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice());
+           OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice(),item.getOptions().get(0).getId());
            list.add(optionDTO);
        }
        this.sell_status = item.getItemSellStatus();
