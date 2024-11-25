@@ -336,7 +336,5 @@
             itemQueryRepository.save(itemQuery);
         }
 
-        public QueryResponse register_API(String token) {
-            return null;
-        }
+
     }

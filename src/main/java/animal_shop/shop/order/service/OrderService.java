@@ -43,6 +43,7 @@ public class OrderService {
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Transactional
     public Long order(OrderDTOList orderDTOList, String token){
         //내가 주문할 상품 찾기
         Item item = itemRepository.findById(orderDTOList.getItemId())
@@ -115,7 +116,7 @@ public class OrderService {
         }
         order.cancelOrder();
     }
-
+    @Transactional
     public void orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
         List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
 

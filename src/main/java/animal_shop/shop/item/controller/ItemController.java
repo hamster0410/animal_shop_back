@@ -80,21 +80,6 @@ public class ItemController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @PatchMapping("register/new")
-    ResponseEntity<?> register_pet(@RequestHeader(value = "Authorization")String token) {
-        ResponseDTO responseDTO = null;
-        try{
-            itemService.register_API(token);
-            responseDTO = ResponseDTO.builder()
-                    .message("register success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
+
 }
 

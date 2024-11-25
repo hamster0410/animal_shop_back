@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -44,13 +45,12 @@ public class CommentService {
     @Autowired
     private PostService postService;
 
-
-
+    @Transactional
     public Comment getByCommentId(Long commentId) {
 
         return commentRepository.findById(commentId).orElseThrow();
     }
-
+    @Transactional
     public CommentResponseDTO getCommentsByPostId(Long postId,String token) {
 
         List<CommentDTO> commentDTOS = new ArrayList<>();
@@ -79,11 +79,12 @@ public class CommentService {
                 .build();
 
     }
-
+    @Transactional
     public Long getCommentCount(Long postId) {
         return commentRepository.countByPostId(postId);
     }
 
+    @Transactional
     public void createComment(String token, Long postId, RequestCommentDTO requestCommentDTO, List<MultipartFile> imageFiles) throws IOException {
 
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -119,6 +120,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public CommentDTO updateComment(String token, Long commentId, RequestCommentDTO commentDTO, List<MultipartFile> imageFiles) throws IOException {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Long UID = Long.valueOf(userId);
@@ -143,7 +145,7 @@ public class CommentService {
             throw new IllegalArgumentException("comment is not present");
         }
     }
-
+    @Transactional
     public void deleteComment(String token, Long commentId) {
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
         Optional<Comment> comment = commentRepository.findById(commentId);
@@ -158,7 +160,7 @@ public class CommentService {
         }
 
     }
-
+    @Transactional
     public List<String> saveImage(List<MultipartFile> imageFiles,String userId) throws IOException {
         List<String> returnFiles = new ArrayList<>();
         Date date = new Date();
@@ -178,7 +180,7 @@ public class CommentService {
         }
         return  returnFiles;
     }
-
+    @Transactional
     public boolean checkCommentWriter(String token, Long commentId) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("comment not found : " + commentId));
@@ -189,13 +191,13 @@ public class CommentService {
         }
     }
 
-
+    @Transactional
     public void increaseHeart(Comment comment) {
         comment.setCountHeart(comment.getCountHeart() + 1);
         commentRepository.save(comment);
     }
 
-
+    @Transactional
     public void decreaseHeart(Comment comment) {
         comment.setCountHeart(comment.getCountHeart() - 1);
         commentRepository.save(comment);

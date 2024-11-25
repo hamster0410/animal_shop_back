@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class AdminService {
 
     @Autowired
     TokenProvider tokenProvider;
-
+    @Transactional
     public SellerResponseDTO request_list(int page) {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
         Page<SellerCandidate> sellerCandidates = sellerCandidateRepository.findAll(pageable);
@@ -43,7 +44,7 @@ public class AdminService {
                .totalCount(sellerCandidates.getTotalElements())
                .build();
     }
-
+    @Transactional
     public void permit_seller(String token, String username) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
@@ -58,7 +59,7 @@ public class AdminService {
         user.setRole(Role.SELLER);
         memberRepository.save(user);
     }
-
+    @Transactional
     public void revoke_seller(String token, String username) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
@@ -73,7 +74,7 @@ public class AdminService {
         user.setRole(Role.USER);
         memberRepository.save(user);
     }
-
+    @Transactional
     public void delete_seller(String token, String username) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
