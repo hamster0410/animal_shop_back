@@ -190,7 +190,7 @@
         }
 
         @Transactional
-        public void register_enquery(String token,
+        public RequestItemQueryDTO register_enquery(String token,
                                      RequestItemQueryDTO requestItemQueryDTO) {
             // 1. 사용자 인증
             String userId = tokenProvider.extractIdByAccessToken(token);
@@ -213,9 +213,12 @@
             itemQuery.setContents(requestItemQueryDTO.getContents());
             itemQuery.setOption_name(requestItemQueryDTO.getOption_name());
             itemQuery.setOption_price(requestItemQueryDTO.getOption_price());
+            itemQuery.setReply(requestItemQueryDTO.getReply());
 
             // 3. 데이터베이스 등록
             itemQueryRepository.save(itemQuery);
+
+            return requestItemQueryDTO;
         }
         @Transactional
         public void delete_query(String token,
@@ -262,10 +265,6 @@
 
         @Transactional
         public QueryResponse select_query(String token, String itemId, int page) {
-            // 1. 사용자 인증(소비자)
-            String userId = tokenProvider.extractIdByAccessToken(token);
-            Member member = memberRepository.findById(Long.valueOf(userId))
-                    .orElseThrow(() -> new IllegalArgumentException("Member is not found!"));
 
             // 2. 페이징 요청 생성
             Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());

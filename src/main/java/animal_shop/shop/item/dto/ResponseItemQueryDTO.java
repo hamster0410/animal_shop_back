@@ -15,6 +15,7 @@ public class ResponseItemQueryDTO {
     private String contents;
     private String option_name;
     private String option_price;
+    private String reply;
     private LocalDateTime createdDate;
 
     //디비로부터 정보 끄집어내는 함수
@@ -23,6 +24,7 @@ public class ResponseItemQueryDTO {
         product = itemQuery.getItem().getName();
         contents = itemQuery.getContents();
         item_query_id = itemQuery.getId();
+        reply = itemQuery.getReply();
         option_name = itemQuery.getOption_name();
         option_price = itemQuery.getOption_price();
         createdDate = itemQuery.getCreatedDate();

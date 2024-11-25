@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter @Setter
 public class OrderItemDTO {
 
+    private Long itemId;
+
     private String itemNm;
 
     private int count;
@@ -18,6 +20,7 @@ public class OrderItemDTO {
     private String imgUrl;
 
     public OrderItemDTO(OrderItem orderItem, String imgUrl){
+        this.itemId = orderItem.getItem().getId();
         this.itemNm = orderItem.getItem().getName();
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrder_price();

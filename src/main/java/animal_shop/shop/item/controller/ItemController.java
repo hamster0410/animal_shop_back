@@ -4,7 +4,6 @@ import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.dto.QueryResponse;
 import animal_shop.shop.item.dto.RequestItemQueryDTO;
-import animal_shop.shop.item.repository.ItemQueryRepository;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +66,7 @@ public class ItemController {
     }
     @GetMapping("/query/list/{item_id}")
     public ResponseEntity<?> search_query(
-            @RequestHeader(value = "Authorization")String token,
+            @RequestHeader(value = "Authorization",required = false)String token,
             @PathVariable(value = "item_id")String itemId,
             @RequestParam(value = "page", defaultValue = "1")int page){
         ResponseDTO responseDTO = null;
