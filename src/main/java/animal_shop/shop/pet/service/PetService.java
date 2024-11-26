@@ -4,7 +4,8 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.pet.dto.PetDTO;
-import animal_shop.shop.pet.dto.PetDTOList;
+import animal_shop.shop.pet.dto.PetProfile;
+import animal_shop.shop.pet.dto.PetProfileList;
 import animal_shop.shop.pet.entity.Pet;
 import animal_shop.shop.pet.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class PetService {
@@ -117,7 +120,7 @@ public class PetService {
         petRepository.save(pet);
     }
     @Transactional(readOnly = true)
-    public Page<PetDTOList> selectAll(String token, int page) {
+    public PetProfileList selectAll(String token, int page) {
         // 1. 사용자 인증
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
@@ -128,14 +131,16 @@ public class PetService {
 
         // 3. 전체 동물 조회 (회원과 연관된 동물만 조회)
         Page<Pet> pets = petRepository.findByMember(member, pageable);
-        // 4. DTO 변환 및 반환
-        return pets.map(pet -> new PetDTOList(
-                pet.getId(),
-                pet.getName(),
-                pet.getProfileImageUrl(),
-                pet.getAge(),
-                pet.getWeight(),
-                pet.getBreed()
-        ));
+
+        List<PetProfile> petList = pets.stream().map(PetProfile::new).toList();
+
+        PetProfileList petProfileList = PetProfileList.builder()
+                .petProfileList(petList)
+                .total_count(pets.getTotalElements())
+                .build();        // 4. DTO 변환 및 반환
+
+        return petProfileList;
     }
+
+
 }

@@ -2,10 +2,9 @@ package animal_shop.shop.pet.controller;
 
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.pet.dto.PetDTO;
-import animal_shop.shop.pet.dto.PetDTOList;
+import animal_shop.shop.pet.dto.PetProfileList;
 import animal_shop.shop.pet.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +53,7 @@ public class PetController {
     }
 
     //동물 정보 수정
-    @PatchMapping("update/{petId}")
+    @PatchMapping("/update/{petId}")
     ResponseEntity<?> update_pet(@RequestHeader(value = "Authorization") String token,
                                  @PathVariable(value = "petId") String petId,
                                  @RequestBody PetDTO petDTO) {
@@ -74,13 +73,13 @@ public class PetController {
     }
 
     //동물 전체 리스트 보기
-    @GetMapping("select/all")
+    @GetMapping("/list")
     ResponseEntity<?> select_pet(@RequestHeader(value = "Authorization") String token,
                                  @RequestParam (value="page",defaultValue = "1")int page) {
         ResponseDTO responseDTO;
         try {
-            Page<PetDTOList> petList = petService.selectAll(token, page - 1);
-            return ResponseEntity.ok().body(petList);
+            PetProfileList petProfileList = petService.selectAll(token, page - 1);
+            return ResponseEntity.ok().body(petProfileList);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
@@ -96,7 +95,7 @@ public class PetController {
         try {
             petService.updateLeader(petId);
             responseDTO = ResponseDTO.builder()
-                    .message("delete success!")
+                    .message("leader success!")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
 
