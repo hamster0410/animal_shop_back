@@ -52,13 +52,18 @@ public class DeliveryService {
 
     @Transactional
     public String approve(String orderCode, String token) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
 
         Order order = orderRepository.findByOrderCode(orderCode);
 
         List<OrderItem> orderItems = order.getOrderItems();
 
         for(OrderItem orderItem : orderItems){
-            orderItem.setDelivery_approval(true);
+            if(orderItem.getItem().getMember().equals(member)){
+                orderItem.setDelivery_approval(true);
+            }
         }
 
         return order.getOrderCode();

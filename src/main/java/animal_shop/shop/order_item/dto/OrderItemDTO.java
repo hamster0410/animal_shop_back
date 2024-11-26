@@ -21,12 +21,15 @@ public class OrderItemDTO {
 
     private String imgUrl;
 
+    private boolean delivery_approval;
+
     public OrderItemDTO(OrderItem orderItem, String imgUrl){
         this.itemId = orderItem.getItem().getId();
         this.itemNm = orderItem.getItem().getName();
         this.orderItemId = orderItem.getId();
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrder_price();
+        this.delivery_approval = orderItem.isDelivery_approval();
         this.orderName = orderItem.getOrder_name();
         this.imgUrl = imgUrl;
     }

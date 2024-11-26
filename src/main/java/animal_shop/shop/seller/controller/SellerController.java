@@ -219,9 +219,9 @@ public class SellerController {
                                    @RequestBody String orderCode) {
         ResponseDTO responseDTO = null;
         try{
-//            deliveryService.approve(deliveryId,token);
+            deliveryService.approve(orderCode,token);
             responseDTO = ResponseDTO.builder()
-                    .message(deliveryService.approve(orderCode,token))
+                    .message("delivery approve success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         }catch (Exception e){
