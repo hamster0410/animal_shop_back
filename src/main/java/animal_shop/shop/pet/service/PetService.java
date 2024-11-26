@@ -64,6 +64,26 @@ public class PetService {
         //4. 해당 강아지 삭제
         petRepository.delete(pet);
 
+    }
 
+    @Transactional
+    public void updatePet(String token, String petId, PetDTO petDTO) {
+        // 1. 사용자 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+
+        // 2. 기존 Pet 조회
+        Pet pet = petRepository.findById(Long.valueOf(petId))
+                .orElseThrow(() -> new IllegalArgumentException("해당 동물이 존재하지 않습니다."));
+
+        petRepository.findById(Long.valueOf(petId))
+                .orElseThrow(() -> new IllegalArgumentException("해당 동물이 존재하지 않습니다."));
+
+        // 3. 소유자 확인
+        if (!pet.getMember().getId().equals(Long.valueOf(userId))) {
+            throw new IllegalArgumentException("해당 사용자는 수정할 권한이 없습니다.");
+        }
+        // 필드 업데이트
+        petDTO.updateEntity(pet);
+        petRepository.save(pet);
     }
 }
