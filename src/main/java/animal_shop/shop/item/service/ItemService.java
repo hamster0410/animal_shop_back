@@ -332,12 +332,33 @@
             itemQueryRepository.save(itemQuery);
         }
 
-        @Transactional
-        public void discount_rate(String token, ItemDiscountDTO itemDiscountDTO) {
-            //1.사용자 인증
+            @Transactional
+            public void discount_rate(String token, ItemDiscountDTO itemDiscountDTO) {
+                //1.사용자 인증
+                String userId = tokenProvider.extractIdByAccessToken(token);
+                Member member = memberRepository.findById(Long.valueOf(userId))
+                        .orElseThrow(()->new IllegalArgumentException("Member is not found"));
+
+                //2.판매자 인증
+                System.out.println("here1");
+                if(!member.getRole().toString().equals("SELLER")){
+                    throw new IllegalStateException("User is not a SELLER");
+                }
+                System.out.println("here2");
+                Option option = optionRepository.findById(itemDiscountDTO.getOption_id())
+                        .orElseThrow(() -> new IllegalArgumentException("option is not found"));
+
+                option.setDiscount_rate(itemDiscountDTO.getOption_discount_rate());
+                System.out.println("here3");
+                optionRepository.save(option);
+
+            }
+
+        public void no_discount(String token, ItemDiscountDTO itemDiscountDTO) {
+            //1. 사용자 인증
             String userId = tokenProvider.extractIdByAccessToken(token);
             Member member = memberRepository.findById(Long.valueOf(userId))
-                    .orElseThrow(()->new IllegalArgumentException("Member is not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Member is not found"));
 
             //2.판매자 인증
             if(!member.getRole().toString().equals("SELLER")){
@@ -347,10 +368,9 @@
             Option option = optionRepository.findById(itemDiscountDTO.getOption_id())
                     .orElseThrow(() -> new IllegalArgumentException("option is not found"));
 
-            option.setDiscount_rate(itemDiscountDTO.getOption_discount_rate());
+            // 4. 할인율을 null로 설정
+            option.setDiscount_rate(null);
 
-            optionRepository.save(option);
-//            item.setItemDetail(itemDTOList.getItem_detail());
-
+            optionRepository.delete(option);
         }
     }

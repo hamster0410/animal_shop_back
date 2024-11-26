@@ -239,5 +239,22 @@ public class SellerController {
         }
 
     }
+    @PatchMapping("/No_discount")
+    ResponseEntity<?>no_discount(@RequestHeader(value= "Authorization")String token,
+                                 @RequestBody ItemDiscountDTO itemDiscountDTO){
+        ResponseDTO responseDTO = null;
+        try{
+            itemService.no_discount(token,itemDiscountDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("THE END")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
 }
