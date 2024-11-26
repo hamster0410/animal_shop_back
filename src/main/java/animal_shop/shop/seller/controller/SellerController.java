@@ -107,7 +107,7 @@ public class SellerController {
             @PathVariable(value = "itemId") String id) {
         ResponseDTO responseDTO = null;
         try {
-            ItemDetailDTO  itemDetailDTO = itemService.selectItem(token, id);
+            ItemDetailDTO itemDetailDTO = itemService.selectItem(token, id);
 
             return ResponseEntity.ok().body(itemDetailDTO);
         } catch (Exception e) {
@@ -121,10 +121,10 @@ public class SellerController {
     //전체 상품 조회
     @GetMapping("/item/select")
     public ResponseEntity<?> selectAll(@RequestHeader(value = "Authorization") String token,
-                                       @RequestParam(value = "page" , defaultValue = "1") int page) {
+                                       @RequestParam(value = "page", defaultValue = "1") int page) {
         ResponseDTO responseDTO;
         try {
-            ItemDTOListResponse items = itemService.selectAll(token,page-1);
+            ItemDTOListResponse items = itemService.selectAll(token, page - 1);
             return ResponseEntity.ok().body(items);
         } catch (IllegalArgumentException | IllegalStateException e) {
             responseDTO = ResponseDTO.builder()
@@ -138,13 +138,14 @@ public class SellerController {
             return ResponseEntity.internalServerError().body(responseDTO);
         }
     }
+
     //문의 내용 리스트 보기
     @GetMapping("/query/list")
     public ResponseEntity<?> seller_CI(@RequestHeader(value = "Authorization") String token,
                                        @RequestParam(value = "page", defaultValue = "1") int page) {
         ResponseDTO responseDTO = null;
         try {
-            QueryResponse orderPage = itemService.find_orders(token, page-1);
+            QueryResponse orderPage = itemService.find_orders(token, page - 1);
 
             return ResponseEntity.ok().body(orderPage);
         } catch (Exception e) {
@@ -154,40 +155,41 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
     //소비자 문의에 대한 판매자의 답변
     @PatchMapping("/query/comment/{queryId}")
-    public ResponseEntity<?>query_comment(@RequestHeader(value ="Authorization")String token,
-                                          @PathVariable(value="queryId") Long queryId,
-                                          @RequestBody SellerReplyDTO sellerReplyDTO){
+    public ResponseEntity<?> query_comment(@RequestHeader(value = "Authorization") String token,
+                                           @PathVariable(value = "queryId") Long queryId,
+                                           @RequestBody SellerReplyDTO sellerReplyDTO) {
         ResponseDTO responseDTO = null;
         try {
-            itemService.query_comment(token,queryId,sellerReplyDTO);
+            itemService.query_comment(token, queryId, sellerReplyDTO);
 
             responseDTO = ResponseDTO.builder()
                     .message("register Comment")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
     //소비자 문의에 대한 판매자 답변 삭제
     @PatchMapping("/query/reply/{queryId}")
-    ResponseEntity<?> delete_reply(@RequestHeader(value = "Authorization")String token,
-                                     @PathVariable(value = "queryId")Long queryId)
-    {
+    ResponseEntity<?> delete_reply(@RequestHeader(value = "Authorization") String token,
+                                   @PathVariable(value = "queryId") Long queryId) {
         ResponseDTO responseDTO = null;
-        try{
-            itemService.delete_reply(token,queryId);
+        try {
+            itemService.delete_reply(token, queryId);
 
             responseDTO = ResponseDTO.builder()
                     .message("delete reply")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())
                     .build();
@@ -202,17 +204,16 @@ public class SellerController {
 
     //구매 물품 등록
     @PostMapping("/delivery/approve/{orderId}")
-    ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization")String token,
-                                   @PathVariable(value = "orderId")Long orderId)
-    {
+    ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization") String token,
+                                       @PathVariable(value = "orderId") Long orderId) {
         ResponseDTO responseDTO = null;
-        try{
+        try {
 
             responseDTO = ResponseDTO.builder()
                     .message("approve success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())
                     .build();
@@ -220,6 +221,23 @@ public class SellerController {
         }
     }
 
+    @PatchMapping("/discount/ok")
+    ResponseEntity<?> item_discount(@RequestHeader(value = "Authorization") String token,
+                                    @RequestBody ItemDiscountDTO itemDiscountDTO){
+        ResponseDTO responseDTO = null;
+        try {
+            itemService.discount_rate(token,itemDiscountDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("Discount success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
 
+    }
 
 }

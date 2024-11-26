@@ -332,5 +332,25 @@
             itemQueryRepository.save(itemQuery);
         }
 
+        @Transactional
+        public void discount_rate(String token, ItemDiscountDTO itemDiscountDTO) {
+            //1.사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(()->new IllegalArgumentException("Member is not found"));
 
+            //2.판매자 인증
+            if(!member.getRole().toString().equals("SELLER")){
+                throw new IllegalStateException("User is not a SELLER");
+            }
+
+            Option option = optionRepository.findById(itemDiscountDTO.getOption_id())
+                    .orElseThrow(() -> new IllegalArgumentException("option is not found"));
+
+            option.setDiscount_rate(itemDiscountDTO.getOption_discount_rate());
+
+            optionRepository.save(option);
+//            item.setItemDetail(itemDTOList.getItem_detail());
+
+        }
     }

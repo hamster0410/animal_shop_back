@@ -8,6 +8,7 @@ import lombok.*;
 @ToString
 @Builder
 @Getter
+@Setter
 @Entity
 public class Option {
 
@@ -16,15 +17,16 @@ public class Option {
     private Long id;
 
     @ManyToOne
-    @Setter
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
-
 
     @Column(nullable = false)
     private String name;
 
     private Long price;
+
+    private Long discount_rate;
+
 
     // 생성자, Getter, Setter
 }
