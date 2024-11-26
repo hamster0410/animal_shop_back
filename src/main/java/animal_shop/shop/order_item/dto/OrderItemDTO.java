@@ -9,6 +9,8 @@ public class OrderItemDTO {
 
     private Long itemId;
 
+    private Long orderItemId;
+
     private String itemNm;
 
     private int count;
@@ -22,6 +24,7 @@ public class OrderItemDTO {
     public OrderItemDTO(OrderItem orderItem, String imgUrl){
         this.itemId = orderItem.getItem().getId();
         this.itemNm = orderItem.getItem().getName();
+        this.orderItemId = orderItem.getId();
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrder_price();
         this.orderName = orderItem.getOrder_name();

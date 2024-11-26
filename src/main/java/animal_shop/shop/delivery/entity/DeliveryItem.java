@@ -30,8 +30,6 @@ public class DeliveryItem {
 
     private Long optionPrice;
 
-    private Long orderId;
-
     private Long sellerId;
 
     private Long buyerId;

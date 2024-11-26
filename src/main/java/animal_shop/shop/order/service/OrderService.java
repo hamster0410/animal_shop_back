@@ -69,11 +69,14 @@ public class OrderService {
             OrderItem orderItem =
                     OrderItem.createOrderItem(item, o);
             //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
+
             orderItemList.add(orderItem);
         }
 
 
         Order order = Order.createOrder(member, orderItemList);
+
+        deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
         //생성한 주문 엔티티를 저장함
         orderRepository.save(order);
 
@@ -141,9 +144,6 @@ public class OrderService {
 
         //각각에 판매자들에게 따로 전송
         HashMap<Member,List<OrderItem>> hashMap = new HashMap<>();
-
-
-        System.out.println(hashMap);
 
         for( CartDetailDTO c : cartDetailDTOList){
             Item item = itemRepository.findById(c.getItemId())
