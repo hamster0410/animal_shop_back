@@ -75,4 +75,9 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
     }
 
+    //카카오 페이 실패 시 결제 삭제
+    public void removeOrder(Order order) {
+        Delivery delivery = deliveryRepository.findByOrderCode(order.getOrderCode());
+        deliveryRepository.delete(delivery);
+    }
 }

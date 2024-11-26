@@ -2,6 +2,7 @@ package animal_shop.shop.order.controller;
 
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
+import animal_shop.shop.order.dto.OrderDTOResponse;
 import animal_shop.shop.order.service.OrderService;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ public class OrderController {
         ResponseDTO responseDTO;
 
         try{
-            Long orderId = orderService.order(orderDTOList,token);
-            return ResponseEntity.ok().body(orderId);
+            OrderDTOResponse order = orderService.order(orderDTOList,token);
+            return ResponseEntity.ok().body(order);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())

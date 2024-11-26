@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     Page<Delivery> findByMember(Member member, Pageable pageable);
+
+    Delivery findByOrderCode(String orderCode);
+
 }
