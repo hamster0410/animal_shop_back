@@ -1,9 +1,6 @@
 package animal_shop.global.kakaopay.controller;
 
-import animal_shop.global.kakaopay.dto.KakaoApproveResponse;
-import animal_shop.global.kakaopay.dto.KakaoCancelRequest;
-import animal_shop.global.kakaopay.dto.KakaoCancelResponse;
-import animal_shop.global.kakaopay.dto.KakaoReadyRequest;
+import animal_shop.global.kakaopay.dto.*;
 import animal_shop.global.kakaopay.service.KakaoPayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,9 +25,9 @@ public class KakaoPayController {
      * 결제 성공
      */
     @GetMapping("/success")
-    public ResponseEntity afterPayRequest(@RequestParam("tid") String tid,@RequestParam("pg_token") String pgToken) {
+    public ResponseEntity afterPayRequest(@RequestBody KakaoSuccessRequest kakaoSuccessRequest) {
 
-        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(tid, pgToken);
+        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(kakaoSuccessRequest);
 
         return new ResponseEntity<>(kakaoApprove, HttpStatus.OK);
     }

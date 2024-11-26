@@ -40,6 +40,8 @@ public class Pet {
 
     private String registrationCode;
 
+    private boolean isRepresent;
+
     // Enum: 종 (개, 고양이, 소동물 등)
     public enum PetSpecies {
         DOG, CAT, SMALL_ANIMAL

@@ -71,17 +71,17 @@ public class KakaoPayService {
     /**
      * 결제 완료 승인
      */
-    public KakaoApproveResponse approveResponse(String tid, String pgToken) {
+    public KakaoApproveResponse approveResponse(KakaoSuccessRequest kakaoSuccessRequest) {
         // 요청 URL
         String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
 
         // 요청 바디 설정
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("cid", "TC0ONETIME"); // 테스트용 CID
-        requestBody.put("tid", tid); // 결제 고유 번호
+        requestBody.put("tid", kakaoSuccessRequest.getTid()); // 결제 고유 번호
         requestBody.put("partner_order_id", "partner_order_id"); // 가맹점 주문 번호
         requestBody.put("partner_user_id", "partner_user_id"); // 가맹점 회원 ID
-        requestBody.put("pg_token", pgToken); // 결제승인 요청 토큰
+        requestBody.put("pg_token", kakaoSuccessRequest.getPg_token()); // 결제승인 요청 토큰
 
         // HTTP 요청 생성
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, getHeaders());
