@@ -133,7 +133,7 @@ public class SellerController {
             return ResponseEntity.internalServerError().body(responseDTO);
         }
     }
-
+    //문의 내용 리스트 보기
     @GetMapping("/query/list")
     public ResponseEntity<?> seller_CI(@RequestHeader(value = "Authorization") String token,
                                        @RequestParam(value = "page", defaultValue = "1") int page) {
@@ -169,6 +169,7 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    //소비자 문의에 대한 판매자 답변 삭제
     @PatchMapping("/query/reply/{queryId}")
     ResponseEntity<?> delete_reply(@RequestHeader(value = "Authorization")String token,
                                      @PathVariable(value = "queryId")Long queryId)

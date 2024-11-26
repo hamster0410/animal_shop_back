@@ -17,10 +17,10 @@ public class PetDTO {
     private int age;  //나이
     private Pet.Gender gender;  //성별
     private double weight; // 무게
-    private String hasRegistrationCertificate;  //동물등록증 유무
     private String description; // 자기소개
     private String profileImageUrl;  //이미지URl
-    private String registrationCode;
+    private String registrationCode; //동물 등록증 코드
+    private boolean leader; // 대표이미지 사진
 
     public static PetDTO fromEntity(Pet pet) {
         return PetDTO.builder()
@@ -32,10 +32,9 @@ public class PetDTO {
                 .age(pet.getAge())
                 .gender(pet.getGender())
                 .weight(pet.getWeight())
-                .hasRegistrationCertificate(pet.getHasRegistrationCertificate())
                 .description(pet.getDescription())
                 .profileImageUrl(pet.getProfileImageUrl())
-                .registrationCode(pet.getRegistrationCode())
+                .leader(pet.getLeader())
                 .build();
 
     }
@@ -43,6 +42,12 @@ public class PetDTO {
     public boolean getIsNeutered() {
         return isNeutered;
     }
+
+
+    public Boolean getMain() {
+        return leader;
+    }
+
 
     public void updateEntity(Pet pet) {
 
@@ -52,11 +57,12 @@ public class PetDTO {
         pet.setAge(this.age);
         pet.setGender(this.gender);
         pet.setWeight(this.weight);
-        pet.setHasRegistrationCertificate(this.hasRegistrationCertificate);
         pet.setDescription(this.description);
         pet.setProfileImageUrl(this.profileImageUrl);
         pet.setIsNeutered(this.isNeutered);
         pet.setRegistrationCode(this.registrationCode);
+        pet.setLeader(this.leader);
     }
 
 }
+

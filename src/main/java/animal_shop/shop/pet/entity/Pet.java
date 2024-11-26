@@ -32,13 +32,16 @@ public class Pet {
 
     private double weight; // 체중
 
-    private String hasRegistrationCertificate; // 동물 등록증 유무
-
     private String description; // 간단한 자기소개
 
     private String profileImageUrl; // 동물 프로필 이미지 (URL 형식)
 
-    private String registrationCode;
+    private String registrationCode;     //동물 등록증 코드
+
+    private Boolean leader;
+
+
+
 
     private boolean isRepresent;
 
@@ -51,5 +54,6 @@ public class Pet {
     public enum Gender {
         MALE, FEMALE
     }
+
 }
 
