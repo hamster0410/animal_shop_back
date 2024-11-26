@@ -30,4 +30,6 @@ public class SellerCandidate {
 
     @Column(nullable = false,unique = true)
     private String bln;
+
+
 }
