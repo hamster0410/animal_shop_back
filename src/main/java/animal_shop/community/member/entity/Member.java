@@ -6,6 +6,7 @@ import animal_shop.community.comment.entity.Comment;
 import animal_shop.community.heart_post.entity.Heart;
 import animal_shop.community.member.Role;
 import animal_shop.community.post.entity.Post;
+import animal_shop.shop.delivery.entity.Delivery;
 import animal_shop.shop.item_comment.entity.ItemComment;
 import animal_shop.shop.pet.entity.Pet;
 import jakarta.persistence.*;
@@ -62,9 +63,11 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemComment> item_comments;
 
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Delivery> deliveries;
 
     private String profile;
 

@@ -5,6 +5,7 @@ import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart.dto.CartDetailDTO;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
+import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.dto.OrderDTO;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -43,6 +45,9 @@ public class OrderService {
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Autowired
+    private DeliveryService deliveryService;
+
     @Transactional
     public Long order(OrderDTOList orderDTOList, String token){
         //내가 주문할 상품 찾기
@@ -58,10 +63,11 @@ public class OrderService {
         //주문할 상품 엔티티와 수량을 이용해 주문을 생성함
         List<OrderItem> orderItemList = new ArrayList<>();
         List<OrderDTO> orderDTOS = orderDTOList.getOption_items();
+
+
         for(OrderDTO o : orderDTOS){
             OrderItem orderItem =
                     OrderItem.createOrderItem(item, o);
-
             //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
             orderItemList.add(orderItem);
         }
@@ -104,7 +110,7 @@ public class OrderService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void cancelOrder(String token, Long orderId){
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member curMember = memberRepository.findById(Long.valueOf(userId))
@@ -132,16 +138,39 @@ public class OrderService {
 
         //카트아이템에서 정보를 끄집어 내서 order에 저장
         List<OrderItem> orderItemList = new ArrayList<>();
+
+        //각각에 판매자들에게 따로 전송
+        HashMap<Member,List<OrderItem>> hashMap = new HashMap<>();
+
+
+        System.out.println(hashMap);
+
         for( CartDetailDTO c : cartDetailDTOList){
             Item item = itemRepository.findById(c.getItemId())
                     .orElseThrow(() -> new IllegalArgumentException("item is not found"));
+
             OrderDTO orderDTO = new OrderDTO(c.getCount(), c.getOption_name(), Math.toIntExact(c.getOption_price()));
+
             OrderItem orderItem = OrderItem.createOrderItem(item,orderDTO);
+
+            //각각에 판매자에게 배송 테이블 전송
+            if(hashMap.containsKey(orderItem.getItem().getMember())){
+                hashMap.get(orderItem.getItem().getMember()).add(orderItem);
+            }else{
+                hashMap.put(orderItem.getItem().getMember(), new ArrayList<OrderItem>());
+                hashMap.get(orderItem.getItem().getMember()).add(orderItem);
+            }
             orderItemList.add(orderItem);
         }
 
         Order order = Order.createOrder(member,orderItemList);
 
+        //판매자에게 배송 정보 전달
+        for(Member m : hashMap.keySet()){
+            deliveryService.createDelivery(m, hashMap.get(m),order);
+        }
+
         orderRepository.save(order);
     }
+
 }

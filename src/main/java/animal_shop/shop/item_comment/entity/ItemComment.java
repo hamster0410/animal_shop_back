@@ -7,7 +7,6 @@ import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,7 +32,7 @@ public class ItemComment extends BaseTimeEntity {
     private Member member;
 
     @OneToMany(mappedBy = "itemComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemCommentLike> likes = new ArrayList<>();
+    private List<ItemCommentLike> likes;
 
     @ElementCollection
     @CollectionTable(name = "item_comment_thumbnail_urls", joinColumns = @JoinColumn(name = "item_comment_id"))

@@ -1,6 +1,7 @@
-package animal_shop.shop.item.controller;
+package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,16 @@ public class SellerController {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private DeliveryService deliveryService;
+
     @PostMapping("/item/new")
     public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization") String token, @RequestBody ItemDTOList itemDTOList) {
         ResponseDTO responseDTO = null;
 
         try {
             itemService.save(token, itemDTOList);
+            System.out.println("here 5");
             responseDTO = ResponseDTO.builder()
                     .message("save success")
                     .build();
@@ -189,6 +194,30 @@ public class SellerController {
         }
     }
 
+    //판매자 물품 주문 리스트
+//    @GetMapping(){
+//
+//    }
+
+    //구매 물품 등록
+    @PostMapping("/delivery/approve/{orderId}")
+    ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization")String token,
+                                   @PathVariable(value = "orderId")Long orderId)
+    {
+        ResponseDTO responseDTO = null;
+        try{
+
+            responseDTO = ResponseDTO.builder()
+                    .message("approve success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
 
 

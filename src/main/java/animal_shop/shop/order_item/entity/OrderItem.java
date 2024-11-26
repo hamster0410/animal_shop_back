@@ -27,9 +27,13 @@ public class OrderItem extends BaseTimeEntity {
 
     private int order_price;
 
+    private String username;
+
     private String order_name;
 
     private int count;
+
+    private boolean delivery_approval;
 
     public static OrderItem createOrderItem(Item item, OrderDTO orderDTO){
         OrderItem orderItem = new OrderItem();

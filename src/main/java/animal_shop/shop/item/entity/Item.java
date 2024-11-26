@@ -4,6 +4,7 @@ package animal_shop.shop.item.entity;
 import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.item.ItemSellStatus;
+import animal_shop.shop.item_comment.entity.ItemComment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,11 @@ public class Item extends BaseTimeEntity{
     // @OneToMany 관계로 수정
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options;
+
+    // @OneToMany 관계로 수정
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemComment> comments;
+
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)

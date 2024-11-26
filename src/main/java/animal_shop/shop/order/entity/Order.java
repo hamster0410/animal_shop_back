@@ -1,7 +1,6 @@
 package animal_shop.shop.order.entity;
 
 import animal_shop.community.member.entity.Member;
-import animal_shop.global.dto.BaseTimeEntity;
 import animal_shop.shop.order.OrderStatus;
 import animal_shop.shop.order_item.entity.OrderItem;
 import jakarta.persistence.*;
@@ -27,7 +26,12 @@ public class Order{
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(nullable = false)
+    private String orderCode;
+
     private LocalDateTime orderDate;
+
+    private Long totalPrice;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -46,9 +50,13 @@ public class Order{
     public static Order createOrder(Member member, List<OrderItem> orderItemList){
         Order order = new Order();
         order.setMember(member);
+        Long totalPrice = 0L;
         for(OrderItem orderItem : orderItemList){
+            totalPrice += orderItem.getOrder_price();
             order.addOrderItem(orderItem);
         }
+        order.setTotalPrice(totalPrice);
+        order.setOrderCode("ORDER-" +System.currentTimeMillis() + "-" + member.getId());
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
         return order;

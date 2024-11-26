@@ -1,6 +1,5 @@
     package animal_shop.shop.item.service;
 
-    import animal_shop.community.comment.entity.Comment;
     import animal_shop.community.member.entity.Member;
     import animal_shop.community.member.repository.MemberRepository;
     import animal_shop.global.security.TokenProvider;
@@ -40,7 +39,6 @@
         @Autowired
         private ItemQueryRepository itemQueryRepository;
 
-
         @Transactional
         public void save(String token, ItemDTOList itemDTOList) {
             String userId = tokenProvider.extractIdByAccessToken(token);
@@ -53,7 +51,6 @@
 
             // Option 리스트 가져오기
             List<Option> options = itemDTOList.getOption();
-
             // Item 객체 생성
             Item item = Item.builder()
                     .name(itemDTOList.getName())
@@ -67,7 +64,6 @@
                     .image_url(itemDTOList.getImageUrl())
                     .thumbnail_url(itemDTOList.getThumbnailUrls())
                     .build();
-
             // Item 저장
             Item savedItem = itemRepository.save(item);  // 여기서 item이 저장되고 id가 생성됨
             // 옵션을 저장할 때, 각각의 Option에 item_id 설정
