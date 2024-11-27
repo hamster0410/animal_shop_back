@@ -8,6 +8,7 @@ import animal_shop.shop.delivery.dto.DeliveryDTO;
 import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
 import animal_shop.shop.delivery.entity.Delivery;
 import animal_shop.shop.delivery.entity.DeliveryItem;
+import animal_shop.shop.delivery.repository.DeliveryItemRepository;
 import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
@@ -39,6 +40,9 @@ public class DeliveryService {
 
     @Autowired
     DeliveryRepository deliveryRepository;
+
+    @Autowired
+    DeliveryItemRepository deliveryItemRepository;
 
     @Transactional(readOnly = true)
     public DeliveryDTOResponse get_list(String token, int page) {
@@ -88,6 +92,10 @@ public class DeliveryService {
                 .orElseThrow(() -> new IllegalArgumentException("order item not found"));
         orderItem.setDelivery_approval(true);
         orderItemRepository.save(orderItem);
+
+        DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItemId);
+        deliveryItem.setDelivery_approval(true);
+        deliveryItemRepository.save(deliveryItem);
 
     }
 

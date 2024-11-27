@@ -252,6 +252,8 @@ public class SellerController {
         }
     }
 
+
+
     @PatchMapping("/discount/ok")
     ResponseEntity<?> item_discount(@RequestHeader(value = "Authorization") String token,
                                     @RequestBody ItemDiscountDTO itemDiscountDTO){
