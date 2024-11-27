@@ -151,7 +151,7 @@ public class CartService {
                 .cartItemImg(cartItem.getItem().getThumbnail_url().get(0))
                 .cartItemName(cartItem.getItem().getName())
                 .options(options)
-                .total_count(cartItemDetailRequest.getTotal_count())
+                .total_count((long) cartItem.getCount())
                 .build();
     }
     @Transactional
