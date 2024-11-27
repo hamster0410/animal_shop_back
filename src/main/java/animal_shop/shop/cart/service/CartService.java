@@ -20,9 +20,6 @@ import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.item.repository.OptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,12 +94,11 @@ public class CartService {
         }
     }
     @Transactional
-    public CartDetailDTOResponse getCartList(String token, int page) {
+    public CartDetailDTOResponse getCartList(String token) {
 
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
 
         List<CartDetailDTO> cartDetailDTOList = new ArrayList<>();
-        Page<CartItem> cartItems = null;
+        List<CartItem> cartItems = null;
         String userId = tokenProvider.extractIdByAccessToken(token);
         Cart cart = cartRepository.findByMemberId(Long.valueOf(userId));
 
@@ -113,7 +109,7 @@ public class CartService {
         }
 
 //        cartDetailDTOList = cartItemRepository.findCartDetailDtoList(cart.getId(),pageable);
-        cartItems = cartItemRepository.findByCartIdOrderByCreatedDateDesc(cart.getId(),pageable);
+        cartItems = cartItemRepository.findByCartIdOrderByCreatedDateDesc(cart.getId());
         for(CartItem ci: cartItems){
             CartDetailDTO cartDetailDTO = new CartDetailDTO(ci);
             cartDetailDTOList.add(cartDetailDTO);
@@ -121,7 +117,7 @@ public class CartService {
 
         cartDetailDTOResponse = CartDetailDTOResponse.builder()
                 .cartDetailDTOList(cartDetailDTOList)
-                .total_count(cartItems.getTotalElements())
+                .total_count((long) cartItems.size())
                 .build();
         return cartDetailDTOResponse;
 

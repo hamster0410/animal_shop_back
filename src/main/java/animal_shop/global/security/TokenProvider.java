@@ -3,8 +3,6 @@ package animal_shop.global.security;
 import animal_shop.community.member.dto.MemberDTO;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
-import animal_shop.shop.pet.entity.Pet;
-import animal_shop.shop.pet.repository.PetRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +16,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -31,9 +28,6 @@ public class  TokenProvider {
     @Autowired
     MemberRepository memberRepository;
 
-    @Autowired
-    PetRepository petRepository;
-
     public String AccessTokenCreate(String memberId) {
         Date expiryDate = Date.from(
                 Instant.now()
@@ -41,15 +35,9 @@ public class  TokenProvider {
         );
         Long id = Long.valueOf(memberId);
         Member member = memberRepository.findById(id).orElseThrow();
-        List<Pet> pet = petRepository.findByMember(member);
         // JWT Claims에 role 정보를 추가
         Map<String, Object> claims = new HashMap<>();
-        if(pet.get(0) != null){
-            claims.put("name",pet.get(0).getName());
-            claims.put("age",pet.get(0).getAge());
-            claims.put("weight",pet.get(0).getWeight());
-            claims.put("gender",pet.get(0).getGender());
-        }
+
         claims.put("role", member.getRole());  // 예를 들어 role이 "USER" 또는 "ADMIN" 등
         return Jwts.builder()
                 .setClaims(claims)

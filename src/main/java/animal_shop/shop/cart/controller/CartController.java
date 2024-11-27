@@ -45,11 +45,10 @@ public class CartController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> orderHist(@RequestHeader(value = "Authorization") String token,
-                            @RequestParam(value = "page",  defaultValue = "1") int page){
+    public ResponseEntity<?> orderHist(@RequestHeader(value = "Authorization") String token){
         ResponseDTO responseDTO;
         try{
-            CartDetailDTOResponse cartDetailDTOResponse = cartService.getCartList(token,page-1);
+            CartDetailDTOResponse cartDetailDTOResponse = cartService.getCartList(token);
 
             return ResponseEntity.ok().body(cartDetailDTOResponse);
         }catch (Exception e){
