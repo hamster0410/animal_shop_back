@@ -4,6 +4,7 @@ import animal_shop.shop.delivery.entity.Delivery;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class DeliveryDTO {
@@ -19,6 +20,8 @@ public class DeliveryDTO {
 
     private Long totalPrice;
 
+    private List<DeliveryItemDTO> deliveryItemDTOList;
+
     public DeliveryDTO(Delivery delivery){
         this.id = delivery.getId();
 
@@ -29,6 +32,8 @@ public class DeliveryDTO {
         this.orderDate = delivery.getOrderDate();
 
         this.totalPrice = delivery.getTotalPrice();
+
+        this.deliveryItemDTOList = delivery.getDeliveryItems().stream().map(DeliveryItemDTO::new).toList();
     }
 
 }

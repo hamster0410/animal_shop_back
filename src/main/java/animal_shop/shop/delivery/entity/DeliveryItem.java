@@ -34,4 +34,6 @@ public class DeliveryItem {
 
     private Long buyerId;
 
+    private Long orderItemId;
+
 }

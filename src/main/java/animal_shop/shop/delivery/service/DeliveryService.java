@@ -10,6 +10,7 @@ import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order_item.entity.OrderItem;
+import animal_shop.shop.order_item.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,9 @@ public class DeliveryService {
 
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    OrderItemRepository orderItemRepository;
 
     @Autowired
     MemberRepository memberRepository;
@@ -51,7 +55,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public String approve(String orderCode, String token) {
+    public void approve(String orderCode, String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
@@ -66,7 +70,17 @@ public class DeliveryService {
             }
         }
 
-        return order.getOrderCode();
+    }
+
+    @Transactional
+    public void approve_detail(Long orderItemId, String token) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
+        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+                .orElseThrow(() -> new IllegalArgumentException("order item not found"));
+        orderItem.setDelivery_approval(true);
+        orderItemRepository.save(orderItem);
 
     }
 
@@ -77,7 +91,10 @@ public class DeliveryService {
 
     //카카오 페이 실패 시 결제 삭제
     public void removeOrder(Order order) {
-        Delivery delivery = deliveryRepository.findByOrderCode(order.getOrderCode());
-        deliveryRepository.delete(delivery);
+        List<Delivery> delivery = deliveryRepository.findByOrderCode(order.getOrderCode());
+        for(Delivery d : delivery){
+            deliveryRepository.delete(d);
+        }
     }
+
 }

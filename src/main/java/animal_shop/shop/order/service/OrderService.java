@@ -116,7 +116,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void failureOrder(String token, Long orderId){
+    public void failureOrder( Long orderId){
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
@@ -179,13 +179,12 @@ public class OrderService {
 
         Order order = Order.createOrder(member,orderItemList);
 
+        orderRepository.save(order);
+
         //판매자에게 배송 정보 전달
         for(Member m : hashMap.keySet()){
             deliveryService.createDelivery(m, hashMap.get(m),order);
         }
-
-        orderRepository.save(order);
-
         OrderDTOResponse orderDTOResponse = new OrderDTOResponse(order);
         orderDTOResponse.setItem_name(
                 orderDTOResponse.getItem_name() + " 외 " + (order.getOrderItems().size() -1 ) + "개");

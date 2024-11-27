@@ -1,5 +1,6 @@
 package animal_shop.global.kakaopay.dto;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,6 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Embeddable
 public class Amount {
 
     private int total; // 총 결제 금액
