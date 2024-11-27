@@ -10,6 +10,7 @@ import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.dto.OrderDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
+import animal_shop.shop.order.dto.OrderDTOResponse;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order_item.dto.OrderHistDTO;
@@ -49,7 +50,7 @@ public class OrderService {
     private DeliveryService deliveryService;
 
     @Transactional
-    public Long order(OrderDTOList orderDTOList, String token){
+    public OrderDTOResponse order(OrderDTOList orderDTOList, String token){
         //내가 주문할 상품 찾기
         Item item = itemRepository.findById(orderDTOList.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item not found"));
@@ -69,15 +70,20 @@ public class OrderService {
             OrderItem orderItem =
                     OrderItem.createOrderItem(item, o);
             //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
+
             orderItemList.add(orderItem);
         }
 
 
         Order order = Order.createOrder(member, orderItemList);
+
+        deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
         //생성한 주문 엔티티를 저장함
         orderRepository.save(order);
 
-        return order.getId();
+        OrderDTOResponse orderDTOResponse = new OrderDTOResponse(order);
+
+        return orderDTOResponse;
     }
 
     @Transactional(readOnly = true)
@@ -96,7 +102,6 @@ public class OrderService {
             List<OrderItem> orderItems = order.getOrderItems();
 
             for(OrderItem orderItem : orderItems){
-                System.out.println(orderItem.getOrder_name() + " " + orderItem.getOrder_price());
                 OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, orderItem.getItem().getThumbnail_url().get(0));
 
                 orderHistDTO.addOrderItemDTO(orderItemDTO);
@@ -108,6 +113,18 @@ public class OrderService {
                 .orderHistDTOList(orderHistDTOs)
                 .total_count(total_count)
                 .build();
+    }
+
+    @Transactional
+    public void failureOrder(String token, Long orderId){
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("order not found"));
+
+        order.cancelOrder();
+        deliveryService.removeOrder(order);
+
+        orderRepository.delete(order);
     }
 
     @Transactional
@@ -123,7 +140,7 @@ public class OrderService {
         order.cancelOrder();
     }
     @Transactional
-    public void orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
+    public OrderDTOResponse orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
         List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
 
         //카트 비었을때 에러처리
@@ -141,9 +158,6 @@ public class OrderService {
 
         //각각에 판매자들에게 따로 전송
         HashMap<Member,List<OrderItem>> hashMap = new HashMap<>();
-
-
-        System.out.println(hashMap);
 
         for( CartDetailDTO c : cartDetailDTOList){
             Item item = itemRepository.findById(c.getItemId())
@@ -171,6 +185,11 @@ public class OrderService {
         }
 
         orderRepository.save(order);
+
+        OrderDTOResponse orderDTOResponse = new OrderDTOResponse(order);
+        orderDTOResponse.setItem_name(
+                orderDTOResponse.getItem_name() + " 외 " + (order.getOrderItems().size() -1 ) + "개");
+        return orderDTOResponse;
     }
 
 }

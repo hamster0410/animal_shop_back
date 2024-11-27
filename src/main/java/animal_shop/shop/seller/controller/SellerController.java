@@ -1,6 +1,7 @@
 package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
@@ -198,19 +199,31 @@ public class SellerController {
     }
 
     //판매자 물품 주문 리스트
-//    @GetMapping(){
-//
-//    }
-
-    //구매 물품 등록
-    @PostMapping("/delivery/approve/{orderId}")
-    ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization") String token,
-                                       @PathVariable(value = "orderId") Long orderId) {
+    @GetMapping("/delivery/list")
+    ResponseEntity<?> delivery_list(@RequestHeader(value =  "Authorization")String token,
+                                    @RequestParam(name = "page", defaultValue = "1")int page){
         ResponseDTO responseDTO = null;
-        try {
+        try{
+            DeliveryDTOResponse deliveryDTOResponse = deliveryService.get_list(token,page - 1);
 
+            return ResponseEntity.ok().body(deliveryDTOResponse);
+        }catch (Exception e){
             responseDTO = ResponseDTO.builder()
-                    .message("approve success")
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+
+    @PostMapping("/delivery/approve")
+    ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization")String token,
+                                   @RequestBody String orderCode) {
+        ResponseDTO responseDTO = null;
+        try{
+            deliveryService.approve(orderCode,token);
+            responseDTO = ResponseDTO.builder()
+                    .message("delivery approve success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {

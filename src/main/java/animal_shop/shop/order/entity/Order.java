@@ -31,6 +31,8 @@ public class Order{
 
     private LocalDateTime orderDate;
 
+    private String tid;
+
     private Long totalPrice;
 
     @Enumerated(EnumType.STRING)
