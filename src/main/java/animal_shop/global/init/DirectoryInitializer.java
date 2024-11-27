@@ -30,6 +30,9 @@ public class DirectoryInitializer {
     @Value("${file.upload-dir-item-comment}")  // 게시글 파일 업로드 경로
     private String itemCommentUploadDir;
 
+    @Value("${file.upload-dir-pet}")  // 파일 저장 경로를 application.properties에 설정
+    private String petUploadDir;
+
     @PostConstruct
     public void init() {
         createDirectoryIfNotExists(commentUploadDir);
@@ -37,6 +40,7 @@ public class DirectoryInitializer {
         createDirectoryIfNotExists(profileUploadDir);
         createDirectoryIfNotExists(itemUploadDir);
         createDirectoryIfNotExists(itemCommentUploadDir);
+        createDirectoryIfNotExists(petUploadDir);
     }
 
     private void createDirectoryIfNotExists(String dirPath) {
