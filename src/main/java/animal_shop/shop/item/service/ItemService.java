@@ -15,6 +15,7 @@
     import org.springframework.data.domain.PageRequest;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.domain.Sort;
+    import org.springframework.mail.javamail.JavaMailSender;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,9 @@
 
         @Autowired
         private ItemQueryRepository itemQueryRepository;
+
+        @Autowired
+        private JavaMailSender javaMailSender;
 
         @Transactional
         public void save(String token, ItemDTOList itemDTOList) {
