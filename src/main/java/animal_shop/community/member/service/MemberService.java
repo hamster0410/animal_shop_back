@@ -59,7 +59,7 @@ public class MemberService {
                 .mail(memberDTO.getMail())
                 .nickname(memberDTO.getNickname())
                 .profile(memberDTO.getProfile())
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
 
         memberRepository.save(member);
