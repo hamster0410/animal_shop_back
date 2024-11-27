@@ -340,16 +340,13 @@
                         .orElseThrow(()->new IllegalArgumentException("Member is not found"));
 
                 //2.판매자 인증
-                System.out.println("here1");
                 if(!member.getRole().toString().equals("SELLER")){
                     throw new IllegalStateException("User is not a SELLER");
                 }
-                System.out.println("here2");
                 Option option = optionRepository.findById(itemDiscountDTO.getOption_id())
                         .orElseThrow(() -> new IllegalArgumentException("option is not found"));
 
                 option.setDiscount_rate(itemDiscountDTO.getOption_discount_rate());
-                System.out.println("here3");
                 optionRepository.save(option);
 
             }
@@ -370,7 +367,6 @@
 
             // 4. 할인율을 null로 설정
             option.setDiscount_rate(null);
-
-            optionRepository.delete(option);
+            optionRepository.save(option);
         }
     }

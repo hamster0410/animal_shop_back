@@ -252,14 +252,14 @@ public class SellerController {
         }
 
     }
-    @PatchMapping("/No_discount")
+    @PatchMapping("/discount/revoke")
     ResponseEntity<?>no_discount(@RequestHeader(value= "Authorization")String token,
                                  @RequestBody ItemDiscountDTO itemDiscountDTO){
         ResponseDTO responseDTO = null;
         try{
             itemService.no_discount(token,itemDiscountDTO);
             responseDTO = ResponseDTO.builder()
-                    .message("THE END")
+                    .message("Discount failure")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         }catch (Exception e){
