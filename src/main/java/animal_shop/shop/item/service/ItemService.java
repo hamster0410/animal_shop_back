@@ -370,7 +370,7 @@
             optionRepository.save(option);
         }
 
-        public QueryResponse search_item(String token, String searchTerm, int page) {
+        public QueryResponse search_item(String token, String searchTerm,String sellerName, int page) {
             // 사용자 인증
             String userId = tokenProvider.extractIdByAccessToken(token);
 
@@ -379,7 +379,9 @@
 
             // 아이템 검색
             Page<Item> items;
-            if (searchTerm != null && !searchTerm.isEmpty()) {
+            if (sellerName != null && !sellerName.isEmpty()) {
+                items = itemRepository.findBySellerNameContainingIgnoreCase(sellerName, pageable);
+            } else if (searchTerm != null && !searchTerm.isEmpty()) {
                 items = itemRepository.findByItemNameContainingIgnoreCase(searchTerm, pageable);
             } else {
                 items = itemRepository.findAllSearch(pageable); // 검색어가 없으면 전체 조회

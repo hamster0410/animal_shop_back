@@ -40,4 +40,8 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
     // 전체 아이템 조회
     @Query("SELECT i FROM Item i")
     Page<Item> findAllSearch(Pageable pageable);
+
+    @Query("SELECT i FROM Item i JOIN i.member m WHERE LOWER(m.nickname) LIKE LOWER(CONCAT('%', :sellerName, '%'))")
+    Page<Item> findBySellerNameContainingIgnoreCase(@Param("sellerName") String sellerName, Pageable pageable);
+
 }

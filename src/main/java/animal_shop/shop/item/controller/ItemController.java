@@ -83,10 +83,11 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<?>search_item(@RequestHeader(value = "Authorization",required = false)String token,
                                         @RequestParam(value = "searchTerm",required = false)String searchTerm,
+                                        @RequestParam(value = "sellerName",required = false)String sellerName,
                                         @RequestParam(value = "page",defaultValue = "1")int page){
         ResponseDTO responseDTO = null;
         try {
-            QueryResponse queryResponse = itemService.search_item(token, searchTerm, page-1);
+            QueryResponse queryResponse = itemService.search_item(token, searchTerm,sellerName,page-1);
             return ResponseEntity.ok().body(queryResponse);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
