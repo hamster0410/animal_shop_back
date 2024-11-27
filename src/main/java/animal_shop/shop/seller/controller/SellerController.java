@@ -233,6 +233,23 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @PostMapping("/delivery/approve_detail")
+    ResponseEntity<?> delivery_approve_detail(@RequestHeader(value = "Authorization")String token,
+                                       @RequestBody Long orderItemId) {
+        ResponseDTO responseDTO = null;
+        try{
+            deliveryService.approve_detail(orderItemId,token);
+            responseDTO = ResponseDTO.builder()
+                    .message("delivery approve success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
     @PatchMapping("/discount/ok")
     ResponseEntity<?> item_discount(@RequestHeader(value = "Authorization") String token,

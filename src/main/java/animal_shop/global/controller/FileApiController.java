@@ -32,6 +32,9 @@ public class FileApiController {
     @Value("${file.upload-dir-item-comment}")  // 파일 저장 경로를 application.properties에 설정
     private String itemCommentUploadDir;
 
+    @Value("${file.upload-dir-pet}")  // 파일 저장 경로를 application.properties에 설정
+    private String petUploadDir;
+
     @PostMapping("/post-image-upload")
     public String uploadPostImage(@RequestPart("image") final MultipartFile image) {
         if (image.isEmpty()) {
@@ -132,6 +135,31 @@ public class FileApiController {
         }
     }
 
+    @PostMapping("/pet-image-upload")
+    public String uploadPetImage(@RequestPart("image") final MultipartFile image) {
+        if (image.isEmpty()) {
+            return "";
+        }
+
+        String orgFilename = image.getOriginalFilename();                                         // 원본 파일명
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");           // 32자리 랜덤 문자열
+        String extension = orgFilename.substring(orgFilename.lastIndexOf(".") + 1);  // 확장자
+        String saveFilename = uuid + "." + extension;                                             // 디스크에 저장할 파일명
+        String fileFullPath = Paths.get(petUploadDir, saveFilename).toString();                      // 디스크에 저장할 파일의 전체 경로
+
+
+        try {
+            // 파일 저장 (write to disk)
+            File uploadFile = new File(fileFullPath);
+            image.transferTo(uploadFile);
+            return "pet_" +saveFilename;
+
+        } catch (IOException e) {
+            // 예외 처리는 따로 해주는 게 좋습니다.
+            throw new RuntimeException(e);
+        }
+    }
+
     @GetMapping(value = "/image-print", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public byte[] printEditorImage(@RequestParam("filename") final String filename) {
         // 업로드된 파일의 전체 경로
@@ -144,6 +172,7 @@ public class FileApiController {
             case "profile" -> profileUploadDir;
             case "item" -> itemUploadDir;
             case "item-comment" -> itemCommentUploadDir;
+            case "pet" -> petUploadDir;
             default -> throw new RuntimeException("path is not valid");
         };
 

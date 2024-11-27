@@ -54,6 +54,7 @@ public class Delivery {
                     deliveryItem.setOptionPrice((long) orderItem.getOrder_price());
                     deliveryItem.setBuyerId(order.getMember().getId());
                     deliveryItem.setSellerId(m.getId());
+                    deliveryItem.setOrderItemId(orderItem.getId());
                     return deliveryItem;
                 }).toList();
     }

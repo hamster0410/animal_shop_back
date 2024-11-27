@@ -24,7 +24,7 @@ public class KakaoPayController {
     /**
      * 결제 성공
      */
-    @GetMapping("/success")
+    @PostMapping("/kakaoSuccess")
     public ResponseEntity afterPayRequest(@RequestBody KakaoSuccessRequest kakaoSuccessRequest) {
 
         KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(kakaoSuccessRequest);
@@ -35,9 +35,9 @@ public class KakaoPayController {
      * 결제 진행 중 취소
      */
     @GetMapping("/kakaoCancel")
-    public void cancel() {
+    public void cancel(@RequestParam(value = "orderId")Long orderId) {
 
-
+        kakaoPayService.revokeOrder(orderId);
         throw new IllegalArgumentException("pay cancel");
     }
 
@@ -45,15 +45,16 @@ public class KakaoPayController {
      * 결제 실패
      */
     @GetMapping("/kakaoFail")
-    public void fail() {
+    public void fail(@RequestParam(value = "orderId")Long orderId) {
 
+        kakaoPayService.revokeOrder(orderId);
         throw new IllegalArgumentException("pay fail");
     }
 
     /**
      * 환불
      */
-    @PostMapping("/refund")
+    @PostMapping("/kakaoRefund")
     public ResponseEntity refund(@RequestBody KakaoCancelRequest kakaoCancelRequest) {
 
         KakaoCancelResponse kakaoCancelResponse = kakaoPayService.kakaoCancel(kakaoCancelRequest);
