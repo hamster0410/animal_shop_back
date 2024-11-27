@@ -1,8 +1,10 @@
 package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
-import animal_shop.shop.delivery.dto.DeliveryApproveRequestDTO;
+import animal_shop.shop.delivery.dto.DeliveryRequestDTO;
 import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
+import animal_shop.shop.delivery.dto.DeliveryRevokeItemDTO;
+import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
@@ -219,10 +221,10 @@ public class SellerController {
 
     @PostMapping("/delivery/approve")
     ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization")String token,
-                                       @RequestBody DeliveryApproveRequestDTO deliveryApproveRequestDTO) {
+                                       @RequestBody DeliveryRequestDTO deliveryRequestDTO) {
         ResponseDTO responseDTO = null;
         try{
-            deliveryService.approve(deliveryApproveRequestDTO,token);
+            deliveryService.approve(deliveryRequestDTO,token);
             responseDTO = ResponseDTO.builder()
                     .message("delivery approve success")
                     .build();
@@ -244,6 +246,37 @@ public class SellerController {
                     .message("delivery approve success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PostMapping("/delivery/revoke")
+    ResponseEntity<?> delivery_revoke(@RequestHeader(value = "Authorization")String token,
+                                       @RequestBody DeliveryRequestDTO deliveryRequestDTO) {
+        ResponseDTO responseDTO = null;
+        try{
+            DeliveryRevokeResponse deliveryRevokeResponse = deliveryService.revoke(deliveryRequestDTO,token);
+            return ResponseEntity.ok().body(deliveryRevokeResponse);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PostMapping("/delivery/revoke_detail")
+    ResponseEntity<?> delivery_revoke_detail(@RequestHeader(value = "Authorization")String token,
+                                             @RequestBody DeliveryRevokeItemDTO deliveryRevokeItemDTO) {
+        ResponseDTO responseDTO = null;
+        try{
+            DeliveryRevokeResponse deliveryRevokeResponse = deliveryService.revoke_detail(deliveryRevokeItemDTO,token);
+
+            return ResponseEntity.ok().body(deliveryRevokeResponse);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

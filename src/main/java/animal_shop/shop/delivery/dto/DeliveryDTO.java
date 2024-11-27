@@ -16,6 +16,8 @@ public class DeliveryDTO {
 
     private Long orderId;
 
+    private String tid;
+
     private LocalDateTime orderDate;
 
     private Long totalPrice;

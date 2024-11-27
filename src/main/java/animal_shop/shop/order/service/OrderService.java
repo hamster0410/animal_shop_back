@@ -75,7 +75,7 @@ public class OrderService {
 
 
         Order order = Order.createOrder(member, orderItemList);
-
+        order.setTid(orderDTOList.getTid());
         //생성한 주문 엔티티를 저장함
         orderRepository.save(order);
 
@@ -109,18 +109,6 @@ public class OrderService {
                 .orderHistDTOList(orderHistDTOs)
                 .total_count(total_count)
                 .build();
-    }
-
-    @Transactional
-    public void failureOrder( Long orderId){
-
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("order not found"));
-
-        order.cancelOrder();
-        deliveryService.removeOrder(order);
-
-        orderRepository.delete(order);
     }
 
     @Transactional
@@ -174,7 +162,7 @@ public class OrderService {
         }
 
         Order order = Order.createOrder(member,orderItemList);
-
+        order.setTid(cartDetailDTOResponse.getTid());
         orderRepository.save(order);
 
         //판매자에게 배송 정보 전달

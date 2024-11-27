@@ -31,11 +31,14 @@ public class Delivery {
 
     private Long totalPrice;
 
+    private String tid;
+
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryItem> deliveryItems = new ArrayList<>();
 
     public Delivery(Member m, List<OrderItem> orderItems, Order order) {
         this.orderId = order.getId();
+        this.tid = order.getTid();
         this.orderDate = order.getOrderDate();
         long total_porice = 0L;
         for(OrderItem o : orderItems){

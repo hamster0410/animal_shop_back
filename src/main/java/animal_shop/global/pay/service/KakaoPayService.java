@@ -9,6 +9,8 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order.service.OrderService;
+import animal_shop.shop.order_item.entity.OrderItem;
+import animal_shop.shop.order_item.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +52,9 @@ public class KakaoPayService {
 
     @Autowired
     TokenProvider tokenProvider;
+
+    @Autowired
+    OrderItemRepository orderItemRepository;
 
     private KakaoReadyResponse kakaoReady;
     public KakaoReadyResponse kakaoPayReady(KakaoReadyRequest kakaoReadyRequest,String token) {
@@ -100,16 +105,19 @@ public class KakaoPayService {
     /**
      * 결제 완료 승인
      */
-    public KakaoApproveResponse approveResponse(KakaoSuccessRequest kakaoSuccessRequest) {
+    public KakaoApproveResponse approveResponse(KakaoSuccessRequest kakaoSuccessRequest,String token) {
         // 요청 URL
         String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
 
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
         // 요청 바디 설정
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("cid", "TC0ONETIME"); // 테스트용 CID
         requestBody.put("tid", kakaoSuccessRequest.getTid()); // 결제 고유 번호
         requestBody.put("partner_order_id", kakaoSuccessRequest.getPartner_order_id()); // 가맹점 주문 번호
-        requestBody.put("partner_user_id", kakaoSuccessRequest.getPartner_user_id()); // 가맹점 회원 ID
+        requestBody.put("partner_user_id", member.getNickname()); // 가맹점 회원 ID
         requestBody.put("pg_token", kakaoSuccessRequest.getPg_token()); // 결제승인 요청 토큰
 
          // HTTP 요청 생성
@@ -126,11 +134,6 @@ public class KakaoPayService {
                     requestEntity,
                     KakaoApproveResponse.class
             );
-//            order에 페이 결제 번호를 저장
-            Order order = orderRepository.findById(Long.valueOf(kakaoSuccessRequest.getPartner_order_id()))
-                    .orElseThrow(() -> new IllegalArgumentException("order is not found"));
-            order.setTid(kakaoSuccessRequest.getTid());
-            orderRepository.save(order);
 
             //카카오페이 결제 정보를 db에 저장
             kakaoPayRepository.save(new KakaoPay(Objects.requireNonNull(responseEntity.getBody())));
@@ -173,6 +176,8 @@ public class KakaoPayService {
                     requestEntity,
                     KakaoCancelResponse.class
             );
+            Objects.requireNonNull(responseEntity.getBody()).setItem_name(kakaoCancelRequest.getItemName());
+            responseEntity.getBody().setQuantity(kakaoCancelRequest.getCancelAmount());
         } catch (Exception e) {
             throw new RuntimeException("Kakao API 호출 실패: " + e.getMessage(), e);
         }
@@ -190,7 +195,4 @@ public class KakaoPayService {
         return headers;
     }
 
-    public void revokeOrder(Long orderId) {
-        orderService.failureOrder(orderId);
-    }
 }

@@ -1,13 +1,15 @@
-package animal_shop.global.pay.dto;
+package animal_shop.shop.delivery.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class KakaoCancelRequest {
+@Builder
+public class DeliveryRevokeResponse {
     private String tid;
     private String itemName;
     private String itemQuantity;
-    private int cancelAmount;
+    private Long cancelAmount;
     private int cancelTaxFreeAmount;
     private int cancelVatAmount;
 }

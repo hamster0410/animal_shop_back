@@ -8,5 +8,6 @@ import java.util.List;
 @Getter @Setter
 public class OrderDTOList {
     private Long itemId;
+    private String tid;
     private List<OrderDTO> option_items;
 }
