@@ -369,4 +369,33 @@
             option.setDiscount_rate(null);
             optionRepository.save(option);
         }
+
+        public QueryResponse search_item(String token, String searchTerm, int page) {
+            // 사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+
+            // Pageable 설정 (페이지 당 10개로 제한)
+            Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
+
+            // 아이템 검색
+            Page<Item> items;
+            if (searchTerm != null && !searchTerm.isEmpty()) {
+                items = itemRepository.findByItemNameContainingIgnoreCase(searchTerm, pageable);
+            } else {
+                items = itemRepository.findAllSearch(pageable); // 검색어가 없으면 전체 조회
+            }
+
+            // DTO 변환 (Item -> ItemDetailDTO)
+            List<ItemDetailDTO> itemDTOs = items.map(ItemDetailDTO::new).getContent();
+
+            // 검색 결과 반환
+            return QueryResponse.builder()
+                    .content(itemDTOs)
+                    .totalItems(items.getTotalElements())
+                    .build();
+        }
+
+
     }
+
+

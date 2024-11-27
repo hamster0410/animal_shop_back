@@ -1,5 +1,6 @@
 package animal_shop.shop.item.repository;
 
+import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.entity.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,8 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 
     Page<Item> findByMemberId(Long memberId,Pageable pageable);
 
+
+
     // fetch join을 사용한 쿼리
     @Query("SELECT i FROM Item i " +
             "LEFT JOIN FETCH i.thumbnail_url " +  // thumbnail_url 컬렉션을 fetch join으로 가져옴
@@ -29,4 +32,12 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             @Param("species") String species,
             @Param("category") String category,
             Pageable pageable);
+
+    // 이름으로 검색 (엔티티만 반환)
+    @Query("SELECT i FROM Item i WHERE i.name LIKE %:searchTerm%")
+    Page<Item> findByItemNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+    // 전체 아이템 조회
+    @Query("SELECT i FROM Item i")
+    Page<Item> findAllSearch(Pageable pageable);
 }

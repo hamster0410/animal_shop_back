@@ -75,11 +75,27 @@ public class ItemController {
             return ResponseEntity.ok().body(queryResponse);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
+                    .message(e.getMessage())
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @GetMapping("/search")
+    public ResponseEntity<?>search_item(@RequestHeader(value = "Authorization",required = false)String token,
+                                        @RequestParam(value = "searchTerm",required = false)String searchTerm,
+                                        @RequestParam(value = "page",defaultValue = "1")int page){
+        ResponseDTO responseDTO = null;
+        try {
+            QueryResponse queryResponse = itemService.search_item(token, searchTerm, page-1);
+            return ResponseEntity.ok().body(queryResponse);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 
 }
 
