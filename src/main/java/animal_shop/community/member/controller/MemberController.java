@@ -47,9 +47,9 @@ public class MemberController {
                     .message(message)
                     .build();
 
-            if(result == 0){
+            if (result == 0) {
                 return ResponseEntity.ok(responseDTO);
-            }else{
+            } else {
                 return ResponseEntity.badRequest().body(responseDTO);
             }
 
@@ -68,19 +68,19 @@ public class MemberController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody MemberDTO memberDTO){
+    public ResponseEntity<?> signin(@RequestBody MemberDTO memberDTO) {
         ResponseDTO responseDTO;
-        String message= "";
-        try{
+        String message = "";
+        try {
             MemberDTO mDTO = memberService.getByCredentials(memberDTO);
 
-            if(mDTO != null){
+            if (mDTO != null) {
                 final TokenDTO tokenDTO = memberService.login(mDTO);
                 return ResponseEntity.ok().body(tokenDTO);
-            }else{
+            } else {
                 throw new IllegalArgumentException("id password wrong");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("login failed for user: {}, error: {}", memberDTO.getUsername(), e.getMessage());
 
             responseDTO = ResponseDTO.builder()
@@ -89,17 +89,18 @@ public class MemberController {
 
             return ResponseEntity
                     .badRequest()
-                    .body(responseDTO);        }
+                    .body(responseDTO);
+        }
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> memberDelete(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> memberDelete(@RequestHeader("Authorization") String token) {
         ResponseDTO responseDTO;
-        try{
+        try {
             memberService.delete(token);
             responseDTO = ResponseDTO.builder().message("delete success").build();
             return ResponseEntity.ok().body(responseDTO);
-        }catch(Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage()).build();
             return ResponseEntity
@@ -109,13 +110,12 @@ public class MemberController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<?> createNewAccessToken( @RequestBody TokenDTO tokenDTO){
-        try{
+    public ResponseEntity<?> createNewAccessToken(@RequestBody TokenDTO tokenDTO) {
+        try {
             TokenDTO token = memberService.getNewAccessToken(tokenDTO);
             return ResponseEntity.ok().body(token);
 
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("error processing");
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("refreshToken expired")
@@ -125,4 +125,21 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/findPassword")
+    public ResponseEntity<?> findPassword(@RequestParam String toMailAddr) {
+        ResponseDTO responseDTO = null;
+
+        try {
+            memberService.createAndSendNewPassword(toMailAddr);
+            responseDTO = ResponseDTO.builder()
+                    .message("success find")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
