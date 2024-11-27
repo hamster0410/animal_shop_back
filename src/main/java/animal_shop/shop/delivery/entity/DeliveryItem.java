@@ -36,4 +36,8 @@ public class DeliveryItem {
 
     private Long orderItemId;
 
+    private boolean delivery_approval;
+
+    private boolean delivery_revoke;
+
 }

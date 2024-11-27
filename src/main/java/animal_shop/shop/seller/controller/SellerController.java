@@ -1,6 +1,7 @@
 package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.delivery.dto.DeliveryApproveRequestDTO;
 import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
@@ -218,10 +219,10 @@ public class SellerController {
 
     @PostMapping("/delivery/approve")
     ResponseEntity<?> delivery_approve(@RequestHeader(value = "Authorization")String token,
-                                   @RequestBody String orderCode) {
+                                       @RequestBody DeliveryApproveRequestDTO deliveryApproveRequestDTO) {
         ResponseDTO responseDTO = null;
         try{
-            deliveryService.approve(orderCode,token);
+            deliveryService.approve(deliveryApproveRequestDTO,token);
             responseDTO = ResponseDTO.builder()
                     .message("delivery approve success")
                     .build();

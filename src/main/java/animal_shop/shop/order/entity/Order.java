@@ -26,9 +26,6 @@ public class Order{
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(nullable = false)
-    private String orderCode;
-
     private LocalDateTime orderDate;
 
     private String tid;
@@ -58,7 +55,6 @@ public class Order{
             order.addOrderItem(orderItem);
         }
         order.setTotalPrice(totalPrice);
-        order.setOrderCode("ORDER-" +System.currentTimeMillis() + "-" + member.getId());
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
         return order;

@@ -13,19 +13,20 @@ public class DeliveryItemDTO {
 
     private Long optionPrice;
 
-    private Long sellerId;
-
-    private Long buyerId;
-
     private Long orderItemId;
+
+    private boolean delivery_approval;
+
+    private boolean delivery_revoke;
+
 
     public DeliveryItemDTO(DeliveryItem deliveryItem){
         this.itemName = deliveryItem.getItemName();
         this.quantity = deliveryItem.getQuantity();
         this.optionName = deliveryItem.getOptionName();
         this.optionPrice = deliveryItem.getOptionPrice();
-        this.sellerId = deliveryItem.getSellerId();
-        this.buyerId = deliveryItem.getBuyerId();
         this.orderItemId = deliveryItem.getOrderItemId();
+        this.delivery_approval = deliveryItem.isDelivery_approval();
+        this.delivery_revoke = deliveryItem.isDelivery_revoke();
     }
 }

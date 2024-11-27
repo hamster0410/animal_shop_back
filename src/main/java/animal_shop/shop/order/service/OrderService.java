@@ -77,9 +77,10 @@ public class OrderService {
 
         Order order = Order.createOrder(member, orderItemList);
 
-        deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
         //생성한 주문 엔티티를 저장함
         orderRepository.save(order);
+
+        deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
 
         OrderDTOResponse orderDTOResponse = new OrderDTOResponse(order);
 

@@ -14,6 +14,6 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     Page<Delivery> findByMember(Member member, Pageable pageable);
 
-    List<Delivery> findByOrderCode(String orderCode);
+    List<Delivery> findByOrderId(Long orderId);
 
 }

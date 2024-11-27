@@ -35,6 +35,8 @@ public class OrderItem extends BaseTimeEntity {
 
     private boolean delivery_approval;
 
+    private boolean delivery_revoke;
+
     public static OrderItem createOrderItem(Item item, OrderDTO orderDTO){
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);

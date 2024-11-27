@@ -12,9 +12,9 @@ public class DeliveryDTO {
     private Long id;
 
     //판매자의 아이디
-    private Long memberId;
+    private Long buyerId;
 
-    private String orderCode;
+    private Long orderId;
 
     private LocalDateTime orderDate;
 
@@ -25,9 +25,9 @@ public class DeliveryDTO {
     public DeliveryDTO(Delivery delivery){
         this.id = delivery.getId();
 
-        this.memberId = delivery.getMember().getId();
+        this.buyerId = delivery.getDeliveryItems().get(0).getBuyerId();
 
-        this.orderCode = delivery.getOrderCode();
+        this.orderId = delivery.getOrderId();
 
         this.orderDate = delivery.getOrderDate();
 

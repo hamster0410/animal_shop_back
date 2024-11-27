@@ -3,9 +3,11 @@ package animal_shop.shop.delivery.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.delivery.dto.DeliveryApproveRequestDTO;
 import animal_shop.shop.delivery.dto.DeliveryDTO;
 import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
 import animal_shop.shop.delivery.entity.Delivery;
+import animal_shop.shop.delivery.entity.DeliveryItem;
 import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
@@ -55,21 +57,26 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void approve(String orderCode, String token) {
+    public void approve(DeliveryApproveRequestDTO deliveryApproveRequestDTO, String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
 
-        Order order = orderRepository.findByOrderCode(orderCode);
+        Order order = orderRepository.findById(deliveryApproveRequestDTO.getOrderId())
+                .orElseThrow(() -> new IllegalArgumentException("order not found"));
 
         List<OrderItem> orderItems = order.getOrderItems();
-
         for(OrderItem orderItem : orderItems){
             if(orderItem.getItem().getMember().equals(member)){
                 orderItem.setDelivery_approval(true);
             }
         }
 
+        Delivery delivery = deliveryRepository.findById(deliveryApproveRequestDTO.getDeliveryId())
+                .orElseThrow(() -> new IllegalArgumentException("delivery is not found"));
+        for(DeliveryItem d: delivery.getDeliveryItems()) {
+            d.setDelivery_approval(true);
+        }
     }
 
     @Transactional
@@ -91,7 +98,7 @@ public class DeliveryService {
 
     //카카오 페이 실패 시 결제 삭제
     public void removeOrder(Order order) {
-        List<Delivery> delivery = deliveryRepository.findByOrderCode(order.getOrderCode());
+        List<Delivery> delivery = deliveryRepository.findByOrderId(order.getId());
         for(Delivery d : delivery){
             deliveryRepository.delete(d);
         }

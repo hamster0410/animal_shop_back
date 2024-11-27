@@ -25,8 +25,7 @@ public class Delivery {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(nullable = false)
-    private String orderCode;
+    private Long orderId;
 
     private LocalDateTime orderDate;
 
@@ -36,7 +35,7 @@ public class Delivery {
     private List<DeliveryItem> deliveryItems = new ArrayList<>();
 
     public Delivery(Member m, List<OrderItem> orderItems, Order order) {
-        this.orderCode = order.getOrderCode();
+        this.orderId = order.getId();
         this.orderDate = order.getOrderDate();
         long total_porice = 0L;
         for(OrderItem o : orderItems){

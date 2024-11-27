@@ -23,6 +23,10 @@ public class PetProfile {
 
     public String breed;
 
+    private Boolean isNeutered; // 중성화 유무 (중성화 여부)
+
+    private Pet.Gender gender; // 성별
+
     public PetProfile(Pet pet) {
         this.id = pet.getId();
         this.name = pet.getName();
@@ -30,5 +34,7 @@ public class PetProfile {
         this.age = pet.getAge();
         this.weight = pet.getWeight();
         this.breed = pet.getBreed();
+        this.isNeutered = pet.getIsNeutered();
+        this.gender = pet.getGender();
     }
 }
