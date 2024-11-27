@@ -1,8 +1,11 @@
-package animal_shop.global.kakaopay.service;
+package animal_shop.global.pay.service;
 
-import animal_shop.global.kakaopay.dto.*;
-import animal_shop.global.kakaopay.entity.KakaoPay;
-import animal_shop.global.kakaopay.repository.KakaoPayRepository;
+import animal_shop.community.member.entity.Member;
+import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.pay.dto.*;
+import animal_shop.global.pay.entity.KakaoPay;
+import animal_shop.global.pay.repository.KakaoPayRepository;
+import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order.service.OrderService;
@@ -38,19 +41,30 @@ public class KakaoPayService {
     @Autowired
     KakaoPayRepository kakaoPayRepository;
 
+
+    @Autowired
+    MemberRepository memberRepository;
+
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    TokenProvider tokenProvider;
+
     private KakaoReadyResponse kakaoReady;
-    public KakaoReadyResponse kakaoPayReady(KakaoReadyRequest kakaoReadyRequest) {
+    public KakaoReadyResponse kakaoPayReady(KakaoReadyRequest kakaoReadyRequest,String token) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        String orderCode = System.currentTimeMillis()+userId;
         // 요청 URL
         String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
         // 요청 바디 설정
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("cid", "TC0ONETIME"); // 테스트용 CID
-        requestBody.put("partner_order_id", kakaoReadyRequest.getPartner_order_id());
-        requestBody.put("partner_user_id", kakaoReadyRequest.getPartner_user_id());
+        requestBody.put("partner_order_id", orderCode);
+        requestBody.put("partner_user_id", member.getNickname());
         requestBody.put("item_name", kakaoReadyRequest.getItem_name());
         requestBody.put("quantity", kakaoReadyRequest.getQuantity());
         requestBody.put("total_amount", kakaoReadyRequest.getTotal_amount());
@@ -74,6 +88,7 @@ public class KakaoPayService {
                     requestEntity,
                     KakaoReadyResponse.class
             );
+            Objects.requireNonNull(responseEntity.getBody()).setPartner_order_id(orderCode);
         } catch (Exception e) {
             //에러 시 주문 취소 
             throw new RuntimeException("Kakao API 호출 실패: " + e.getMessage(), e);

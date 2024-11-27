@@ -1,4 +1,4 @@
-package animal_shop.global.kakaopay.dto;
+package animal_shop.global.pay.dto;
 
 import lombok.Getter;
 

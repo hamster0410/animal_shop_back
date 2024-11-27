@@ -32,6 +32,8 @@ public class Order{
 
     private Long totalPrice;
 
+    private String orderCode;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 

@@ -10,7 +10,6 @@ import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.dto.OrderDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
-import animal_shop.shop.order.dto.OrderDTOResponse;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order_item.dto.OrderHistDTO;
@@ -50,7 +49,7 @@ public class OrderService {
     private DeliveryService deliveryService;
 
     @Transactional
-    public OrderDTOResponse order(OrderDTOList orderDTOList, String token){
+    public void order(OrderDTOList orderDTOList, String token){
         //내가 주문할 상품 찾기
         Item item = itemRepository.findById(orderDTOList.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item not found"));
@@ -81,10 +80,6 @@ public class OrderService {
         orderRepository.save(order);
 
         deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
-
-        OrderDTOResponse orderDTOResponse = new OrderDTOResponse(order);
-
-        return orderDTOResponse;
     }
 
     @Transactional(readOnly = true)
@@ -141,7 +136,7 @@ public class OrderService {
         order.cancelOrder();
     }
     @Transactional
-    public OrderDTOResponse orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
+    public void orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
         List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
 
         //카트 비었을때 에러처리
@@ -186,10 +181,7 @@ public class OrderService {
         for(Member m : hashMap.keySet()){
             deliveryService.createDelivery(m, hashMap.get(m),order);
         }
-        OrderDTOResponse orderDTOResponse = new OrderDTOResponse(order);
-        orderDTOResponse.setItem_name(
-                orderDTOResponse.getItem_name() + " 외 " + (order.getOrderItems().size() -1 ) + "개");
-        return orderDTOResponse;
+
     }
 
 }

@@ -1,7 +1,7 @@
-package animal_shop.global.kakaopay.entity;
+package animal_shop.global.pay.entity;
 
-import animal_shop.global.kakaopay.dto.Amount;
-import animal_shop.global.kakaopay.dto.KakaoApproveResponse;
+import animal_shop.global.pay.dto.Amount;
+import animal_shop.global.pay.dto.KakaoApproveResponse;
 import jakarta.persistence.*;
 import lombok.*;
 

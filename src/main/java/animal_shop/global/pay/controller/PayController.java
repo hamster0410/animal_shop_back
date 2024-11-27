@@ -1,7 +1,7 @@
-package animal_shop.global.kakaopay.controller;
+package animal_shop.global.pay.controller;
 
-import animal_shop.global.kakaopay.dto.*;
-import animal_shop.global.kakaopay.service.KakaoPayService;
+import animal_shop.global.pay.dto.*;
+import animal_shop.global.pay.service.KakaoPayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/pay")
 @RequiredArgsConstructor
-public class KakaoPayController {
+public class PayController {
 
     private final KakaoPayService kakaoPayService;
 
@@ -18,8 +18,10 @@ public class KakaoPayController {
      * 결제요청
      */
     @PostMapping("/kakaoReady")
-    public ResponseEntity readyToKakaoPay(@RequestBody KakaoReadyRequest kakaoReadyRequest) {
-        return ResponseEntity.ok().body(kakaoPayService.kakaoPayReady(kakaoReadyRequest));
+    public ResponseEntity readyToKakaoPay(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody KakaoReadyRequest kakaoReadyRequest) {
+        return ResponseEntity.ok().body(kakaoPayService.kakaoPayReady(kakaoReadyRequest,token));
     }
     /**
      * 결제 성공

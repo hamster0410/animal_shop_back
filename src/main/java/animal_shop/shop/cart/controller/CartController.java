@@ -7,7 +7,6 @@ import animal_shop.shop.cart.dto.CartItemUpdateDTO;
 import animal_shop.shop.cart.service.CartService;
 import animal_shop.shop.cart_item.dto.CartItemDetailRequest;
 import animal_shop.shop.cart_item.dto.CartItemDetailResponse;
-import animal_shop.shop.order.dto.OrderDTOResponse;
 import animal_shop.shop.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,10 +119,12 @@ public class CartController {
                                            @RequestBody CartDetailDTOResponse cartDetailDTOResponse){
         ResponseDTO responseDTO;
         try{
-            OrderDTOResponse orderDTOResponse = orderService.orderCart(token,cartDetailDTOResponse);
+            orderService.orderCart(token,cartDetailDTOResponse);
             cartService.emptyCart(cartDetailDTOResponse);
-
-            return ResponseEntity.ok().body(orderDTOResponse);
+            responseDTO = ResponseDTO.builder()
+                    .message("order success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
