@@ -27,6 +27,9 @@ public class PetProfile {
 
     private Pet.Gender gender; // 성별
 
+    private Boolean isLeader;
+
+
     public PetProfile(Pet pet) {
         this.id = pet.getId();
         this.name = pet.getName();
@@ -36,5 +39,6 @@ public class PetProfile {
         this.breed = pet.getBreed();
         this.isNeutered = pet.getIsNeutered();
         this.gender = pet.getGender();
+        this.isLeader = pet.getLeader();
     }
 }
