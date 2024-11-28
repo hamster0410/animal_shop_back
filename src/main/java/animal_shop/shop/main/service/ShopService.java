@@ -76,6 +76,22 @@ public class ShopService {
                 .build();
     }
 
+    public MainDTOBestResponse custom_contents(String token, int page) {
+        if (page < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must be >= 0");
+        }
+
+        Pageable pageable = PageRequest.of(page, 20);
+        Page<Item> custom_goods = itemRepository.findAllSearch(pageable);
+        for(Item item : custom_goods){
+            System.out.println(item.getId());
+        }
+
+        return MainDTOBestResponse.builder()
+                .best_goods(custom_goods.stream().map(MainDTO::new).toList())
+                .total_count(custom_goods.getTotalElements())
+                .build();
+    }
 }
 
 

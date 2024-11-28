@@ -52,6 +52,9 @@ public class Item extends BaseTimeEntity{
     @Column(nullable = false, length = 20)
     private String category;
 
+    @Column
+    private String detailed_category;
+
     private Long comment_count;
 
 

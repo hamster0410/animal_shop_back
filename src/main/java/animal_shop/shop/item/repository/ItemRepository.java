@@ -1,6 +1,5 @@
 package animal_shop.shop.item.repository;
 
-import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.entity.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,4 +39,11 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
     // 전체 아이템 조회
     @Query("SELECT i FROM Item i")
     Page<Item> findAllSearch(Pageable pageable);
+
+    @Query(value = "SELECT * FROM item", nativeQuery = true)
+    Page<Item> findAllItemsSortedByCommentsAndRatings(Pageable pageable);
 }
+//LEFT JOIN FETCH i.comments c
+//GROUP BY i
+//ORDER BY
+//        (COUNT(c) * 0.5 + COALESCE(AVG(c.rating), 0) * 0.5) DESC

@@ -65,4 +65,19 @@ public class ShopMainController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @GetMapping("/member-custom")
+    public ResponseEntity<?> member_custom(@RequestHeader(value = "Authorization") String token,
+                                           @RequestParam(value = "page", defaultValue = "1") int page){
+        ResponseDTO responseDTO;
+        try{
+            MainDTOBestResponse mainDTOBestResponse = shopService.custom_contents(token,page-1);
+            return ResponseEntity.badRequest().body(mainDTOBestResponse);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getLocalizedMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+
+    }
 }

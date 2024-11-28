@@ -1,6 +1,7 @@
 package animal_shop.shop.main.dto;
 
 import animal_shop.shop.item.entity.Item;
+import animal_shop.shop.item_comment.entity.ItemComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +27,12 @@ public class MainDTO {
         this.nickname = item.getMember().getNickname();
         this.thumbnail_url = item.getThumbnail_url().get(0);
         this.price = item.getOptions().get(0).getPrice();
-        this.rating = 0L;
-        this.comment_count = 0L;
+        long average_ratings = 0L;
+        for(ItemComment itemComment : item.getComments()){
+            average_ratings += itemComment.getRating();
+        }
+        this.rating = average_ratings/item.getComment_count();
+        this.comment_count = item.getComment_count();
         this.option_count = item.getOptions().size();
     }
 }
