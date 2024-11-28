@@ -6,6 +6,7 @@ import animal_shop.global.pay.dto.*;
 import animal_shop.global.pay.entity.KakaoPay;
 import animal_shop.global.pay.repository.KakaoPayRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,6 +119,9 @@ public class KakaoPayService {
                     KakaoApproveResponse.class
             );
 
+            System.out.println(kakaoSuccessRequest.getPartner_order_id());
+            Order order = orderRepository.findByOrderCode(kakaoSuccessRequest.getPartner_order_id());
+            order.paySuccess();
             //카카오페이 결제 정보를 db에 저장
             kakaoPayRepository.save(new KakaoPay(Objects.requireNonNull(responseEntity.getBody())));
         } catch (Exception e) {

@@ -17,4 +17,5 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     )
     Page<Order> findOrders(@Param("member_id") String member_id, Pageable pageable);
 
+    Order findByOrderCode(String OrderCode);
 }

@@ -2,6 +2,7 @@ package animal_shop.shop.order.entity;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.shop.order.OrderStatus;
+import animal_shop.shop.order.PaymentStatus;
 import animal_shop.shop.order_item.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -81,6 +82,12 @@ public class Order{
 
         for(OrderItem orderItem : orderItems){
             orderItem.cancel();
+        }
+    }
+
+    public void paySuccess() {
+        for(OrderItem orderitem : orderItems){
+            orderitem.setPaymentStatus(PaymentStatus.valueOf("COMPLETED"));
         }
     }
 }

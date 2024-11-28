@@ -108,6 +108,7 @@ public class OrderService {
 
         KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(kakaoReadyRequest);
         order.setTid(kakaoReadyResponse.getTid());
+        order.setOrderCode(kakaoReadyResponse.getPartner_order_id());
         orderRepository.save(order);
         deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
 
@@ -288,6 +289,7 @@ public class OrderService {
 
         KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(kakaoReadyRequest);
         order.setTid(kakaoReadyResponse.getTid());
+        order.setOrderCode(kakaoReadyResponse.getPartner_order_id());
         orderRepository.save(order);
         //판매자에게 배송 정보 전달
         for(Member m : hashMap.keySet()){
