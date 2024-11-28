@@ -1,7 +1,10 @@
 package animal_shop.shop.item.entity;
 
+import animal_shop.shop.cart_item.entity.CartItem;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +29,10 @@ public class Option {
     private Long price;
 
     private Long discount_rate;
+
+    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
+
 
 
     // 생성자, Getter, Setter

@@ -12,7 +12,6 @@ import animal_shop.global.security.TokenProvider;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -223,6 +222,7 @@ public class MemberService {
         try {
             // 새로운 비밀번호 생성
             String newPassword = createNewPassword();
+//            member의 임시비밀번호 저장
 
             // 비밀번호가 생성되면 이메일로 전송
             if (newPassword != null && !newPassword.isEmpty()) {
