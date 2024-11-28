@@ -1,18 +1,22 @@
 package animal_shop.shop.delivery.dto;
 
-import animal_shop.shop.delivery.entity.Delivery;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DeliveryDTO {
 
     private Long id;
 
     //판매자의 아이디
-    private Long buyerId;
+    private String customer;
 
     private Long orderId;
 
@@ -24,20 +28,6 @@ public class DeliveryDTO {
 
     private List<DeliveryItemDTO> deliveryItemDTOList;
 
-    public DeliveryDTO(Delivery delivery){
-        this.id = delivery.getId();
 
-        this.tid = delivery.getTid();
-
-        this.buyerId = delivery.getDeliveryItems().get(0).getBuyerId();
-
-        this.orderId = delivery.getOrderId();
-
-        this.orderDate = delivery.getOrderDate();
-
-        this.totalPrice = delivery.getTotalPrice();
-
-        this.deliveryItemDTOList = delivery.getDeliveryItems().stream().map(DeliveryItemDTO::new).toList();
-    }
 
 }

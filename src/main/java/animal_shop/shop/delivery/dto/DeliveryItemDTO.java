@@ -1,9 +1,14 @@
 package animal_shop.shop.delivery.dto;
 
 import animal_shop.shop.delivery.entity.DeliveryItem;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DeliveryItemDTO {
     private String itemName;
 
@@ -18,6 +23,8 @@ public class DeliveryItemDTO {
     private boolean delivery_approval;
 
     private boolean delivery_revoke;
+
+    private String thumbnailUrl;
 
 
     public DeliveryItemDTO(DeliveryItem deliveryItem){

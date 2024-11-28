@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,9 +52,34 @@ public class DeliveryService {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
 
         Page<Delivery> deliveries = deliveryRepository.findByMember(member, pageable);
+        List<DeliveryDTO> deliveryDTOList = new ArrayList<>();
+        for(Delivery delivery : deliveries){
+            DeliveryDTO dto = new DeliveryDTO();
+            Member customer = memberRepository.findById(delivery.getDeliveryItems().get(0).getBuyerId())
+                            .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+            dto.setId(delivery.getId());
+            dto.setCustomer(customer.getNickname());
+            dto.setOrderId(delivery.getOrderId());
+            dto.setTid(delivery.getTid());
+            dto.setOrderDate(delivery.getOrderDate());
+            dto.setTotalPrice(delivery.getTotalPrice());
+
+            List<DeliveryItemDTO> deliveryItemDTOList = new ArrayList<>();
+
+            //잃어버린 썸네일을 찾아서...
+            for(DeliveryItem deliveryItem : delivery.getDeliveryItems()){
+                DeliveryItemDTO deliveryItemDTO = new DeliveryItemDTO(deliveryItem);
+                OrderItem orderItem = orderItemRepository.findById(deliveryItem.getOrderItemId())
+                                .orElseThrow(() -> new IllegalArgumentException("order item is not found"));
+                deliveryItemDTO.setThumbnailUrl(orderItem.getItem().getThumbnail_url().get(0));
+                deliveryItemDTOList.add(deliveryItemDTO);
+            }
+            dto.setDeliveryItemDTOList(deliveryItemDTOList);
+            deliveryDTOList.add(dto);
+        }
 
         return DeliveryDTOResponse.builder()
-                .deliveryDTOList(deliveries.stream().map(DeliveryDTO::new).toList())
+                .deliveryDTOList(deliveryDTOList)
                 .total_count(deliveries.getTotalElements())
                 .build();
 

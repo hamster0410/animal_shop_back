@@ -278,12 +278,7 @@ public class OrderService {
         }
 
         Order order = Order.createOrder(member,orderItemList);
-        orderRepository.save(order);
 
-        //판매자에게 배송 정보 전달
-        for(Member m : hashMap.keySet()){
-            deliveryService.createDelivery(m, hashMap.get(m),order);
-        }
         String name = "";
         if(!(quantity==1)){
             name = order.getOrderItems().get(0).getItem().getName() + "외 " + (quantity -1) + "건";
@@ -291,7 +286,14 @@ public class OrderService {
         KakaoReadyRequest kakaoReadyRequest =
                 new KakaoReadyRequest(orderCode, member.getNickname(), name, String.valueOf(quantity), String.valueOf(total_amount));
 
-        return kakaoPayService.kakaoPayReady(kakaoReadyRequest);
+        KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(kakaoReadyRequest);
+        order.setTid(kakaoReadyResponse.getTid());
+        orderRepository.save(order);
+        //판매자에게 배송 정보 전달
+        for(Member m : hashMap.keySet()){
+            deliveryService.createDelivery(m, hashMap.get(m),order);
+        }
+        return kakaoReadyResponse;
     }
 
 }
