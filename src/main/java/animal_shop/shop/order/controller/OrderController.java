@@ -1,6 +1,7 @@
 package animal_shop.shop.order.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.global.pay.dto.KakaoReadyResponse;
 import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
 import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
 import animal_shop.shop.order.dto.OrderDTOList;
@@ -25,12 +26,9 @@ public class OrderController {
         ResponseDTO responseDTO;
 
         try{
-            orderService.order(orderDTOList,token);
-            responseDTO = ResponseDTO.builder()
-                    .message("order success")
-                    .build();
+            KakaoReadyResponse kakaoReadyResponse = orderService.order(orderDTOList,token);
 
-            return ResponseEntity.ok().body(responseDTO);
+            return ResponseEntity.ok().body(kakaoReadyResponse);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())

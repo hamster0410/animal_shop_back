@@ -1,6 +1,7 @@
 package animal_shop.shop.cart.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.global.pay.dto.KakaoReadyResponse;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
 import animal_shop.shop.cart.dto.CartItemDTO;
 import animal_shop.shop.cart.dto.CartItemUpdateDTO;
@@ -119,12 +120,10 @@ public class CartController {
                                            @RequestBody CartDetailDTOResponse cartDetailDTOResponse){
         ResponseDTO responseDTO;
         try{
-            orderService.orderCart(token,cartDetailDTOResponse);
+            KakaoReadyResponse kakaoReadyResponse = orderService.orderCart(token,cartDetailDTOResponse);
             cartService.emptyCart(cartDetailDTOResponse);
-            responseDTO = ResponseDTO.builder()
-                    .message("order success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
+
+            return ResponseEntity.ok().body(kakaoReadyResponse);
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())

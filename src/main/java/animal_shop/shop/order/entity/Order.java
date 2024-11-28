@@ -32,6 +32,12 @@ public class Order{
 
     private Long totalPrice;
 
+    private String phoneNumber;
+
+    private String address;
+
+    private String deliveryRequest;
+
     private String orderCode;
 
     @Enumerated(EnumType.STRING)

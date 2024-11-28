@@ -19,9 +19,8 @@ public class PayController {
      */
     @PostMapping("/kakaoReady")
     public ResponseEntity readyToKakaoPay(
-            @RequestHeader(value = "Authorization") String token,
             @RequestBody KakaoReadyRequest kakaoReadyRequest) {
-        return ResponseEntity.ok().body(kakaoPayService.kakaoPayReady(kakaoReadyRequest,token));
+        return ResponseEntity.ok().body(kakaoPayService.kakaoPayReady(kakaoReadyRequest));
     }
     /**
      * 결제 성공

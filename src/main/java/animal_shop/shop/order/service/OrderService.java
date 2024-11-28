@@ -2,6 +2,9 @@ package animal_shop.shop.order.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.pay.dto.KakaoReadyRequest;
+import animal_shop.global.pay.dto.KakaoReadyResponse;
+import animal_shop.global.pay.service.KakaoPayService;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart.dto.CartDetailDTO;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
@@ -14,6 +17,7 @@ import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
+import animal_shop.shop.order.PaymentStatus;
 import animal_shop.shop.order.dto.OrderDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.entity.Order;
@@ -58,14 +62,15 @@ public class OrderService {
     private DeliveryItemRepository deliveryItemRepository;
     @Autowired
     private TokenProvider tokenProvider;
-
     @Autowired
     private DeliveryService deliveryService;
+    @Autowired
+    private KakaoPayService kakaoPayService;
 
 
 
     @Transactional
-    public void order(OrderDTOList orderDTOList, String token){
+    public KakaoReadyResponse order(OrderDTOList orderDTOList, String token){
         //내가 주문할 상품 찾기
         Item item = itemRepository.findById(orderDTOList.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item not found"));
@@ -80,22 +85,33 @@ public class OrderService {
         List<OrderItem> orderItemList = new ArrayList<>();
         List<OrderDTO> orderDTOS = orderDTOList.getOption_items();
 
+        //결제를 위한 정보
+        String orderCode = System.currentTimeMillis() + userId;
+        int quantity = 0;
+        int total_amount = 0;
 
         for(OrderDTO o : orderDTOS){
             OrderItem orderItem =
                     OrderItem.createOrderItem(item, o);
             //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
-
+            quantity += orderItem.getCount();
+            total_amount += orderItem.getCount() * orderItem.getOrder_price();
             orderItemList.add(orderItem);
+            orderItem.setPaymentStatus(PaymentStatus.valueOf("PENDING"));
         }
 
-
         Order order = Order.createOrder(member, orderItemList);
-        order.setTid(orderDTOList.getTid());
-        //생성한 주문 엔티티를 저장함
-        orderRepository.save(order);
+        //아직 pending상태
+        //카카오 결제일 경우
+        KakaoReadyRequest kakaoReadyRequest =
+                new KakaoReadyRequest(orderCode, member.getNickname(), order.getOrderItems().get(0).getItem().getName(), String.valueOf(quantity), String.valueOf(total_amount));
 
+        KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(kakaoReadyRequest);
+        order.setTid(kakaoReadyResponse.getTid());
+        orderRepository.save(order);
         deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
+
+        return kakaoReadyResponse;
     }
 
     @Transactional(readOnly = true)
@@ -217,7 +233,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
+    public KakaoReadyResponse orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
         List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();
 
         //카트 비었을때 에러처리
@@ -236,6 +252,11 @@ public class OrderService {
         //각각에 판매자들에게 따로 전송
         HashMap<Member,List<OrderItem>> hashMap = new HashMap<>();
 
+        //카카오 페이 결제를 위한 데이터
+        String orderCode = System.currentTimeMillis() + userId;
+        int quantity = 0;
+        int total_amount = 0;
+
         for( CartDetailDTO c : cartDetailDTOList){
             Item item = itemRepository.findById(c.getItemId())
                     .orElseThrow(() -> new IllegalArgumentException("item is not found"));
@@ -243,6 +264,8 @@ public class OrderService {
             OrderDTO orderDTO = new OrderDTO(c.getCount(), c.getOption_name(), Math.toIntExact(c.getOption_price()));
 
             OrderItem orderItem = OrderItem.createOrderItem(item,orderDTO);
+            quantity += orderItem.getCount();
+            total_amount += orderItem.getCount() * orderItem.getOrder_price();
 
             //각각에 판매자에게 배송 테이블 전송
             if(hashMap.containsKey(orderItem.getItem().getMember())){
@@ -255,14 +278,20 @@ public class OrderService {
         }
 
         Order order = Order.createOrder(member,orderItemList);
-        order.setTid(cartDetailDTOResponse.getTid());
         orderRepository.save(order);
 
         //판매자에게 배송 정보 전달
         for(Member m : hashMap.keySet()){
             deliveryService.createDelivery(m, hashMap.get(m),order);
         }
+        String name = "";
+        if(!(quantity==1)){
+            name = order.getOrderItems().get(0).getItem().getName() + "외 " + (quantity -1) + "건";
+        }
+        KakaoReadyRequest kakaoReadyRequest =
+                new KakaoReadyRequest(orderCode, member.getNickname(), name, String.valueOf(quantity), String.valueOf(total_amount));
 
+        return kakaoPayService.kakaoPayReady(kakaoReadyRequest);
     }
 
 }
