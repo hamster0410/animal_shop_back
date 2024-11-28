@@ -45,10 +45,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false, length = 30, unique = true)
     private String nickname;
 
-    private String phoneNumber;
-
-    private String address;
-
     private String refreshtoken;
 
     @Enumerated(EnumType.STRING)
@@ -72,6 +68,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Delivery> deliveries;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryInfo> deliveryInfos;
 
     private String profile;
 

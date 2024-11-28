@@ -1,5 +1,6 @@
 package animal_shop.shop.order.entity;
 
+import animal_shop.community.member.dto.DeliveryInfoDTO;
 import animal_shop.community.member.entity.Member;
 import animal_shop.shop.order.OrderStatus;
 import animal_shop.shop.order.PaymentStatus;
@@ -33,13 +34,16 @@ public class Order{
 
     private Long totalPrice;
 
+    private String orderCode;
+
+    @Setter
+    private String recipient;
+
     private String phoneNumber;
 
     private String address;
 
     private String deliveryRequest;
-
-    private String orderCode;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -55,7 +59,7 @@ public class Order{
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(Member member, List<OrderItem> orderItemList){
+    public static Order createOrder(Member member, List<OrderItem> orderItemList, DeliveryInfoDTO deliveryInfoDTO){
         Order order = new Order();
         order.setMember(member);
         Long totalPrice = 0L;
@@ -66,6 +70,10 @@ public class Order{
         order.setTotalPrice(totalPrice);
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
+        order.setRecipient(deliveryInfoDTO.getRecipient());
+        order.setPhoneNumber(deliveryInfoDTO.getPhoneNumber());
+        order.setDeliveryRequest(deliveryInfoDTO.getDeliveryRequest());
+        order.setAddress(deliveryInfoDTO.getAddress());
         return order;
     }
 

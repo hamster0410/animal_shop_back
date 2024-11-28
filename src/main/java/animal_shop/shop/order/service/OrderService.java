@@ -100,7 +100,8 @@ public class OrderService {
             orderItem.setPaymentStatus(PaymentStatus.valueOf("PENDING"));
         }
 
-        Order order = Order.createOrder(member, orderItemList);
+        Order order = Order.createOrder(member, orderItemList, orderDTOList.getDeliveryInfoDTO());
+
         //아직 pending상태
         //카카오 결제일 경우
         KakaoReadyRequest kakaoReadyRequest =
@@ -278,7 +279,7 @@ public class OrderService {
             orderItemList.add(orderItem);
         }
 
-        Order order = Order.createOrder(member,orderItemList);
+        Order order = Order.createOrder(member,orderItemList,cartDetailDTOResponse.getDeliveryInfoDTO());
 
         String name = "";
         if(!(quantity==1)){
