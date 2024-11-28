@@ -1,10 +1,7 @@
 package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
-import animal_shop.shop.delivery.dto.DeliveryRequestDTO;
-import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
-import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
-import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
+import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
@@ -210,6 +207,22 @@ public class SellerController {
             DeliveryDTOResponse deliveryDTOResponse = deliveryService.get_list(token,page - 1);
 
             return ResponseEntity.ok().body(deliveryDTOResponse);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/delivery/detail")
+    ResponseEntity<?> delivery_detail(@RequestHeader(value =  "Authorization")String token,
+                                    @RequestParam(value = "orderItemId") Long orderItemId){
+        ResponseDTO responseDTO = null;
+        try{
+            DeliveryDetailDTO deliveryDetailDTO = deliveryService.get_detail(orderItemId,token);
+
+            return ResponseEntity.ok().body(deliveryDetailDTO);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

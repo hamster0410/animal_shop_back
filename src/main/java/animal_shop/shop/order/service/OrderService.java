@@ -203,6 +203,9 @@ public class OrderService {
             if(orderItem.isDelivery_revoke()){
                 throw new IllegalArgumentException("order is already revoke");
             }
+            if(orderItem.isDelivery_approval()){
+                throw new IllegalArgumentException("order is already approval");
+            }
             orderItem.cancel();
 
             DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItemId);

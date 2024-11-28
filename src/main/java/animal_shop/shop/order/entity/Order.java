@@ -98,4 +98,10 @@ public class Order{
             orderitem.setPaymentStatus(PaymentStatus.valueOf("COMPLETED"));
         }
     }
+
+    public void payFailure() {
+        for(OrderItem orderitem : orderItems){
+            orderitem.setPaymentStatus(PaymentStatus.valueOf("FAILED"));
+        }
+    }
 }

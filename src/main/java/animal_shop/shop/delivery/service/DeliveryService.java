@@ -85,6 +85,28 @@ public class DeliveryService {
 
     }
 
+    @Transactional(readOnly = true)
+    public DeliveryDetailDTO get_detail(Long orderItemId, String token) {
+
+        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+                .orElseThrow(() -> new IllegalArgumentException("order item is not found"));
+        if(!tokenProvider.extractIdByAccessToken(token).equals(String.valueOf(orderItem.getItem().getMember().getId()))){
+            throw new IllegalArgumentException("you are not this seller");
+
+        }
+        DeliveryDetailDTO deliveryDetailDTO = DeliveryDetailDTO.builder()
+                .customer(orderItem.getOrder().getRecipient())
+                .thumbnailUrl(orderItem.getItem().getThumbnail_url().get(0))
+                .itemName(orderItem.getItem().getName())
+                .optionName(orderItem.getOrder_name())
+                .price(orderItem.getTotalPrice())
+                .quantity(orderItem.getCount())
+                .build();
+
+        return deliveryDetailDTO;
+
+    }
+
     @Transactional
     public void approve(DeliveryRequestDTO deliveryRequestDTO, String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -227,6 +249,7 @@ public class DeliveryService {
         Delivery delivery = new Delivery(m, orderItems, order);
         deliveryRepository.save(delivery);
     }
+
 
 }
 

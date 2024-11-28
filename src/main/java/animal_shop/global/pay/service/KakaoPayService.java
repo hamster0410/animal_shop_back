@@ -110,7 +110,7 @@ public class KakaoPayService {
         // RestTemplate 호출
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<KakaoApproveResponse> responseEntity;
-
+        Order order = orderRepository.findByOrderCode(kakaoSuccessRequest.getPartner_order_id());
         try {
             responseEntity = restTemplate.exchange(
                     url,
@@ -120,11 +120,12 @@ public class KakaoPayService {
             );
 
             //주문 상태들 결제로 바꿈
-            Order order = orderRepository.findByOrderCode(kakaoSuccessRequest.getPartner_order_id());
             order.paySuccess();
             //카카오페이 결제 정보를 db에 저장
             kakaoPayRepository.save(new KakaoPay(Objects.requireNonNull(responseEntity.getBody())));
         } catch (Exception e) {
+            order.payFailure();
+            order.cancelOrder();
             //에러 시 주문 취소
             throw new RuntimeException("Kakao API 호출 실패: " + e.getMessage(), e);
         }
