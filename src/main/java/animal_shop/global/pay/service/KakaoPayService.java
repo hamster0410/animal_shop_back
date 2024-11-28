@@ -119,7 +119,7 @@ public class KakaoPayService {
                     KakaoApproveResponse.class
             );
 
-            System.out.println(kakaoSuccessRequest.getPartner_order_id());
+            //주문 상태들 결제로 바꿈
             Order order = orderRepository.findByOrderCode(kakaoSuccessRequest.getPartner_order_id());
             order.paySuccess();
             //카카오페이 결제 정보를 db에 저장

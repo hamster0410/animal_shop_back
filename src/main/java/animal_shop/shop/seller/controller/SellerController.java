@@ -85,7 +85,7 @@ public class SellerController {
     }
 
     //상품 삭제
-    @DeleteMapping("/item/delete/{itemId}")
+    @PatchMapping("/item/discontinue/{itemId}")
     public ResponseEntity<?> deleteItem(
             @RequestHeader(value = "Authorization") String token,
             @PathVariable(value = "itemId") String id) {
@@ -93,7 +93,7 @@ public class SellerController {
         try {
             itemService.delete(token, id);
             responseDTO = ResponseDTO.builder()
-                    .message("delete success")
+                    .message("discontinue success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {

@@ -3,6 +3,7 @@
     import animal_shop.community.member.entity.Member;
     import animal_shop.community.member.repository.MemberRepository;
     import animal_shop.global.security.TokenProvider;
+    import animal_shop.shop.item.ItemSellStatus;
     import animal_shop.shop.item.dto.*;
     import animal_shop.shop.item.entity.Item;
     import animal_shop.shop.item.entity.ItemQuery;
@@ -131,7 +132,7 @@
                     .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
             //아이템 삭제
-            itemRepository.delete(item);
+            item.setItemSellStatus(ItemSellStatus.valueOf("SOLD_OUT"));
 
         }
 
