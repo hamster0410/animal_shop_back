@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DeliveryService {
@@ -154,40 +155,52 @@ public class DeliveryService {
                 .build();
 
     }
+
+    @Transactional
+    public DeliveryRevokeResponse revoke_detail(DeliveryRevokeDTO deliveryRevokeDTO, String token) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
+
+        OrderItem orderItem=null;
+
+        int itemQuantity = 0;
+        int cancelAmount = 0;
+
+        for(Long orderItemId : deliveryRevokeDTO.getOrderItemIds()){
+            orderItem = orderItemRepository.findById(orderItemId)
+                    .orElseThrow(() -> new IllegalArgumentException("order item not found"));
+
+            itemQuantity++;
+            cancelAmount += orderItem.getOrder_price() * orderItem.getCount();
+
+            orderItem.setDelivery_revoke(true);
+
+            DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItemId);
+
+            if(!member.getId().equals(deliveryItem.getSellerId())){
+                throw new IllegalArgumentException("seller is not matching");
+            }
+
+            deliveryItem.setDelivery_revoke(true);
+        }
+        String item_name = Objects.requireNonNull(orderItem).getOrder_name();
+
+        if(!(itemQuantity==1)){
+            item_name += "외 " + (itemQuantity -1) + "건";
+        }
+
+        return DeliveryRevokeResponse.builder()
+                .tid(orderItem.getOrder().getTid())
+                .itemQuantity(String.valueOf(itemQuantity))
+                .cancelAmount((long) cancelAmount)
+                .itemName(item_name)
+                .build();
+    }
     public void createDelivery(Member m, List<OrderItem> orderItems, Order order) {
         Delivery delivery = new Delivery(m, orderItems, order);
         deliveryRepository.save(delivery);
     }
 
-
-    @Transactional
-    public DeliveryRevokeResponse revoke_detail(DeliveryRevokeItemDTO deliveryRevokeItemDTO, String token) {
-        String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new IllegalArgumentException("member not found"));
-
-
-        OrderItem orderItem = orderItemRepository.findById(deliveryRevokeItemDTO.getOrderItemId())
-                .orElseThrow(() -> new IllegalArgumentException("order item not found"));
-
-        orderItem.setDelivery_revoke(true);
-        orderItemRepository.save(orderItem);
-
-        DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(deliveryRevokeItemDTO.getOrderItemId());
-
-        if(!member.getId().equals(deliveryItem.getSellerId())){
-            throw new IllegalArgumentException("seller is not matching");
-        }
-
-        deliveryItem.setDelivery_revoke(true);
-        deliveryItemRepository.save(deliveryItem);
-
-        return DeliveryRevokeResponse.builder()
-                .tid(deliveryRevokeItemDTO.getTid())
-                .itemQuantity(String.valueOf(deliveryItem.getQuantity()))
-                .cancelAmount(deliveryItem.getOptionPrice() * deliveryItem.getQuantity())
-                .itemName(deliveryItem.getItemName())
-                .build();
-    }
 }
 

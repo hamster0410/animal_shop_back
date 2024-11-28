@@ -5,6 +5,12 @@ import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart.dto.CartDetailDTO;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
+import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
+import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
+import animal_shop.shop.delivery.entity.Delivery;
+import animal_shop.shop.delivery.entity.DeliveryItem;
+import animal_shop.shop.delivery.repository.DeliveryItemRepository;
+import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
@@ -16,6 +22,7 @@ import animal_shop.shop.order_item.dto.OrderHistDTO;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
 import animal_shop.shop.order_item.dto.OrderItemDTO;
 import animal_shop.shop.order_item.entity.OrderItem;
+import animal_shop.shop.order_item.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -43,10 +51,18 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private DeliveryRepository deliveryRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+    @Autowired
+    private DeliveryItemRepository deliveryItemRepository;
+    @Autowired
     private TokenProvider tokenProvider;
 
     @Autowired
     private DeliveryService deliveryService;
+
+
 
     @Transactional
     public void order(OrderDTOList orderDTOList, String token){
@@ -112,7 +128,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void cancelOrder(String token, Long orderId){
+    public DeliveryRevokeResponse cancelOrder(String token, Long orderId){
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member curMember = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
@@ -121,8 +137,83 @@ public class OrderService {
         if(!curMember.getUsername().equals(order.getMember().getUsername())){
             throw new IllegalArgumentException("validate false");
         }
+
+        List<Delivery> deliveries = deliveryRepository.findByOrderId(orderId);
+
+        for (Delivery delivery : deliveries) {
+            for (DeliveryItem deliveryItem : delivery.getDeliveryItems()) {
+                deliveryItem.setDelivery_revoke(true);
+            }
+        }
+// 별도의 save 호출 없이 Transaction 종료 시점에 변경 사항 반영
+        int total_count = 0;
+        long total_amount = 0L;
+        for(OrderItem orderItem : order.getOrderItems()){
+            //이미 주문 취소한 품목의 금액은 책정하지 않음
+            if(!orderItem.isDelivery_revoke()){
+                total_count += orderItem.getCount();
+                total_amount = (long) orderItem.getOrder_price() * orderItem.getCount();
+            }
+        }
+
         order.cancelOrder();
+
+        return DeliveryRevokeResponse.builder()
+                .tid(order.getTid())
+                .itemName(order.getOrderItems().get(0).getOrder_name() + "외 " + (order.getOrderItems().size() -1) + "건")
+                .itemQuantity(String.valueOf(total_count))
+                .cancelAmount(total_amount)
+                .build();
+
     }
+
+    @Transactional
+    public DeliveryRevokeResponse cancelOrderDetail(String token, DeliveryRevokeDTO deliveryRevokeDTO) {
+
+        long userId = Long.parseLong(tokenProvider.extractIdByAccessToken(token));
+        OrderItem orderItem = null;
+
+        int itemQuantity = 0;
+        long cancelAmount = 0;
+
+        for(Long orderItemId : deliveryRevokeDTO.getOrderItemIds()){
+            orderItem = orderItemRepository.findById(orderItemId)
+                    .orElseThrow(() -> new IllegalArgumentException("order item not found"));
+
+            itemQuantity++;
+            cancelAmount += (long) orderItem.getOrder_price() * orderItem.getCount();
+
+            orderItem.cancel();
+
+            DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItemId);
+
+            //물품이 구매자가 산 물품인지 검증
+            if(!deliveryItem.getBuyerId().equals(userId)){
+                throw new IllegalArgumentException("buyer is not matching");
+            }
+            deliveryItem.setDelivery_revoke(true);
+//            deliveryItemRepository.save(deliveryItem);
+        }
+
+//        orderItem.setDelivery_revoke(true);
+
+//        orderItemRepository.save(orderItem);
+
+
+        String item_name = Objects.requireNonNull(orderItem).getOrder_name();
+
+        if(!(itemQuantity==1)){
+            item_name += "외 " + (itemQuantity -1) + "건";
+        }
+
+        return DeliveryRevokeResponse.builder()
+                .tid(orderItem.getOrder().getTid())
+                .itemQuantity(String.valueOf(itemQuantity))
+                .cancelAmount(cancelAmount)
+                .itemName(item_name)
+                .build();
+    }
+
     @Transactional
     public void orderCart(String token, CartDetailDTOResponse cartDetailDTOResponse) {
         List<CartDetailDTO> cartDetailDTOList = cartDetailDTOResponse.getCartDetailDTOList();

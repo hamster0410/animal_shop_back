@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Struct;
+
 @Entity
 @Setter
 @Getter
@@ -52,6 +54,9 @@ public class OrderItem extends BaseTimeEntity {
     }
 
     public void cancel(){
+
         this.getItem().addStock(count);
+        this.delivery_revoke = true;
+
     }
 }

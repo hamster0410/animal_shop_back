@@ -27,6 +27,8 @@ public class DeliveryDTO {
     public DeliveryDTO(Delivery delivery){
         this.id = delivery.getId();
 
+        this.tid = delivery.getTid();
+
         this.buyerId = delivery.getDeliveryItems().get(0).getBuyerId();
 
         this.orderId = delivery.getOrderId();

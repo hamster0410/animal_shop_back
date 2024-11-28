@@ -45,6 +45,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false, length = 30, unique = true)
     private String nickname;
 
+    private String phoneNumber;
+
+    private String address;
+
     private String refreshtoken;
 
     @Enumerated(EnumType.STRING)

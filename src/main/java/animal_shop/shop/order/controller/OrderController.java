@@ -1,6 +1,8 @@
 package animal_shop.shop.order.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
+import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
 import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.service.OrderService;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
@@ -53,17 +55,33 @@ public class OrderController {
         }
     }
 
-    @PatchMapping("/order/cancel/{orderId}")
+    //주문 전체 취소
+    @PatchMapping("/order/cancel")
     public ResponseEntity<?> cancelOrder (@RequestHeader(value = "Authorization") String token,
-                                          @PathVariable(value = "orderId") Long orderId){
+                                          @RequestBody Long orderId){
         ResponseDTO responseDTO;
         try{
-            orderService.cancelOrder(token, orderId);
+            DeliveryRevokeResponse deliveryRevokeResponse = orderService.cancelOrder(token, orderId);
+
+            return ResponseEntity.ok().body(deliveryRevokeResponse);
+        }catch(Exception e){
             responseDTO = ResponseDTO.builder()
-                    .message("cancel success")
+                    .error(e.getMessage())
                     .build();
 
-            return ResponseEntity.ok().body(responseDTO);
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+
+    @PatchMapping("/order/cancel_detail")
+    public ResponseEntity<?> cancelOrderDetail (@RequestHeader(value = "Authorization") String token,
+                                                @RequestBody DeliveryRevokeDTO deliveryRevokeDTO){
+        ResponseDTO responseDTO;
+        try{
+            DeliveryRevokeResponse deliveryRevokeResponse = orderService.cancelOrderDetail(token, deliveryRevokeDTO);
+
+            return ResponseEntity.ok().body(deliveryRevokeResponse);
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())

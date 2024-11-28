@@ -3,7 +3,7 @@ package animal_shop.shop.seller.controller;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.delivery.dto.DeliveryRequestDTO;
 import animal_shop.shop.delivery.dto.DeliveryDTOResponse;
-import animal_shop.shop.delivery.dto.DeliveryRevokeItemDTO;
+import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
 import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
@@ -271,10 +271,10 @@ public class SellerController {
 
     @PostMapping("/delivery/revoke_detail")
     ResponseEntity<?> delivery_revoke_detail(@RequestHeader(value = "Authorization")String token,
-                                             @RequestBody DeliveryRevokeItemDTO deliveryRevokeItemDTO) {
+                                             @RequestBody DeliveryRevokeDTO deliveryRevokeDTO) {
         ResponseDTO responseDTO = null;
         try{
-            DeliveryRevokeResponse deliveryRevokeResponse = deliveryService.revoke_detail(deliveryRevokeItemDTO,token);
+            DeliveryRevokeResponse deliveryRevokeResponse = deliveryService.revoke_detail(deliveryRevokeDTO,token);
 
             return ResponseEntity.ok().body(deliveryRevokeResponse);
         } catch (Exception e) {

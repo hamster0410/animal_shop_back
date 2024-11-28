@@ -53,7 +53,7 @@ public class Order{
         order.setMember(member);
         Long totalPrice = 0L;
         for(OrderItem orderItem : orderItemList){
-            totalPrice += orderItem.getOrder_price();
+            totalPrice += (long) orderItem.getOrder_price() * orderItem.getCount();
             order.addOrderItem(orderItem);
         }
         order.setTotalPrice(totalPrice);

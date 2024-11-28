@@ -23,6 +23,8 @@ public class OrderItemDTO {
 
     private boolean delivery_approval;
 
+    private boolean delivery_revoke;
+
     public OrderItemDTO(OrderItem orderItem, String imgUrl){
         this.itemId = orderItem.getItem().getId();
         this.itemNm = orderItem.getItem().getName();
@@ -30,6 +32,7 @@ public class OrderItemDTO {
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrder_price();
         this.delivery_approval = orderItem.isDelivery_approval();
+        this.delivery_revoke = orderItem.isDelivery_revoke();
         this.orderName = orderItem.getOrder_name();
         this.imgUrl = imgUrl;
     }
