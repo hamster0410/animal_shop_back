@@ -182,7 +182,9 @@ public class OrderService {
 
             itemQuantity++;
             cancelAmount += (long) orderItem.getOrder_price() * orderItem.getCount();
-
+            if(orderItem.isDelivery_revoke()){
+                throw new IllegalArgumentException("order is already revoke");
+            }
             orderItem.cancel();
 
             DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItemId);
