@@ -18,6 +18,7 @@ import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.PaymentStatus;
+import animal_shop.shop.order.dto.OrderCancelDTO;
 import animal_shop.shop.order.dto.OrderDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.entity.Order;
@@ -146,17 +147,17 @@ public class OrderService {
     }
 
     @Transactional
-    public DeliveryRevokeResponse cancelOrder(String token, Long orderId){
+    public DeliveryRevokeResponse cancelOrder(String token, OrderCancelDTO orderCancelDTO){
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member curMember = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findById(orderCancelDTO.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
         if(!curMember.getUsername().equals(order.getMember().getUsername())){
             throw new IllegalArgumentException("validate false");
         }
 
-        List<Delivery> deliveries = deliveryRepository.findByOrderId(orderId);
+        List<Delivery> deliveries = deliveryRepository.findByOrderId(orderCancelDTO.getOrderId());
 
         for (Delivery delivery : deliveries) {
             for (DeliveryItem deliveryItem : delivery.getDeliveryItems()) {
@@ -169,8 +170,9 @@ public class OrderService {
         for(OrderItem orderItem : order.getOrderItems()){
             //이미 주문 취소한 품목의 금액은 책정하지 않음
             if(!orderItem.isDelivery_revoke()){
+                System.out.println((long) orderItem.getOrder_price() * orderItem.getCount());
                 total_count += orderItem.getCount();
-                total_amount = (long) orderItem.getOrder_price() * orderItem.getCount();
+                total_amount += (long) orderItem.getOrder_price() * orderItem.getCount();
             }
         }
 

@@ -4,6 +4,7 @@ import animal_shop.global.dto.ResponseDTO;
 import animal_shop.global.pay.dto.KakaoReadyResponse;
 import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
 import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
+import animal_shop.shop.order.dto.OrderCancelDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.service.OrderService;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
@@ -56,10 +57,10 @@ public class OrderController {
     //주문 전체 취소
     @PatchMapping("/order/cancel")
     public ResponseEntity<?> cancelOrder (@RequestHeader(value = "Authorization") String token,
-                                          @RequestBody Long orderId){
+                                          @RequestBody OrderCancelDTO orderCancelDTO){
         ResponseDTO responseDTO;
         try{
-            DeliveryRevokeResponse deliveryRevokeResponse = orderService.cancelOrder(token, orderId);
+            DeliveryRevokeResponse deliveryRevokeResponse = orderService.cancelOrder(token, orderCancelDTO);
 
             return ResponseEntity.ok().body(deliveryRevokeResponse);
         }catch(Exception e){
