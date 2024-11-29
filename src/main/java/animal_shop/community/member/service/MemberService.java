@@ -1,9 +1,7 @@
 package animal_shop.community.member.service;
 
 import animal_shop.community.member.Role;
-import animal_shop.community.member.dto.MemberDTO;
-import animal_shop.community.member.dto.SellerRegisterDTO;
-import animal_shop.community.member.dto.TokenDTO;
+import animal_shop.community.member.dto.*;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.entity.SellerCandidate;
 import animal_shop.community.member.repository.MemberRepository;
@@ -222,7 +220,6 @@ public class MemberService {
         try {
             // 새로운 비밀번호 생성
             String newPassword = createNewPassword();
-//            member의 임시비밀번호 저장
 
             // 비밀번호가 생성되면 이메일로 전송
             if (newPassword != null && !newPassword.isEmpty()) {
@@ -238,7 +235,7 @@ public class MemberService {
     }
 
     public String createNewPassword() {
-        System.out.println("here1");
+
         char[] chars = new char[]{
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
@@ -263,24 +260,58 @@ public class MemberService {
         }
         return stringBuffer.toString();
     }
-
-    private void sendNewPasswordByMail(String toMailAddr,String newPassword) {
+    @Transactional
+    public void sendNewPasswordByMail(String toMailAddr,String authentication) {
+        memberRepository.updatePasswordByEmail(toMailAddr, authentication);
         final MimeMessagePreparator mimeMessagePreparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
-                System.out.println("here2");
+
                 final MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                 mimeMessageHelper.setTo(toMailAddr);
                 mimeMessageHelper.setSubject("[Space X] 새로운 비밀번호 안내입니다.");
-                mimeMessageHelper.setText("새 비밀번호" + newPassword, true);
-                System.out.println("here3");
+                mimeMessageHelper.setText("새 비밀번호" + authentication, true);
+
             };
 
         };javaMailSenderImpl.send(mimeMessagePreparator);
-        System.out.println("gg");
+
     }
 
+    public void verifyNumber(VerifyMailDTO verifyMailDTO) {
+        // 1. DB에서 이메일에 해당하는 인증값을 가져오기
+        String storedAuthentication = memberRepository.findAuthentication(verifyMailDTO.getMail()); // 이메일을 파라미터로 사용
 
+        // 2. 인증번호 비교
+        if (storedAuthentication != null && storedAuthentication.equals(verifyMailDTO.getAuthentication())) {
+            // 인증번호가 일치하면 인증 성공 처리
+            log.info("인증번호 일치: 인증 성공");
+        } else {
+            // 인증번호가 일치하지 않으면 오류 처리
+            log.warn("인증번호 불일치: 인증 실패");
+            throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
+        }
+    }
+    @Transactional
+    public void changePassword( ChangePasswordDTO changePasswordDTO) {
+        // 1. 이메일로 해당 사용자의 정보를 가져오기
+        Optional<Member> memberOpt = memberRepository.findByMail(changePasswordDTO.getMail());
+
+        // 2. 사용자가 존재하는지 확인
+        if (memberOpt.isEmpty()) {
+            throw new IllegalArgumentException("이메일에 해당하는 사용자가 없습니다.");
+        }
+
+        Member member = memberOpt.get();
+        if(changePasswordDTO.getCheckPassword().equals( changePasswordDTO.getNewPassword())){
+            member.updatePassword(passwordEncoder, changePasswordDTO.getNewPassword());
+        }
+
+        // 5. 업데이트된 회원 정보 저장
+        memberRepository.save(member);
+
+    }
 }
+
 
 
 

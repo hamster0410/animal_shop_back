@@ -1,5 +1,7 @@
 package animal_shop.community.member.controller;
 
+import animal_shop.community.member.dto.ChangePasswordDTO;
+import animal_shop.community.member.dto.VerifyMailDTO;
 import animal_shop.community.member.dto.MemberDTO;
 import animal_shop.community.member.dto.TokenDTO;
 import animal_shop.community.member.service.MemberService;
@@ -126,9 +128,8 @@ public class MemberController {
     }
 
     @GetMapping("/findPassword")
-    public ResponseEntity<?> findPassword(@RequestParam String toMailAddr) {
+    public ResponseEntity<?> findPassword(@RequestParam (value="toMailAddr")String toMailAddr) {
         ResponseDTO responseDTO = null;
-
         try {
             memberService.createAndSendNewPassword(toMailAddr);
             responseDTO = ResponseDTO.builder()
@@ -142,4 +143,38 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyNumber(@RequestBody VerifyMailDTO verifyMailDTO) {
+
+        ResponseDTO responseDTO = null;
+        try {
+            memberService.verifyNumber(verifyMailDTO); // 인증번호와 이메일을 넘겨줌
+            responseDTO = ResponseDTO.builder()
+                    .message("success verify")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+   @PatchMapping("/changePassword")
+    public ResponseEntity<?> changPassword(@RequestBody ChangePasswordDTO changePasswordDTO){
+        ResponseDTO responseDTO = null;
+        try {
+            //해당 이메일에 비밀번호를 바꿀려고 하는거니까
+            memberService.changePassword(changePasswordDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("success change")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+   }
 }

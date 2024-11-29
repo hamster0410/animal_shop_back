@@ -28,7 +28,9 @@ public class MemberDTO {
 
     private String RefreshToken;
 
-    private Role role;
 
+
+
+    private Role role;
 
 }
