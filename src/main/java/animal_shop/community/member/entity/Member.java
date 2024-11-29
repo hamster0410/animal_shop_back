@@ -47,6 +47,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     private String refreshtoken;
 
+    private String authentication;
+
+
     @Enumerated(EnumType.STRING)
     @Setter
     private Role role;
