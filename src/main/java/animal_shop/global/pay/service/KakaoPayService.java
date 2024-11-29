@@ -60,7 +60,9 @@ public class KakaoPayService {
         requestBody.put("total_amount", kakaoReadyRequest.getTotal_amount());
         requestBody.put("vat_amount", "0");
         requestBody.put("tax_free_amount", "0");
-        requestBody.put("approval_url", server_address + "/pay/success");
+        requestBody.put("approval_url", server_address + "/pay/success" +
+                "?partner_order_id="+kakaoReadyRequest.getPartner_order_id() +
+                "&partner_user_id=" + kakaoReadyRequest.getPartner_user_id());
         requestBody.put("fail_url", server_address + "/pay/cancel");
         requestBody.put("cancel_url", server_address + "/pay/fail");
         // HTTP 요청 생성
