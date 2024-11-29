@@ -146,11 +146,11 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void approve_detail(Long orderItemId, String token) {
+    public void approve_detail(DeliveryApproveDetailDTO deliveryApproveDetailDTO, String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
-        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+        OrderItem orderItem = orderItemRepository.findById(deliveryApproveDetailDTO.getOrderItemId())
                 .orElseThrow(() -> new IllegalArgumentException("order item not found"));
         if(orderItem.isDelivery_revoke()){
             throw new IllegalArgumentException("orderItem is revoke");
@@ -158,7 +158,7 @@ public class DeliveryService {
         orderItem.setDelivery_approval(true);
         orderItemRepository.save(orderItem);
 
-        DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItemId);
+        DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(deliveryApproveDetailDTO.getOrderItemId());
 
 
         if(!member.getId().equals(deliveryItem.getSellerId())){

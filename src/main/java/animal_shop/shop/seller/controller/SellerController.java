@@ -251,10 +251,10 @@ public class SellerController {
     }
     @PostMapping("/delivery/approve_detail")
     ResponseEntity<?> delivery_approve_detail(@RequestHeader(value = "Authorization")String token,
-                                       @RequestBody Long orderItemId) {
+                                       @RequestBody DeliveryApproveDetailDTO deliveryApproveDetailDTO) {
         ResponseDTO responseDTO = null;
         try{
-            deliveryService.approve_detail(orderItemId,token);
+            deliveryService.approve_detail(deliveryApproveDetailDTO,token);
             responseDTO = ResponseDTO.builder()
                     .message("delivery approve success")
                     .build();
