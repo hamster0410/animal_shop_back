@@ -160,7 +160,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-   @PatchMapping("/changePassword")
+       @PatchMapping("/changePassword")
     public ResponseEntity<?> changPassword(@RequestBody ChangePasswordDTO changePasswordDTO){
         ResponseDTO responseDTO = null;
         try {

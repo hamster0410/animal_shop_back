@@ -291,25 +291,57 @@ public class MemberService {
             throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
         }
     }
-    @Transactional
-    public void changePassword( ChangePasswordDTO changePasswordDTO) {
-        // 1. 이메일로 해당 사용자의 정보를 가져오기
-        Optional<Member> memberOpt = memberRepository.findByMail(changePasswordDTO.getMail());
+//    @Transactional
+//    public void changePassword( ChangePasswordDTO changePasswordDTO) {
+//        // 1. 이메일로 해당 사용자의 정보를 가져오기
+//        Optional<Member> memberOpt = memberRepository.findByMail(changePasswordDTO.getMail());
+//
+//        // 2. 사용자가 존재하는지 확인
+//        if (memberOpt.isEmpty()) {
+//            throw new IllegalArgumentException("이메일에 해당하는 사용자가 없습니다.");
+//        }
+//
+//        Member member = memberOpt.get();
+//        if(changePasswordDTO.getCheckPassword().equals( changePasswordDTO.getNewPassword())){
+//            member.updatePassword(passwordEncoder, changePasswordDTO.getNewPassword());
+//        }else{
+//            log.warn("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        // 5. 업데이트된 회원 정보 저장
+//        memberRepository.save(member);
+//
+//    }
+@Transactional
+public void changePassword(ChangePasswordDTO changePasswordDTO) {
+    // 1. 이메일로 해당 사용자의 정보를 가져오기
+    Optional<Member> memberOpt = memberRepository.findByMail(changePasswordDTO.getMail());
 
-        // 2. 사용자가 존재하는지 확인
-        if (memberOpt.isEmpty()) {
-            throw new IllegalArgumentException("이메일에 해당하는 사용자가 없습니다.");
+    // 2. 사용자가 존재하는지 확인
+    if (memberOpt.isEmpty()) {
+        throw new IllegalArgumentException("이메일에 해당하는 사용자가 없습니다.");
+    }
+
+    Member member = memberOpt.get();
+
+    try {
+        // 3. 비밀번호가 일치하는지 확인
+        if (!changePasswordDTO.getCheckPassword().equals(changePasswordDTO.getNewPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        Member member = memberOpt.get();
-        if(changePasswordDTO.getCheckPassword().equals( changePasswordDTO.getNewPassword())){
-            member.updatePassword(passwordEncoder, changePasswordDTO.getNewPassword());
-        }
+        // 4. 비밀번호 업데이트
+        member.updatePassword(passwordEncoder, changePasswordDTO.getNewPassword());
 
         // 5. 업데이트된 회원 정보 저장
         memberRepository.save(member);
 
+    } catch (IllegalArgumentException e) {
+        log.warn("비밀번호 변경 실패: {}", e.getMessage());
+        throw e; // 예외를 다시 던져서 호출자에게 알림
     }
+}
+
 }
 
 
