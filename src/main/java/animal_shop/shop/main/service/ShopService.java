@@ -1,7 +1,5 @@
 package animal_shop.shop.main.service;
 
-
-import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.entity.Item;
@@ -9,7 +7,6 @@ import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.main.dto.MainDTO;
 import animal_shop.shop.main.dto.MainDTOBestResponse;
 import animal_shop.shop.main.dto.MainDTOResponse;
-import animal_shop.shop.pet.entity.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,17 +34,19 @@ public class ShopService {
     public MainDTOResponse main_contents() {
         Pageable pageable = (Pageable) PageRequest.of(0,4);
 
-        List<MainDTO> dog_hot = itemRepository.findBySpecies("dog",pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
+        List<MainDTO> animal_new = itemRepository.findBySpecies("dog",pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
                 .toList();
-        List<MainDTO> cat_hot = itemRepository.findBySpecies("cat",pageable).stream().map(MainDTO::new)
+
+        List<MainDTO> animal_hot = itemRepository.findBySpecies("dog",pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
                 .toList();
-        List<MainDTO> new_goods = itemRepository.findAllByOrderByCreatedDateDesc(pageable).stream().map(MainDTO::new)
+
+        List<MainDTO> animal_custom = itemRepository.findBySpecies("dog",pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
                 .toList();
 
         return MainDTOResponse.builder()
-                .cat_hot(cat_hot)
-                .dog_hot(dog_hot)
-                .new_goods(new_goods)
+                .animal_new(animal_new)
+                .animal_hot(animal_hot)
+                .animal_custom(animal_custom  )
                 .build();
     }
 
@@ -87,33 +86,6 @@ public class ShopService {
                 .build();
     }
 
-    public MainDTOBestResponse custom_contents(String token, int page) {
-        if (page < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must be >= 0");
-        }
-        String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
-
-        Pet pet = member.getPets().stream()
-                .filter(Pet::getLeader) // leader가 true인 Pet만 필터링
-                .findFirst().orElse(null);
-
-        if(pet != null){
-            pet.getBreed();
-            pet.getSpecies();
-            pet.getWeight();
-            pet.getAge();
-        }
-
-        Pageable pageable = PageRequest.of(page, 20);
-        Page<Item> custom_goods = itemRepository.findAllItemsSortedByCommentsAndRatings(pageable);
-
-        return MainDTOBestResponse.builder()
-                .best_goods(custom_goods.stream().map(MainDTO::new).toList())
-                .total_count(custom_goods.getTotalElements())
-                .build();
-    }
 }
 
 

@@ -3,6 +3,7 @@ package animal_shop.shop.item.repository;
 import animal_shop.shop.item.entity.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,13 +16,11 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 
     Page<Item> findByMemberId(Long memberId,Pageable pageable);
 
-
-
-    // fetch join을 사용한 쿼리
     @Query("SELECT i FROM Item i " +
-            "LEFT JOIN FETCH i.thumbnail_url " +  // thumbnail_url 컬렉션을 fetch join으로 가져옴
-            "WHERE i.species = :species")
-    Page<Item> findBySpecies( @Param("species") String species, Pageable pageable);
+            "LEFT JOIN FETCH i.thumbnail_url " + // thumbnail_url 컬렉션을 fetch join으로 가져옴
+            "WHERE i.species = :species " +
+            "ORDER BY i.createdDate DESC") // 날짜 역순으로 정렬
+    Page<Item> findBySpecies(@Param("species") String species, Pageable pageable);
 
     // fetch join을 사용한 쿼리
     @Query("SELECT i FROM Item i " +
@@ -33,17 +32,29 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             Pageable pageable);
 
     // 이름으로 검색 (엔티티만 반환)
-    @Query("SELECT i FROM Item i WHERE i.name LIKE %:searchTerm%")
+//    @Query("SELECT i FROM Item i WHERE i.name LIKE %:searchTerm%")
+//    Page<Item> findByItemNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+    // 이름으로 검색 (Option을 페치 조인)
+//    @Query("SELECT DISTINCT i FROM Item i JOIN FETCH i.options o WHERE i.member.nickname LIKE %:searchTerm%")
+//    Page<Item> findByMemberNicknameContainingWithOptions(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"options", "member"})
+    @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     Page<Item> findByItemNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+
+    @EntityGraph(attributePaths = {"options"})
+    @Query("SELECT i FROM Item i WHERE i.member.nickname LIKE %:searchTerm%")
+    Page<Item> findByMemberNicknameContainingWithOptions(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+
+    // 이름으로 검색 (엔티티만 반환)
+    @Query("SELECT i FROM Item i WHERE i.member.nickname LIKE %:searchTerm%")
+    Page<Item> findByMemberNicknameContaining(@Param("searchTerm") String searchTerm, Pageable pageable);
 
     // 전체 아이템 조회
     @Query("SELECT i FROM Item i")
     Page<Item> findAllSearch(Pageable pageable);
 
-    @Query(value = "SELECT * FROM item", nativeQuery = true)
-    Page<Item> findAllItemsSortedByCommentsAndRatings(Pageable pageable);
 }
-//LEFT JOIN FETCH i.comments c
-//GROUP BY i
-//ORDER BY
-//        (COUNT(c) * 0.5 + COALESCE(AVG(c.rating), 0) * 0.5) DESC

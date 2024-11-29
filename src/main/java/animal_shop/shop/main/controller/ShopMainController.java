@@ -15,7 +15,7 @@ public class ShopMainController {
     @Autowired
     ShopService shopService;
 
-    @GetMapping("/main")
+    @GetMapping({"/main","/dog"})
     public ResponseEntity<?> shop_main(){
         ResponseDTO responseDTO;
         try{
@@ -47,37 +47,5 @@ public class ShopMainController {
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
-    }
-    @GetMapping("/product-category")
-    public ResponseEntity<?> shop_category(@RequestParam(value = "page", defaultValue = "1")int page,
-                                           @RequestParam(value = "species",required = false) String species,
-                                           @RequestParam(value = "category", required = false) String category){
-        ResponseDTO responseDTO;
-        try{
-            MainDTOBestResponse mainDTOBestResponse = shopService.category_contents(page - 1,species,category);
-            return ResponseEntity.ok().body(mainDTOBestResponse);
-
-        }catch (Exception e){
-
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getLocalizedMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-    @GetMapping("/member-custom")
-    public ResponseEntity<?> member_custom(@RequestHeader(value = "Authorization") String token,
-                                           @RequestParam(value = "page", defaultValue = "1") int page){
-        ResponseDTO responseDTO;
-        try{
-            MainDTOBestResponse mainDTOBestResponse = shopService.custom_contents(token,page-1);
-            return ResponseEntity.badRequest().body(mainDTOBestResponse);
-        }catch (Exception e){
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getLocalizedMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-
     }
 }

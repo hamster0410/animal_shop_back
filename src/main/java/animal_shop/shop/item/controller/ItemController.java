@@ -1,6 +1,7 @@
 package animal_shop.shop.item.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.item.dto.ItemDTOListResponse;
 import animal_shop.shop.item.dto.ItemDetailDTO;
 import animal_shop.shop.item.dto.QueryResponse;
 import animal_shop.shop.item.dto.RequestItemQueryDTO;
@@ -83,11 +84,12 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<?>search_item(@RequestHeader(value = "Authorization",required = false)String token,
                                         @RequestParam(value = "searchTerm",required = false)String searchTerm,
+                                        @RequestParam(value = "searchBy",required = false)String searchBy,
                                         @RequestParam(value = "page",defaultValue = "1")int page){
         ResponseDTO responseDTO = null;
         try {
-            QueryResponse queryResponse = itemService.search_item(token, searchTerm, page-1);
-            return ResponseEntity.ok().body(queryResponse);
+            ItemDTOListResponse item = itemService.search_item(token, searchBy, searchTerm, page-1);
+            return ResponseEntity.ok().body(item);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

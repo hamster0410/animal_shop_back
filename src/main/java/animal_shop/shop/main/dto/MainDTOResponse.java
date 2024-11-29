@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 @Getter
 public class MainDTOResponse {
-    List<MainDTO> new_goods;
-    List<MainDTO> dog_hot;
-    List<MainDTO> cat_hot;
+    List<MainDTO> animal_new;
+    List<MainDTO> animal_hot;
+    List<MainDTO> animal_custom;
 }
