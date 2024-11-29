@@ -31,6 +31,16 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             @Param("category") String category,
             Pageable pageable);
 
+    @Query("SELECT i FROM Item i " +
+            "LEFT JOIN FETCH i.thumbnail_url " +  // thumbnail_url 컬렉션을 fetch join으로 가져옴
+            "WHERE i.category = :category " +
+            "AND i.detailed_category = :detailedCategory")
+    Page<Item> findByCategoryAndDetailedCategoryWithThumbnails(
+            @Param("category") String category,
+            @Param("detailedCategory") String detailedCategory,
+            Pageable pageable);
+
+
     // 이름으로 검색 (엔티티만 반환)
 //    @Query("SELECT i FROM Item i WHERE i.name LIKE %:searchTerm%")
 //    Page<Item> findByItemNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, Pageable pageable);

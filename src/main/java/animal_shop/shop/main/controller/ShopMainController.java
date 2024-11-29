@@ -15,11 +15,13 @@ public class ShopMainController {
     @Autowired
     ShopService shopService;
 
-    @GetMapping({"/main","/dog"})
-    public ResponseEntity<?> shop_main(){
+    @GetMapping("/main")
+    public ResponseEntity<?> shop_main(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam(value = "species", defaultValue = "dog")String species){
         ResponseDTO responseDTO;
         try{
-            MainDTOResponse mainDTOResponse = shopService.main_contents();
+            MainDTOResponse mainDTOResponse = shopService.main_contents(token, species);
 
             return ResponseEntity.ok().body(mainDTOResponse);
 

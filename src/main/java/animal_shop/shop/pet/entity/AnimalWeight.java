@@ -1,8 +1,10 @@
 package animal_shop.shop.pet.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class AnimalWeight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
