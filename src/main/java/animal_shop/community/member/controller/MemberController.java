@@ -1,9 +1,6 @@
 package animal_shop.community.member.controller;
 
-import animal_shop.community.member.dto.ChangePasswordDTO;
-import animal_shop.community.member.dto.VerifyMailDTO;
-import animal_shop.community.member.dto.MemberDTO;
-import animal_shop.community.member.dto.TokenDTO;
+import animal_shop.community.member.dto.*;
 import animal_shop.community.member.service.MemberService;
 import animal_shop.global.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -127,13 +124,13 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/findPassword")
-    public ResponseEntity<?> findPassword(@RequestParam (value="toMailAddr")String toMailAddr) {
+    @PostMapping("/findPassword")
+    public ResponseEntity<?> findPassword(@RequestBody SendMailDTO sendMailDTO) {
         ResponseDTO responseDTO = null;
         try {
-            memberService.createAndSendNewPassword(toMailAddr);
+            memberService.createAndSendNewPassword(sendMailDTO);
             responseDTO = ResponseDTO.builder()
-                    .message("success find")
+                    .message("success sending mail")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {

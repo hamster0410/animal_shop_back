@@ -47,6 +47,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     private String refreshtoken;
 
+    @Setter
     private String authentication;
 
 

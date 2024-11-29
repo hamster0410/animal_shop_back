@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VerifyMailDTO {
     private String mail;
-    private String password;
     private String authentication; // 인증 관련 정보 (예: 인증 코드 등)
 
 }

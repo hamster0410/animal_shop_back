@@ -216,21 +216,21 @@ public class MemberService {
         sellerCandidateRepository.save(s);
     }
     @Transactional
-    public void createAndSendNewPassword(String toMailAddr) {
+    public void createAndSendNewPassword(SendMailDTO sendMailDTO) {
         try {
             // 새로운 비밀번호 생성
             String newPassword = createNewPassword();
 
             // 비밀번호가 생성되면 이메일로 전송
             if (newPassword != null && !newPassword.isEmpty()) {
-                sendNewPasswordByMail(toMailAddr, newPassword);
+                sendNewPasswordByMail(sendMailDTO.getToMailAddr(), newPassword);
             } else {
                 // 비밀번호 생성 실패 시 로그 출력
-                System.err.println("새 비밀번호 생성에 실패했습니다.");
+                throw new IllegalArgumentException("새 비밀번호 생성에 실패했습니다.");
             }
         } catch (Exception e) {
             // 예외 발생 시 처리 (예: 로그 기록)
-            System.err.println("비밀번호 생성 및 전송 중 오류 발생: " + e.getMessage());
+            throw new IllegalArgumentException("비밀번호 생성 및 전송 중 오류 발생: " + e.getMessage());
         }
     }
 
@@ -262,14 +262,17 @@ public class MemberService {
     }
     @Transactional
     public void sendNewPasswordByMail(String toMailAddr,String authentication) {
-        memberRepository.updatePasswordByEmail(toMailAddr, authentication);
+        Member member = memberRepository.findByMail(toMailAddr)
+                .orElseThrow(() -> new IllegalArgumentException("member is not matching"));
+        member.setAuthentication(authentication);
+
         final MimeMessagePreparator mimeMessagePreparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
 
                 final MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                 mimeMessageHelper.setTo(toMailAddr);
-                mimeMessageHelper.setSubject("[Space X] 새로운 비밀번호 안내입니다.");
-                mimeMessageHelper.setText("새 비밀번호" + authentication, true);
+                mimeMessageHelper.setSubject("[AnimalPing] 인증번호 안내입니다.");
+                mimeMessageHelper.setText("인증번호 " + authentication, true);
 
             };
 
