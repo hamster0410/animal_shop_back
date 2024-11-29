@@ -98,10 +98,11 @@ public class KakaoPayService {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        Order order = orderRepository.findByOrderCode(kakaoSuccessRequest.getPartner_order_id());
         // 요청 바디 설정
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("cid", "TC0ONETIME"); // 테스트용 CID
-        requestBody.put("tid", kakaoSuccessRequest.getTid()); // 결제 고유 번호
+        requestBody.put("tid", order.getTid()); // 결제 고유 번호
         requestBody.put("partner_order_id", kakaoSuccessRequest.getPartner_order_id()); // 가맹점 주문 번호
         requestBody.put("partner_user_id", member.getNickname()); // 가맹점 회원 ID
         requestBody.put("pg_token", kakaoSuccessRequest.getPg_token()); // 결제승인 요청 토큰
@@ -112,7 +113,6 @@ public class KakaoPayService {
         // RestTemplate 호출
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<KakaoApproveResponse> responseEntity;
-        Order order = orderRepository.findByOrderCode(kakaoSuccessRequest.getPartner_order_id());
         try {
             responseEntity = restTemplate.exchange(
                     url,
