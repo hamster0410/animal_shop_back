@@ -82,6 +82,9 @@ public class ItemCommentService {
 
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalArgumentException("item not found"));
 
+        //댓글 등록시 item의 별점 증가
+        item.setTotal_rating(item.getTotal_rating() + requestItemCommentDTO.getRating());
+
         ItemComment comment = ItemComment.builder()
                 .contents(requestItemCommentDTO.getContents())
                 .item(item)
@@ -101,6 +104,9 @@ public class ItemCommentService {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
         ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("comment not found"));
+        Item item = comment.getItem();
+        //총 평점 수정
+        item.setTotal_rating(item.getTotal_rating() - comment.getRating() + requestItemCommentDTO.getRating());
         comment.setContents(requestItemCommentDTO.getContents());
         comment.setRating(requestItemCommentDTO.getRating());
         comment.setComment_thumbnail_url(requestItemCommentDTO.getThumbnailUrls());
@@ -116,6 +122,8 @@ public class ItemCommentService {
 
         Item item = comment.getItem();
         item.setComment_count(item.getComment_count()-1);
+        //item의 평점 삭제
+        item.setTotal_rating(item.getTotal_rating() - comment.getRating());
         itemRepository.save(item);
 
         if(userId.equals(comment.getMember().getId())){

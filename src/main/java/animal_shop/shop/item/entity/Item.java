@@ -52,6 +52,9 @@ public class Item extends BaseTimeEntity{
     @Column(nullable = false, length = 20)
     private String category;
 
+    @Builder.Default
+    private Long total_rating = 0L;
+
     @Column
     private String detailed_category;
 

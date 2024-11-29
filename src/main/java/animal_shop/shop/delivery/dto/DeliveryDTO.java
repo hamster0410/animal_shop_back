@@ -20,6 +20,8 @@ public class DeliveryDTO {
 
     private Long orderId;
 
+    private Long deliveryId;
+
     private String tid;
 
     private LocalDateTime orderDate;

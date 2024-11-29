@@ -58,6 +58,7 @@ public class DeliveryService {
             Member customer = memberRepository.findById(delivery.getDeliveryItems().get(0).getBuyerId())
                             .orElseThrow(() -> new IllegalArgumentException("member is not found"));
             dto.setId(delivery.getId());
+            dto.setDeliveryId(delivery.getId());
             dto.setCustomer(customer.getNickname());
             dto.setOrderId(delivery.getOrderId());
             dto.setTid(delivery.getTid());
@@ -94,12 +95,18 @@ public class DeliveryService {
             throw new IllegalArgumentException("you are not this seller");
 
         }
+        Order order = orderItem.getOrder();
         DeliveryDetailDTO deliveryDetailDTO = DeliveryDetailDTO.builder()
-                .customer(orderItem.getOrder().getRecipient())
+                .recipient(orderItem.getOrder().getRecipient())
                 .thumbnailUrl(orderItem.getItem().getThumbnail_url().get(0))
                 .itemName(orderItem.getItem().getName())
                 .optionName(orderItem.getOrder_name())
-                .price(orderItem.getTotalPrice())
+                .total_price(orderItem.getTotalPrice())
+                .address(order.getAddress())
+                .order_code(order.getOrderCode())
+                .order_date(order.getOrderDate())
+                .order_status(orderItem.getPaymentStatus())
+                .phone_number(order.getPhoneNumber())
                 .quantity(orderItem.getCount())
                 .build();
 
@@ -171,6 +178,7 @@ public class DeliveryService {
 
         Delivery delivery = deliveryRepository.findById(deliveryRequestDTO.getDeliveryId())
                 .orElseThrow(() -> new IllegalArgumentException("delivery is not found"));
+
 
         Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
