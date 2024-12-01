@@ -3,15 +3,22 @@ package animal_shop.shop.delivery.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.delivery.DeliveryStatus;
 import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.entity.Delivery;
+import animal_shop.shop.delivery.entity.DeliveryCompleted;
 import animal_shop.shop.delivery.entity.DeliveryItem;
+import animal_shop.shop.delivery.entity.DeliveryProgress;
+import animal_shop.shop.delivery.repository.DeliveryCompletedRepository;
 import animal_shop.shop.delivery.repository.DeliveryItemRepository;
+import animal_shop.shop.delivery.repository.DeliveryProgressRepository;
 import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
 import animal_shop.shop.order_item.entity.OrderItem;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
+import animal_shop.shop.point.entity.Point;
+import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +51,15 @@ public class DeliveryService {
 
     @Autowired
     DeliveryItemRepository deliveryItemRepository;
+
+    @Autowired
+    DeliveryProgressRepository deliveryProgressRepository;
+
+    @Autowired
+    DeliveryCompletedRepository deliveryCompletedRepository;
+
+    @Autowired
+    PointRepository pointRepository;
 
     @Transactional(readOnly = true)
     public DeliveryDTOResponse get_list(String token, int page) {
@@ -127,11 +144,16 @@ public class DeliveryService {
             if (d.isDelivery_revoke()) {
                 throw new IllegalStateException("some delivery item is revoke");
             }
+
+            //배송 승인처리
             d.setDelivery_approval(true);
+
+            //배송 진행 테이블 생성
+            DeliveryProgress deliveryProgress = new DeliveryProgress(d);
+            deliveryProgressRepository.save(deliveryProgress);
         }
 
-
-        Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
+        Order order = orderRepository.findById(delivery.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
 
         for(OrderItem orderItem : order.getOrderItems()){
@@ -160,6 +182,9 @@ public class DeliveryService {
 
         DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(deliveryApproveDetailDTO.getOrderItemId());
 
+        //배송 진행 테이블 생성
+        DeliveryProgress deliveryProgress = new DeliveryProgress(deliveryItem);
+        deliveryProgressRepository.save(deliveryProgress);
 
         if(!member.getId().equals(deliveryItem.getSellerId())){
             throw new IllegalArgumentException("seller is not matching");
@@ -180,7 +205,7 @@ public class DeliveryService {
                 .orElseThrow(() -> new IllegalArgumentException("delivery is not found"));
 
 
-        Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
+        Order order = orderRepository.findById(delivery.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
 
         for (DeliveryItem d : delivery.getDeliveryItems()) {
@@ -258,6 +283,103 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
     }
 
+    // `DeliveryProgress`를 `DeliveryCompleted`로 이동
+    public void moveToCompleted(DeliveryProgress progress) {
+        DeliveryCompleted completed = new DeliveryCompleted();
+        completed.setDeliveryItemId(progress.getDeliveryItemId());
+        completed.setSellerId(progress.getSellerId());
+        completed.setBuyerId(progress.getBuyerId());
+        completed.setAddress(progress.getAddress());
+        completed.setTrackingNumber(progress.getTrackingNumber());
+        completed.setCourier(progress.getCourier());
+        //현재시간이 배송 완료시간
+        completed.setDeliveredDate(LocalDateTime.now());
+
+        deliveryCompletedRepository.save(completed);
+        deliveryProgressRepository.delete(progress); // 기존 데이터를 삭제
+
+        // 포인트 추가
+        addPoints(completed);
+    }
+
+    // 포인트 추가
+    private void addPoints(DeliveryCompleted completed) {
+        Point point = new Point();
+        DeliveryItem deliveryItem = deliveryItemRepository.findById(completed.getDeliveryItemId())
+                .orElseThrow(() -> new IllegalArgumentException("delivery item is not found"));
+        point.setSellerId(completed.getSellerId());
+        point.setBuyerId(completed.getBuyerId());
+        point.setItemName(deliveryItem.getItemName());
+        point.setOptionName(deliveryItem.getOptionName());
+        point.setQuantity(deliveryItem.getQuantity());
+        point.setPrice(deliveryItem.getOptionPrice());
+        point.setPoint(deliveryItem.getOptionPrice() * deliveryItem.getQuantity()); // 기본 포인트 (비즈니스 로직에 따라 조정)
+        point.setGetDate(LocalDateTime.now());
+        point.setDeliveryCompletedId(completed.getId());
+
+        pointRepository.save(point);
+    }
+
+    public DeliveryCustomerResponse get_deliveryList(String token, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Pageable pageable = (Pageable) PageRequest.of(page,10);
+
+        Page<DeliveryProgress> deliveryProgresses = deliveryProgressRepository.findByBuyerId(Long.valueOf(userId),pageable);
+        List<DeliveryCustomerDTO> deliveryCustomerDTOList = new ArrayList<>();
+
+        Member buyer =  memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+
+
+        for(DeliveryProgress deliveryProgress : deliveryProgresses){
+            Member seller = memberRepository.findById(deliveryProgress.getSellerId())
+                    .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+
+            DeliveryItem deliveryItem = deliveryItemRepository.findById(deliveryProgress.getDeliveryItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("deliveryItem is not found"));
+            deliveryCustomerDTOList.add(new DeliveryCustomerDTO(deliveryProgress,seller,buyer,deliveryItem));
+        }
+
+        return DeliveryCustomerResponse
+                .builder()
+                .deliveryCustomerDTOList(deliveryCustomerDTOList)
+                .total_count(deliveryProgresses.getTotalElements())
+                .build();
+    }
+
+    public DeliveryCustomerResponse get_deliveryCompltedList(String token, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Pageable pageable = (Pageable) PageRequest.of(page,10);
+
+        Page<DeliveryCompleted> deliveryCompleteds = deliveryCompletedRepository.findByBuyerId(Long.valueOf(userId),pageable);
+        List<DeliveryCustomerDTO> deliveryCustomerDTOList = new ArrayList<>();
+
+        Member buyer =  memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+
+
+        for(DeliveryCompleted deliveryCompleted : deliveryCompleteds){
+            Member seller = memberRepository.findById(deliveryCompleted.getSellerId())
+                    .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+
+            DeliveryItem deliveryItem = deliveryItemRepository.findById(deliveryCompleted.getDeliveryItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("deliveryItem is not found"));
+            deliveryCustomerDTOList.add(new DeliveryCustomerDTO(deliveryCompleted,seller,buyer,deliveryItem));
+        }
+
+        return DeliveryCustomerResponse
+                .builder()
+                .deliveryCustomerDTOList(deliveryCustomerDTOList)
+                .total_count(deliveryCompleteds.getTotalElements())
+                .build();
+    }
+    public void delivery_check(String token, DeliveryCheckDTO deliveryCheckDTO) {
+
+        DeliveryProgress deliveryProgress = deliveryProgressRepository.findById(deliveryCheckDTO.getDeliveryProgressId())
+                .orElseThrow(() -> new IllegalArgumentException("deliveryProgress is not found"));
+        deliveryProgress.setDeliveryStatus(DeliveryStatus.COMPLETED);
+        moveToCompleted(deliveryProgress);
+    }
 
 }
 

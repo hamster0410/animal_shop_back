@@ -33,6 +33,8 @@ public class Delivery {
 
     private String tid;
 
+    private String address;
+
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryItem> deliveryItems = new ArrayList<>();
 
@@ -44,6 +46,7 @@ public class Delivery {
         for(OrderItem o : orderItems){
             total_porice += (long) o.getOrder_price() * o.getCount();
         }
+        this.address = order.getAddress();
         this.totalPrice = total_porice;
         this.member = m;
         this.deliveryItems = orderItems.stream()
