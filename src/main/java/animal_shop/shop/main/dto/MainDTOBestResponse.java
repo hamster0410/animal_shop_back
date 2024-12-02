@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Builder
 public class MainDTOBestResponse {
-    List<MainDTO> best_goods;
+    List<MainDTO> goods;
     Long total_count;
 
 }

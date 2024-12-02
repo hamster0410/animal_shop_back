@@ -65,6 +65,13 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             Pageable pageable
     );
 
+    @Query("SELECT i FROM Item i " +
+            "WHERE i.itemSellStatus = :itemSellStatus")
+    Page<Item> findByItemSellStatus(
+            @Param("itemSellStatus") ItemSellStatus itemSellStatus,
+            Pageable pageable);
+
+
     @EntityGraph(attributePaths = {"options", "member"})
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     Page<Item> findByItemNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, Pageable pageable);

@@ -148,7 +148,7 @@ public class ShopService {
 
         Page<Item> best = itemRepository.findAll(pageable);
         return MainDTOBestResponse.builder()
-                .best_goods(best.stream().map(MainDTO::new).toList())
+                .goods(best.stream().map(MainDTO::new).toList())
                 .total_count(best.getTotalElements())
                 .build();
 
@@ -173,7 +173,7 @@ public class ShopService {
         }
 
         return MainDTOBestResponse.builder()
-                .best_goods(category_goods.stream().map(MainDTO::new).toList())
+                .goods(category_goods.stream().map(MainDTO::new).toList())
                 .total_count(category_goods.getTotalElements())
                 .build();
     }

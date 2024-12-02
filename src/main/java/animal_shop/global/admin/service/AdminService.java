@@ -12,6 +12,8 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.ItemSellStatus;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
+import animal_shop.shop.main.dto.MainDTO;
+import animal_shop.shop.main.dto.MainDTOBestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -107,8 +109,25 @@ public class AdminService {
         if(!admin.getRole().toString().equals("ADMIN")){
             throw new IllegalArgumentException("member is not admin ");
         }
+
         Item item = itemRepository.findById(stopItemDTO.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("item is not found"));
         item.setItemSellStatus(ItemSellStatus.valueOf("STOP"));
+    }
+
+    public MainDTOBestResponse stop_list(String token, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+        Pageable pageable = (Pageable) PageRequest.of(page,20);
+        //admin인지 아닌지 판별
+        if(!admin.getRole().toString().equals("ADMIN")){
+            throw new IllegalArgumentException("member is not admin ");
+        }
+        Page<Item> items = itemRepository.findByItemSellStatus(ItemSellStatus.STOP,pageable);
+        return MainDTOBestResponse.builder()
+                .goods(items.stream().map(MainDTO::new).toList())
+                .total_count(items.getTotalElements())
+                .build();
+
     }
 }
