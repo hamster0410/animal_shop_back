@@ -30,9 +30,6 @@ import animal_shop.shop.order_item.entity.OrderItem;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,13 +115,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderHistDTOResponse getOrderList(String token, int page){
+    public OrderHistDTOResponse getOrderList(String token, int page, String status){
         String userId = tokenProvider.extractIdByAccessToken(token);
 
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
-
-        Page<Order> orders = orderRepository.findOrders(userId, pageable);
-        Long total_count = orders.getTotalElements();
+        List<Order> orders = orderRepository.findOrders(userId);
 
         List<OrderHistDTO> orderHistDTOs = new ArrayList<>();
 
@@ -133,16 +127,30 @@ public class OrderService {
             List<OrderItem> orderItems = order.getOrderItems();
 
             for(OrderItem orderItem : orderItems){
+
                 OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, orderItem.getItem().getThumbnail_url().get(0));
+                if(status.equals("waiting")){
+                    if(!orderItem.isDelivery_revoke() && !orderItem.isDelivery_approval()){
+                        orderHistDTO.addOrderItemDTO(orderItemDTO);
+                    }
+                }else if(status.equals("approve")){
+                    if(orderItem.isDelivery_approval()) orderHistDTO.addOrderItemDTO(orderItemDTO);
 
-                orderHistDTO.addOrderItemDTO(orderItemDTO);
+                }else {
+                    if(orderItem.isDelivery_revoke()) orderHistDTO.addOrderItemDTO(orderItemDTO);
+                }
+
             }
-
-            orderHistDTOs.add(orderHistDTO  );
+            if(!orderHistDTO.getOrderItemDTOList().isEmpty()){
+                orderHistDTOs.add(orderHistDTO);
+            }
         }
+        int totalItems = orderHistDTOs.size();
+        int fromIndex = Math.min(page * 10, totalItems); // 시작 인덱스 계산
+        int toIndex = Math.min(fromIndex + 10, totalItems); // 끝 인덱스 계산
         return OrderHistDTOResponse.builder()
-                .orderHistDTOList(orderHistDTOs)
-                .total_count(total_count)
+                .orderHistDTOList(orderHistDTOs.subList(fromIndex,toIndex))
+                .total_count((long) orderHistDTOs.size())
                 .build();
     }
 

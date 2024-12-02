@@ -40,10 +40,11 @@ public class OrderController {
 
     @GetMapping("/orders")
     public ResponseEntity<?> orderHist(@RequestHeader(value = "Authorization") String token,
-                                       @RequestParam(value = "page" , defaultValue = "1")int page){
+                                       @RequestParam(value = "page" , defaultValue = "1")int page,
+                                       @RequestParam(value="status", defaultValue = "waiting") String status){
         ResponseDTO responseDTO;
         try{
-            OrderHistDTOResponse  orderHistDTOResponse = orderService.getOrderList(token,page-1);
+            OrderHistDTOResponse  orderHistDTOResponse = orderService.getOrderList(token,page-1, status);
                 return ResponseEntity.ok().body(orderHistDTOResponse);
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
