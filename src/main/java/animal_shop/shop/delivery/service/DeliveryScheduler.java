@@ -20,6 +20,7 @@ public class DeliveryScheduler {
         this.deliveryProgressRepository = deliveryProgressRepository;
     }
 
+
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정 실행
     public void checkCompletedDeliveries() {
         List<DeliveryProgress> progresses = deliveryProgressRepository.findAllByDeliveryStatusAndDeliveredDateBefore(
