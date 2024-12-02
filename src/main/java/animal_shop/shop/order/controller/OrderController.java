@@ -4,10 +4,12 @@ import animal_shop.global.dto.ResponseDTO;
 import animal_shop.global.pay.dto.KakaoReadyResponse;
 import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
 import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
+import animal_shop.shop.order.dto.MyOrderCountDTO;
 import animal_shop.shop.order.dto.OrderCancelDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
 import animal_shop.shop.order.service.OrderService;
 import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -91,4 +93,23 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/order_info")
+    @Operation(
+            summary = "해당 멤버가 주문한 물품들의 상태 수",
+            description = "특정 멤버가 지금까지 주문하거나 취소 혹은 수신받은 모든 개별 상품들의 수를 출력합니다.")
+
+    public ResponseEntity<?> myOrderInfo(@RequestHeader(value = "Authorization") String token){
+        ResponseDTO responseDTO;
+        try{
+            MyOrderCountDTO myOrderCountDTO = orderService.getOrderInfo(token);
+
+            return ResponseEntity.ok().body(myOrderCountDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }

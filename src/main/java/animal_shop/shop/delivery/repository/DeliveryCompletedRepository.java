@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeliveryCompletedRepository extends JpaRepository<DeliveryCompleted, Long> {
     Page<DeliveryCompleted> findByBuyerId(Long BuyerId, Pageable pageable);
+
 }

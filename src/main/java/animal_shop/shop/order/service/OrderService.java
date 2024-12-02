@@ -11,13 +11,18 @@ import animal_shop.shop.cart.dto.CartDetailDTOResponse;
 import animal_shop.shop.delivery.dto.DeliveryRevokeDTO;
 import animal_shop.shop.delivery.dto.DeliveryRevokeResponse;
 import animal_shop.shop.delivery.entity.Delivery;
+import animal_shop.shop.delivery.entity.DeliveryCompleted;
 import animal_shop.shop.delivery.entity.DeliveryItem;
+import animal_shop.shop.delivery.entity.DeliveryProgress;
+import animal_shop.shop.delivery.repository.DeliveryCompletedRepository;
 import animal_shop.shop.delivery.repository.DeliveryItemRepository;
+import animal_shop.shop.delivery.repository.DeliveryProgressRepository;
 import animal_shop.shop.delivery.repository.DeliveryRepository;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.order.PaymentStatus;
+import animal_shop.shop.order.dto.MyOrderCountDTO;
 import animal_shop.shop.order.dto.OrderCancelDTO;
 import animal_shop.shop.order.dto.OrderDTO;
 import animal_shop.shop.order.dto.OrderDTOList;
@@ -30,6 +35,9 @@ import animal_shop.shop.order_item.entity.OrderItem;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,17 +62,27 @@ public class OrderService {
 
     @Autowired
     private DeliveryRepository deliveryRepository;
+
     @Autowired
     private OrderItemRepository orderItemRepository;
+
     @Autowired
     private DeliveryItemRepository deliveryItemRepository;
+
     @Autowired
     private TokenProvider tokenProvider;
+
     @Autowired
     private DeliveryService deliveryService;
+
     @Autowired
     private KakaoPayService kakaoPayService;
 
+    @Autowired
+    private DeliveryProgressRepository deliveryProgressRepository;
+
+    @Autowired
+    private DeliveryCompletedRepository deliveryCompletedRepository;
 
 
     @Transactional
@@ -315,4 +333,35 @@ public class OrderService {
         return kakaoReadyResponse;
     }
 
+    public MyOrderCountDTO getOrderInfo(String token) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        List<Order> orders = orderRepository.findOrders(userId);
+        Pageable pageable = PageRequest.of(0,10);
+        long approve = 0;
+        long waiting = 0;
+        long revoke = 0;
+        long entire=0;
+        for(Order order : orders){
+            for(OrderItem orderItem : order.getOrderItems()){
+                entire +=1;
+                if(orderItem.isDelivery_approval()){
+                    approve +=1;
+                }else if(orderItem.isDelivery_revoke()){
+                    revoke +=1;
+                }else{
+                    waiting +=1;
+                }
+            }
+        }
+        Page<DeliveryProgress> deliveryProgresses = deliveryProgressRepository.findByBuyerId(Long.valueOf(userId), pageable);
+        Page<DeliveryCompleted> deliveryCompleteds = deliveryCompletedRepository.findByBuyerId(Long.valueOf(userId),pageable);
+        return MyOrderCountDTO.builder()
+                .entire(entire)
+                .approve(approve)
+                .waiting(waiting)
+                .revoke(revoke)
+                .deliveryProgress(deliveryProgresses.getTotalElements())
+                .deliveryCompleted(deliveryCompleteds.getTotalElements())
+                .build();
+    }
 }
