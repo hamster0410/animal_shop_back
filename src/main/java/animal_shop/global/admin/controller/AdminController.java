@@ -1,6 +1,7 @@
 package animal_shop.global.admin.controller;
 
 import animal_shop.global.admin.dto.SellerResponseDTO;
+import animal_shop.global.admin.dto.StopItemDTO;
 import animal_shop.global.admin.service.AdminService;
 import animal_shop.global.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,13 @@ public class AdminController {
     AdminService adminService;
 
     @GetMapping("/request-list")
-    public ResponseEntity<?> requestPage(@RequestHeader(value = "Authorization") String token, @RequestParam(value = "page", defaultValue = "1") int page){
+    public ResponseEntity<?> requestPage(@RequestHeader(value = "Authorization") String token, @RequestParam(value = "page", defaultValue = "1") int page) {
         ResponseDTO responseDTO = null;
-        try{
-            SellerResponseDTO sellerDTOS = adminService.request_list(page-1);
+        try {
+            SellerResponseDTO sellerDTOS = adminService.request_list(page - 1);
 
             return ResponseEntity.ok().body(sellerDTOS);
-        }catch(Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage()).build();
             return ResponseEntity
@@ -34,16 +35,16 @@ public class AdminController {
     }
 
     @PatchMapping("/seller-ok")
-    public ResponseEntity<?> sellerOk(@RequestHeader(value = "Authorization") String token, @RequestParam String username){
+    public ResponseEntity<?> sellerOk(@RequestHeader(value = "Authorization") String token, @RequestParam String username) {
         ResponseDTO responseDTO = null;
-        try{
-            adminService.permit_seller(token,username);
+        try {
+            adminService.permit_seller(token, username);
             responseDTO = ResponseDTO.builder()
                     .message("seller permit success")
                     .build();
 
             return ResponseEntity.ok().body(responseDTO);
-        }catch(Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage()).build();
             return ResponseEntity
@@ -53,15 +54,15 @@ public class AdminController {
     }
 
     @PatchMapping("/seller-revoke")
-    public ResponseEntity<?> sellerRevoke(@RequestHeader("Authorization") String token,@RequestParam(value = "username") String username){
+    public ResponseEntity<?> sellerRevoke(@RequestHeader("Authorization") String token, @RequestParam(value = "username") String username) {
         ResponseDTO responseDTO;
 
-        try{
+        try {
             adminService.revoke_seller(token, username);
             responseDTO = ResponseDTO.builder().message("revoke success").build();
             return ResponseEntity.ok().body(responseDTO);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage()).build();
             return ResponseEntity
@@ -71,20 +72,39 @@ public class AdminController {
     }
 
     @DeleteMapping("/seller-delete")
-    public ResponseEntity<?> sellerDelete(@RequestHeader("Authorization") String token,@RequestParam(value = "username") String username){
+    public ResponseEntity<?> sellerDelete(@RequestHeader("Authorization") String token, @RequestParam(value = "username") String username) {
         ResponseDTO responseDTO;
 
-        try{
+        try {
             adminService.delete_seller(token, username);
             responseDTO = ResponseDTO.builder().message("delete success").build();
             return ResponseEntity.ok().body(responseDTO);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
         }
+    }
+
+    @PostMapping("/item_stop")
+    public ResponseEntity<?> sellerDelete(@RequestHeader("Authorization") String token,
+                                          @RequestBody StopItemDTO stopItemDTO) {
+        ResponseDTO responseDTO;
+        try {
+            adminService.stop_item(token,stopItemDTO);
+            responseDTO = ResponseDTO.builder().message("STOP success").build();
+            return ResponseEntity.ok().body(responseDTO);
+
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+
     }
 }

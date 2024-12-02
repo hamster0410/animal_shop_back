@@ -394,7 +394,7 @@
                 }
 
             } else {
-                items = itemRepository.findAllSearch(pageable); // 검색어가 없으면 전체 조회
+                items = itemRepository.findAllSearch(ItemSellStatus.STOP, pageable); // 검색어가 없으면 전체 조회
             }
 
             // DTO 변환 (Item -> ItemDetailDTO)

@@ -3,6 +3,7 @@ package animal_shop.shop.main.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.item.ItemSellStatus;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
 import animal_shop.shop.main.dto.MainDTO;
@@ -44,16 +45,16 @@ public class ShopService {
     public MainDTOResponse main_contents(String token, String species) {
         Pageable pageable = (Pageable) PageRequest.of(0,4);
 
-        List<MainDTO> animal_new = itemRepository.findBySpecies(species,pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
+        List<MainDTO> animal_new = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
                 .toList();
 
-        List<MainDTO> animal_hot = itemRepository.findBySpecies(species,pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
+        List<MainDTO> animal_hot = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
                 .toList();
 
         List<MainDTO> animal_custom = new ArrayList<>();
         //로그인 하지 않은 경우
         if(token==null){
-            animal_custom = itemRepository.findBySpecies(species,pageable).stream().map(MainDTO::new).toList();
+            animal_custom = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
 
             return MainDTOResponse.builder()
                     .animal_new(animal_new)
@@ -72,8 +73,7 @@ public class ShopService {
 
         //애완동물 정보가 없거나 리더 동물이 없는경우
         if(pet == null){
-            System.out.println("here 4");
-            animal_custom = itemRepository.findBySpecies(species,pageable).stream().map(MainDTO::new).toList();
+            animal_custom = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
 
             return MainDTOResponse.builder()
                     .animal_new(animal_new)
@@ -109,25 +109,28 @@ public class ShopService {
             //강아지일 경우
             if(species.equals("dog")){
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                                    pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                                    pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                                    pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }else{
                 //고양이일 경우
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }
@@ -164,7 +167,7 @@ public class ShopService {
         if (category != null) {
             category_goods = itemRepository.findBySpeciesAndCategoryWithThumbnails(species, category, pageable);
         } else if (species != null) {
-            category_goods = itemRepository.findBySpecies(species, pageable);
+            category_goods = itemRepository.findBySpecies(species,ItemSellStatus.STOP, pageable);
         } else {
             category_goods = itemRepository.findAll(pageable);
         }

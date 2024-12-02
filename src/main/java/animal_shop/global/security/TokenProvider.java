@@ -39,6 +39,7 @@ public class  TokenProvider {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("role", member.getRole());  // 예를 들어 role이 "USER" 또는 "ADMIN" 등
+        claims.put("profileImg",member.getProfile());
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
