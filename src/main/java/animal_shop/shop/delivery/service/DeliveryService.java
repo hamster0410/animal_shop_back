@@ -162,6 +162,7 @@ public class DeliveryService {
 
         Order order = orderRepository.findById(delivery.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
+        order.setOrderStatus(OrderStatus.valueOf("PROGRESS"));
 
         for(OrderItem orderItem : order.getOrderItems()){
             if(orderItem.getItem().getMember().equals(member) ){
@@ -185,6 +186,9 @@ public class DeliveryService {
             throw new IllegalArgumentException("orderItem is revoke");
         }
         orderItem.setDelivery_approval(true);
+        Order order = orderItem.getOrder();
+        order.setOrderStatus(OrderStatus.valueOf("PROGRESS"));
+
         orderItemRepository.save(orderItem);
 
         DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(deliveryApproveDetailDTO.getOrderItemId());
@@ -361,7 +365,7 @@ public class DeliveryService {
         for(Long orderId :hashMap2.keySet()){
             OrderHistDTO orderHistDTO = new OrderHistDTO();
             orderHistDTO.setOrderId(orderId);
-            orderHistDTO.setOrderStatus(OrderStatus.valueOf(String.valueOf(hashMap2.get(orderId).getDeliveryStatus())));
+            orderHistDTO.setOrderStatus(OrderStatus.valueOf("PROGRESS"));
             orderHistDTO.setOrderDate(String.valueOf(hashMap2.get(orderId).getDeliveredDate()));
             orderHistDTO.setOrderItemDTOList(hashMap.get(orderId));
             orderHistDTOList.add(orderHistDTO);

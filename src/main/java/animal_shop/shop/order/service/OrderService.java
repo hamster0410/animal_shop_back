@@ -129,7 +129,10 @@ public class OrderService {
             for(OrderItem orderItem : orderItems){
 
                 OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, orderItem.getItem().getThumbnail_url().get(0));
-                if(status.equals("waiting")){
+                if(status == null){
+                    orderHistDTO.addOrderItemDTO(orderItemDTO);
+                }
+                else if(status.equals("waiting")){
                     if(!orderItem.isDelivery_revoke() && !orderItem.isDelivery_approval()){
                         orderHistDTO.addOrderItemDTO(orderItemDTO);
                     }

@@ -41,7 +41,7 @@ public class OrderController {
     @GetMapping("/orders")
     public ResponseEntity<?> orderHist(@RequestHeader(value = "Authorization") String token,
                                        @RequestParam(value = "page" , defaultValue = "1")int page,
-                                       @RequestParam(value="status", defaultValue = "waiting") String status){
+                                       @RequestParam(value="status", required = false) String status){
         ResponseDTO responseDTO;
         try{
             OrderHistDTOResponse  orderHistDTOResponse = orderService.getOrderList(token,page-1, status);
