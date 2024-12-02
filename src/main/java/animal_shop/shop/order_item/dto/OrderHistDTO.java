@@ -2,8 +2,8 @@ package animal_shop.shop.order_item.dto;
 
 import animal_shop.shop.order.OrderStatus;
 import animal_shop.shop.order.entity.Order;
-import animal_shop.shop.order_item.entity.OrderItem;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.format.DateTimeFormatter;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
+@NoArgsConstructor
 public class OrderHistDTO {
 
     private Long orderId;

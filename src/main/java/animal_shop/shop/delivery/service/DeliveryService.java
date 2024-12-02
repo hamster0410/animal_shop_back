@@ -13,8 +13,12 @@ import animal_shop.shop.delivery.repository.DeliveryCompletedRepository;
 import animal_shop.shop.delivery.repository.DeliveryItemRepository;
 import animal_shop.shop.delivery.repository.DeliveryProgressRepository;
 import animal_shop.shop.delivery.repository.DeliveryRepository;
+import animal_shop.shop.order.OrderStatus;
 import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.order.repository.OrderRepository;
+import animal_shop.shop.order_item.dto.OrderHistDTO;
+import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
+import animal_shop.shop.order_item.dto.OrderItemDTO;
 import animal_shop.shop.order_item.entity.OrderItem;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
 import animal_shop.shop.point.entity.Point;
@@ -28,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -149,7 +154,9 @@ public class DeliveryService {
             d.setDelivery_approval(true);
 
             //배송 진행 테이블 생성
-            DeliveryProgress deliveryProgress = new DeliveryProgress(d);
+            OrderItem orderItem = orderItemRepository.findById(d.getOrderItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("orderItem is not found"));
+            DeliveryProgress deliveryProgress = new DeliveryProgress(d,orderItem);
             deliveryProgressRepository.save(deliveryProgress);
         }
 
@@ -183,7 +190,7 @@ public class DeliveryService {
         DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(deliveryApproveDetailDTO.getOrderItemId());
 
         //배송 진행 테이블 생성
-        DeliveryProgress deliveryProgress = new DeliveryProgress(deliveryItem);
+        DeliveryProgress deliveryProgress = new DeliveryProgress(deliveryItem,orderItem);
         deliveryProgressRepository.save(deliveryProgress);
 
         if(!member.getId().equals(deliveryItem.getSellerId())){
@@ -292,6 +299,7 @@ public class DeliveryService {
         completed.setAddress(progress.getAddress());
         completed.setTrackingNumber(progress.getTrackingNumber());
         completed.setCourier(progress.getCourier());
+        completed.setOrderId(progress.getOrderId());
         //현재시간이 배송 완료시간
         completed.setDeliveredDate(LocalDateTime.now());
 
@@ -320,56 +328,94 @@ public class DeliveryService {
         pointRepository.save(point);
     }
 
-    public DeliveryCustomerResponse get_deliveryList(String token, int page) {
+    public OrderHistDTOResponse get_deliveryList(String token, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Pageable pageable = (Pageable) PageRequest.of(page,10);
 
         Page<DeliveryProgress> deliveryProgresses = deliveryProgressRepository.findByBuyerId(Long.valueOf(userId),pageable);
-        List<DeliveryCustomerDTO> deliveryCustomerDTOList = new ArrayList<>();
 
-        Member buyer =  memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+        List<OrderHistDTO> orderHistDTOList = new ArrayList<>();
 
-
-        for(DeliveryProgress deliveryProgress : deliveryProgresses){
-            Member seller = memberRepository.findById(deliveryProgress.getSellerId())
-                    .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+        HashMap<Long,ArrayList<OrderItemDTO>> hashMap = new HashMap<>();
+        HashMap<Long,DeliveryProgress> hashMap2 = new HashMap<>();
+        for(DeliveryProgress deliveryProgress : deliveryProgresses) {
 
             DeliveryItem deliveryItem = deliveryItemRepository.findById(deliveryProgress.getDeliveryItemId())
                     .orElseThrow(() -> new IllegalArgumentException("deliveryItem is not found"));
-            deliveryCustomerDTOList.add(new DeliveryCustomerDTO(deliveryProgress,seller,buyer,deliveryItem));
+
+            OrderItem orderItem = orderItemRepository.findById(deliveryItem.getOrderItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("order item not found"));
+
+            if (!hashMap.containsKey(deliveryProgress.getOrderId())) {
+                hashMap.put(deliveryProgress.getOrderId(), new ArrayList<OrderItemDTO>());
+                hashMap.get(deliveryProgress.getOrderId()).add(new OrderItemDTO(deliveryProgress,deliveryItem, orderItem));
+            } else {
+                hashMap.get(deliveryProgress.getOrderId()).add(new OrderItemDTO(deliveryProgress,deliveryItem, orderItem));
+            }
+
+            if (!hashMap2.containsKey(deliveryProgress.getOrderId())) {
+                hashMap2.put(deliveryProgress.getOrderId(), deliveryProgress);
+            }
         }
 
-        return DeliveryCustomerResponse
-                .builder()
-                .deliveryCustomerDTOList(deliveryCustomerDTOList)
+        for(Long orderId :hashMap2.keySet()){
+            OrderHistDTO orderHistDTO = new OrderHistDTO();
+            orderHistDTO.setOrderId(orderId);
+            orderHistDTO.setOrderStatus(OrderStatus.valueOf(String.valueOf(hashMap2.get(orderId).getDeliveryStatus())));
+            orderHistDTO.setOrderDate(String.valueOf(hashMap2.get(orderId).getDeliveredDate()));
+            orderHistDTO.setOrderItemDTOList(hashMap.get(orderId));
+            orderHistDTOList.add(orderHistDTO);
+        }
+
+
+        return OrderHistDTOResponse.builder()
+                .orderHistDTOList(orderHistDTOList)
                 .total_count(deliveryProgresses.getTotalElements())
                 .build();
     }
 
-    public DeliveryCustomerResponse get_deliveryCompltedList(String token, int page) {
+    public OrderHistDTOResponse get_deliveryCompltedList(String token, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Pageable pageable = (Pageable) PageRequest.of(page,10);
 
         Page<DeliveryCompleted> deliveryCompleteds = deliveryCompletedRepository.findByBuyerId(Long.valueOf(userId),pageable);
         List<DeliveryCustomerDTO> deliveryCustomerDTOList = new ArrayList<>();
 
-        Member buyer =  memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(()-> new IllegalArgumentException("member is not found"));
+        List<OrderHistDTO> orderHistDTOList = new ArrayList<>();
 
+        HashMap<Long,ArrayList<OrderItemDTO>> hashMap = new HashMap<>();
+        HashMap<Long,DeliveryCompleted> hashMap2 = new HashMap<>();
 
         for(DeliveryCompleted deliveryCompleted : deliveryCompleteds){
-            Member seller = memberRepository.findById(deliveryCompleted.getSellerId())
-                    .orElseThrow(()-> new IllegalArgumentException("member is not found"));
 
             DeliveryItem deliveryItem = deliveryItemRepository.findById(deliveryCompleted.getDeliveryItemId())
                     .orElseThrow(() -> new IllegalArgumentException("deliveryItem is not found"));
-            deliveryCustomerDTOList.add(new DeliveryCustomerDTO(deliveryCompleted,seller,buyer,deliveryItem));
-        }
 
-        return DeliveryCustomerResponse
-                .builder()
-                .deliveryCustomerDTOList(deliveryCustomerDTOList)
+            OrderItem orderItem = orderItemRepository.findById(deliveryItem.getOrderItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("order item not found"));
+
+            if (!hashMap.containsKey(deliveryCompleted.getOrderId())) {
+                hashMap.put(deliveryCompleted.getOrderId(), new ArrayList<OrderItemDTO>());
+                hashMap.get(deliveryCompleted.getOrderId()).add(new OrderItemDTO(deliveryCompleted,deliveryItem, orderItem));
+            } else {
+                hashMap.get(deliveryCompleted.getOrderId()).add(new OrderItemDTO(deliveryCompleted,deliveryItem, orderItem));
+            }
+
+            if (!hashMap2.containsKey(deliveryCompleted.getOrderId())) {
+                hashMap2.put(deliveryCompleted.getOrderId(), deliveryCompleted);
+            }
+        }
+        System.out.println(hashMap);
+        for(Long orderId :hashMap2.keySet()){
+            OrderHistDTO orderHistDTO = new OrderHistDTO();
+            orderHistDTO.setOrderId(orderId);
+            orderHistDTO.setOrderStatus(OrderStatus.valueOf("COMPLETED"));
+            orderHistDTO.setOrderDate(String.valueOf(hashMap2.get(orderId).getDeliveredDate()));
+            orderHistDTO.setOrderItemDTOList(hashMap.get(orderId));
+            orderHistDTOList.add(orderHistDTO);
+        }
+        return OrderHistDTOResponse.builder()
+                .orderHistDTOList(orderHistDTOList)
                 .total_count(deliveryCompleteds.getTotalElements())
                 .build();
     }

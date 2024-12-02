@@ -1,6 +1,8 @@
 package animal_shop.shop.order_item.entity;
 
+import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
+import animal_shop.shop.delivery.entity.DeliveryItem;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.order.PaymentStatus;
 import animal_shop.shop.order.dto.OrderDTO;

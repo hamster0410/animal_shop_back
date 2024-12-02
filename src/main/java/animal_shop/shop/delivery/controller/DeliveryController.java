@@ -4,6 +4,8 @@ import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.delivery.dto.DeliveryCheckDTO;
 import animal_shop.shop.delivery.dto.DeliveryCustomerResponse;
 import animal_shop.shop.delivery.service.DeliveryService;
+import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,7 @@ public class DeliveryController {
                                       @RequestParam(name = "page", defaultValue = "1")int page){
         ResponseDTO responseDTO;
         try{
-            DeliveryCustomerResponse deliveryCustomerResponse = deliveryService.get_deliveryList(token,page-1);
+            OrderHistDTOResponse deliveryCustomerResponse = deliveryService.get_deliveryList(token,page-1);
             return ResponseEntity.ok().body(deliveryCustomerResponse);
         }catch (Exception e){
             responseDTO = ResponseDTO
@@ -36,7 +38,7 @@ public class DeliveryController {
                                       @RequestParam(name = "page", defaultValue = "1")int page){
         ResponseDTO responseDTO;
         try{
-            DeliveryCustomerResponse deliveryCustomerResponse = deliveryService.get_deliveryCompltedList(token,page-1);
+            OrderHistDTOResponse deliveryCustomerResponse = deliveryService.get_deliveryCompltedList(token,page-1);
             return ResponseEntity.ok().body(deliveryCustomerResponse);
         }catch (Exception e){
             responseDTO = ResponseDTO

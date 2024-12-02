@@ -33,21 +33,30 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 
     @Query("SELECT i FROM Item i " +
             "LEFT JOIN FETCH i.thumbnail_url " +  // thumbnail_url 컬렉션을 fetch join으로 가져옴
-            "WHERE i.category = :category " +
+            "WHERE i.species = :species " +
+            "AND i.category = :category " +
             "AND i.detailed_category = :detailedCategory")
     Page<Item> findByCategoryAndDetailedCategoryWithThumbnails(
+            @Param("species") String species,
             @Param("category") String category,
             @Param("detailedCategory") String detailedCategory,
             Pageable pageable);
 
-
-    // 이름으로 검색 (엔티티만 반환)
-//    @Query("SELECT i FROM Item i WHERE i.name LIKE %:searchTerm%")
-//    Page<Item> findByItemNameContainingIgnoreCase(@Param("searchTerm") String searchTerm, Pageable pageable);
-
-    // 이름으로 검색 (Option을 페치 조인)
-//    @Query("SELECT DISTINCT i FROM Item i JOIN FETCH i.options o WHERE i.member.nickname LIKE %:searchTerm%")
-//    Page<Item> findByMemberNicknameContainingWithOptions(@Param("searchTerm") String searchTerm, Pageable pageable);
+    //종과 카테고리와, 디테일 카테고리를 통해 이름이 비슷한 아이템 검색
+    @EntityGraph(attributePaths = {"options"})
+    @Query("SELECT i FROM Item i " +
+            "LEFT JOIN FETCH i.thumbnail_url " +
+            "WHERE i.species = :species " +
+            "AND i.category = :category " +
+            "AND i.detailed_category = :detailedCategory " +
+            "AND LOWER(i.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Item> findBySpeciesAndCategoryAndDetailedCategoryWithThumbnailsContainingIgnoreCase(
+            @Param("species") String species,
+            @Param("category") String category,
+            @Param("detailedCategory") String detailedCategory,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
 
     @EntityGraph(attributePaths = {"options", "member"})
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")

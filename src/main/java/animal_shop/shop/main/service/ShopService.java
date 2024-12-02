@@ -105,29 +105,29 @@ public class ShopService {
             }
         }else {
             //체중기준 추천
-            AnimalWeight animalWeight = animalWeightRepository.findBySpecies(species);
+            AnimalWeight animalWeight = animalWeightRepository.findBySpecies(pet.getBreed());
             //강아지일 경우
             if(species.equals("dog")){
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails("SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails("SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails("SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }else{
                 //고양이일 경우
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails("SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails("SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails("SAMPLE","SAMPLE",pageable)
+                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE",pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }

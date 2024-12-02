@@ -27,6 +27,8 @@ public class DeliveryCompleted {
 
     private String trackingNumber;
 
+    private Long orderId;
+
     //배송인 이름
     @Column(nullable = false,length = 30)
     private String courier;

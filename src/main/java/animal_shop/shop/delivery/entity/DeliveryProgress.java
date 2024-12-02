@@ -1,6 +1,7 @@
 package animal_shop.shop.delivery.entity;
 
 import animal_shop.shop.delivery.DeliveryStatus;
+import animal_shop.shop.order_item.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,8 @@ public class DeliveryProgress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_progress_id")
     private Long id;
+
+    private Long orderId;
 
     @Column(nullable = false)
     private Long deliveryItemId;
@@ -42,13 +45,14 @@ public class DeliveryProgress {
     private DeliveryStatus deliveryStatus;
 
 
-    public DeliveryProgress(DeliveryItem deliveryItem){
+    public DeliveryProgress(DeliveryItem deliveryItem, OrderItem orderItem){
         this.deliveryItemId = deliveryItem.getId();
         this.sellerId = deliveryItem.getSellerId();
         this.buyerId = deliveryItem.getBuyerId();
         this.address = deliveryItem.getDelivery().getAddress();
         this.trackingNumber = System.currentTimeMillis()+"-" + deliveryItem.getId();
         this.courier ="animalping";
+        this.orderId = orderItem.getOrder().getId();
         this.deliveredDate = LocalDateTime.now();
         this.deliveryStatus = DeliveryStatus.COMPLETED;
     }

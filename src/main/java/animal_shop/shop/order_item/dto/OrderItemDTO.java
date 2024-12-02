@@ -1,5 +1,9 @@
 package animal_shop.shop.order_item.dto;
 
+import animal_shop.community.member.entity.Member;
+import animal_shop.shop.delivery.entity.DeliveryCompleted;
+import animal_shop.shop.delivery.entity.DeliveryItem;
+import animal_shop.shop.delivery.entity.DeliveryProgress;
 import animal_shop.shop.order_item.entity.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,4 +40,25 @@ public class OrderItemDTO {
         this.orderName = orderItem.getOrder_name();
         this.imgUrl = imgUrl;
     }
+
+    public OrderItemDTO(DeliveryProgress deliveryProgress,DeliveryItem deliveryItem, OrderItem orderItem) {
+        this.itemId = deliveryProgress.getId();
+        this.itemNm = deliveryItem.getItemName();
+        this.count = deliveryItem.getQuantity();
+        this.orderPrice = Math.toIntExact(deliveryItem.getOptionPrice());
+        this.orderName = orderItem.getOrder_name();
+        this.imgUrl = orderItem.getItem().getThumbnail_url().get(0);
+    }
+
+    public OrderItemDTO(DeliveryCompleted deliveryCompleted, DeliveryItem deliveryItem, OrderItem orderItem) {
+        this.itemId = deliveryCompleted.getId();
+        this.itemNm = deliveryItem.getItemName();
+        this.count = deliveryItem.getQuantity();
+        this.orderPrice = Math.toIntExact(deliveryItem.getOptionPrice());
+        this.orderName = orderItem.getOrder_name();
+        this.imgUrl = orderItem.getItem().getThumbnail_url().get(0);
+
+    }
+
+//    public OrderItemDTO();
 }
