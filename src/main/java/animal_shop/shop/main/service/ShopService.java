@@ -88,19 +88,19 @@ public class ShopService {
         if(randomNumber % 2 ==0){
             if(species.equals("dog")){
                 if(pet.getAge()<2){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"HEALTH",pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"HEALTH",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
                 }else if(pet.getAge() < 8){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"ACCESSORY",pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"ACCESSORY",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
                 }else{
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"TOYS",pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"TOYS", ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
                 }
             }else{
                 if(pet.getAge()<2){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"HEALTH",pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"HEALTH",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
                 }else if(pet.getAge() < 8){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"ACCESSORY",pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"ACCESSORY", ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
                 }else{
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"TOYS",pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"TOYS",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
                 }
             }
         }else {
@@ -109,28 +109,28 @@ public class ShopService {
             //강아지일 경우
             if(species.equals("dog")){
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
                                     pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
                                     pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
                                     pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }else{
                 //고양이일 경우
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findByCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }
@@ -154,7 +154,7 @@ public class ShopService {
 
     }
     @Transactional(readOnly = true)
-    public MainDTOBestResponse category_contents(int page, String species, String category) {
+    public MainDTOBestResponse category_contents(String species, String category, String detailed_category, int page) {
         if (page < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must be >= 0");
         }
@@ -162,14 +162,13 @@ public class ShopService {
         Pageable pageable = PageRequest.of(page, 20);
         Page<Item> category_goods = null;
 
-        System.out.println("Species: " + species + ", Category: " + category);
 
-        if (category != null) {
-            category_goods = itemRepository.findBySpeciesAndCategoryWithThumbnails(species, category, pageable);
-        } else if (species != null) {
-            category_goods = itemRepository.findBySpecies(species,ItemSellStatus.STOP, pageable);
+        if (detailed_category != null && category != null) {
+            category_goods = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,category,detailed_category,ItemSellStatus.STOP,pageable);
+        } else if (category != null) {
+            category_goods = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,category,ItemSellStatus.STOP,pageable);
         } else {
-            category_goods = itemRepository.findAll(pageable);
+            category_goods = itemRepository.findBySpecies(species,ItemSellStatus.STOP, pageable);
         }
 
         return MainDTOBestResponse.builder()
@@ -177,7 +176,6 @@ public class ShopService {
                 .total_count(category_goods.getTotalElements())
                 .build();
     }
-
 }
 
 

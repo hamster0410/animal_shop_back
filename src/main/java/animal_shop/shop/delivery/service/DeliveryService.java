@@ -307,15 +307,16 @@ public class DeliveryService {
         //현재시간이 배송 완료시간
         completed.setDeliveredDate(LocalDateTime.now());
 
+        // 포인트 추가
+        Point point = addPoints(completed);
+        completed.setPointId(point.getId());
+
         deliveryCompletedRepository.save(completed);
         deliveryProgressRepository.delete(progress); // 기존 데이터를 삭제
-
-        // 포인트 추가
-        addPoints(completed);
     }
 
     // 포인트 추가
-    private void addPoints(DeliveryCompleted completed) {
+    private Point addPoints(DeliveryCompleted completed) {
         Point point = new Point();
         DeliveryItem deliveryItem = deliveryItemRepository.findById(completed.getDeliveryItemId())
                 .orElseThrow(() -> new IllegalArgumentException("delivery item is not found"));
@@ -333,6 +334,8 @@ public class DeliveryService {
         point.setDeliveryCompletedId(completed.getId());
 
         pointRepository.save(point);
+
+        return point;
     }
 
     public OrderHistDTOResponse get_deliveryList(String token, int page) {

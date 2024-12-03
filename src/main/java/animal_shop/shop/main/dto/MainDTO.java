@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MainDTO {
+    private  String species;
     private Long id;
     private String name;
     private String nickname;
@@ -19,6 +20,8 @@ public class MainDTO {
     private Long rating;
     private Long comment_count;
     private long option_count;
+    private String category;
+    private String detailed_category;
 
     public MainDTO(Item item){
         this.id = item.getId();
@@ -33,5 +36,8 @@ public class MainDTO {
         this.rating = ar;
         this.comment_count = item.getComment_count();
         this.option_count = item.getOptions().size();
+        this.category = item.getCategory();
+        this.detailed_category = item.getDetailed_category();
+        this.species = item.getSpecies();
     }
 }

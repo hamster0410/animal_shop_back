@@ -30,10 +30,13 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
     // fetch join을 사용한 쿼리
     @Query("SELECT i FROM Item i " +
             "LEFT JOIN FETCH i.thumbnail_url " +  // thumbnail_url 컬렉션을 fetch join으로 가져옴
-            "WHERE i.species = :species AND i.category = :category")
+            "WHERE i.species = :species " +
+            "AND i.category = :category " +
+            "AND i.itemSellStatus != :itemSellStatus ")
     Page<Item> findBySpeciesAndCategoryWithThumbnails(
             @Param("species") String species,
             @Param("category") String category,
+            @Param("itemSellStatus") ItemSellStatus itemSellStatus,
             Pageable pageable);
 
     @Query("SELECT i FROM Item i " +
@@ -42,7 +45,7 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             "AND i.category = :category " +
             "AND i.detailed_category = :detailedCategory " +
             "AND i.itemSellStatus != :itemSellStatus ")
-    Page<Item> findByCategoryAndDetailedCategoryWithThumbnails(
+    Page<Item> findBySpeciesCategoryAndDetailedCategoryWithThumbnails(
             @Param("species") String species,
             @Param("category") String category,
             @Param("detailedCategory") String detailedCategory,
