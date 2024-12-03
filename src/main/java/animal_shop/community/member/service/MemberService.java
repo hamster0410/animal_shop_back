@@ -87,16 +87,15 @@ public class MemberService {
 
     @Transactional
     public void modify(MemberDTO memberDTO, String token) {
-        System.out.println("Member Service modify");
 
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
         Optional<Member> member = memberRepository.findById(userId);
 
-        if (memberRepository.existsByMail(memberDTO.getMail())) {
+        if (!memberDTO.getMail().equals(member.get().getMail()) && memberRepository.existsByMail(memberDTO.getMail())) {
             log.warn("Mail already exists {}", memberDTO.getMail());
             throw new RuntimeException("mail already exists");
         }
-        if (memberRepository.existsByNickname(memberDTO.getNickname())) {
+        if (!memberDTO.getNickname().equals(member.get().getNickname()) && memberRepository.existsByNickname(memberDTO.getNickname())) {
             log.warn("Nickname already exists {}", memberDTO.getNickname());
             throw new RuntimeException("Nickname already exists");
         }
@@ -106,6 +105,9 @@ public class MemberService {
             }
             if (memberDTO.getNickname() != null) {
                 member.get().setNickname(memberDTO.getNickname());
+            }
+            if (memberDTO.getProfile() != null){
+                member.get().setProfile(memberDTO.getProfile());
             }
 
             memberRepository.save(member.get());
