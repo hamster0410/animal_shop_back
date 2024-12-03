@@ -2,6 +2,7 @@ package animal_shop.shop.point.controller;
 
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.point.dto.PointTotalDTO;
+import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
 import animal_shop.shop.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class PointController {
                                            @RequestParam(value = "year") int year){
         ResponseDTO responseDTO;
         try{
-            List<PointTotalDTO> pointDTOList = pointService.getMonthSum(token,year);
+            PointTotalDTOResponse pointDTOList = pointService.getMonthSum(token,year);
             return ResponseEntity.ok().body(pointDTOList);
         }catch (Exception e){
 
@@ -40,7 +41,7 @@ public class PointController {
                                            @RequestParam(value = "month") int month){
         ResponseDTO responseDTO;
         try{
-            List<PointTotalDTO> pointDTOList = pointService.getDaySum(token,year,month);
+            PointTotalDTOResponse pointDTOList = pointService.getDaySum(token,year,month);
             return ResponseEntity.ok().body(pointDTOList);
         }catch (Exception e){
 

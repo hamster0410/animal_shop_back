@@ -2,15 +2,20 @@ package animal_shop.shop.point.repository;
 
 import animal_shop.shop.point.entity.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface PointRepository extends JpaRepository<Point, Long> {
+public interface PointRepository extends JpaRepository<Point, Long>, JpaSpecificationExecutor<Point> {
 
+    // 가장 빠른 포인트 일자를 가져오는 쿼리
+    @Query("SELECT MIN(p.getDate) FROM Point p")
+    LocalDateTime findEarliestPointDate();
 
     //월별 전체 합계
     @Query("SELECT FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m') AS month, SUM(p.point) AS totalPoints " +

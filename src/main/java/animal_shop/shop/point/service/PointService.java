@@ -2,12 +2,16 @@ package animal_shop.shop.point.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
 import animal_shop.shop.point.dto.PointTotalDTO;
+import animal_shop.shop.point.entity.Point;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,23 +24,31 @@ public class PointService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public List<PointTotalDTO> getMonthSum(String token, int year) {
+    public PointTotalDTOResponse getMonthSum(String token, int year) {
         List<Object[]> objects = pointRepository.findMonthlyPointSumsByYear(year);
         List<PointTotalDTO> pointTotalDTOList = new ArrayList<>();
         for(Object[] obj : objects){
             pointTotalDTOList.add(new PointTotalDTO(obj));
         }
-        return pointTotalDTOList;
+        return PointTotalDTOResponse
+                .builder()
+                .pointTotalDTOList(pointTotalDTOList)
+                .first_date(getEarliestPointDate())
+                .build();
     }
 
 
-    public List<PointTotalDTO> getDaySum(String token, int year, int month) {
+    public PointTotalDTOResponse getDaySum(String token, int year, int month) {
         List<Object[]> objects = pointRepository.findDailyPointSumsByYearAndMonth(year, month);
         List<PointTotalDTO> pointTotalDTOList = new ArrayList<>();
         for(Object[] obj : objects){
             pointTotalDTOList.add(new PointTotalDTO(obj));
         }
-        return pointTotalDTOList;
+        return PointTotalDTOResponse
+                .builder()
+                .pointTotalDTOList(pointTotalDTOList)
+                .first_date(getEarliestPointDate())
+                .build();
     }
 
     public List<PointYearSellerDTO> getSellerSumYear(String token,int year) {
@@ -74,5 +86,9 @@ public class PointService {
             pointTotalDTOList.add(pointYearSellerDTO);
         }
         return pointTotalDTOList;
+    }
+
+    public LocalDateTime getEarliestPointDate() {
+        return pointRepository.findEarliestPointDate();
     }
 }
