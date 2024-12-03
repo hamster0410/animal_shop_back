@@ -319,8 +319,11 @@ public class DeliveryService {
         Point point = new Point();
         DeliveryItem deliveryItem = deliveryItemRepository.findById(completed.getDeliveryItemId())
                 .orElseThrow(() -> new IllegalArgumentException("delivery item is not found"));
+        OrderItem orderItem = orderItemRepository.findById(deliveryItem.getOrderItemId())
+                        .orElseThrow(() -> new IllegalArgumentException("not found orderItem id"));
         point.setSellerId(completed.getSellerId());
         point.setBuyerId(completed.getBuyerId());
+        point.setItemId(orderItem.getItem().getId());
         point.setItemName(deliveryItem.getItemName());
         point.setOptionName(deliveryItem.getOptionName());
         point.setQuantity(deliveryItem.getQuantity());

@@ -260,7 +260,7 @@ public class MemberService {
         }
         return stringBuffer.toString();
     }
-    @Transactional
+
     public void sendNewPasswordByMail(String toMailAddr,String authentication) {
         Member member = memberRepository.findByMail(toMailAddr)
                 .orElseThrow(() -> new IllegalArgumentException("member is not matching"));

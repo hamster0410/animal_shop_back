@@ -5,4 +5,5 @@ import lombok.Getter;
 @Getter
 public class StopItemDTO {
     Long itemId;
+    String suspensionReason;
 }

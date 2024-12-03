@@ -21,6 +21,8 @@ public class Point {
 
     private Long buyerId;
 
+    private Long itemId;
+
     private String itemName;
 
     private String optionName;
