@@ -5,10 +5,8 @@ import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
 import animal_shop.shop.point.dto.PointTotalDTO;
-import animal_shop.shop.point.entity.Point;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -76,8 +74,8 @@ public class PointService {
         return pointTotalDTOList;
     }
 
-    public List<PointYearSellerDTO> getSellerSumDay(String token, int year, int month) {
-        List<Object[]> objects = pointRepository.findDailyTotalPointsBySellerForMonth(year, month);
+    public List<PointYearSellerDTO> getSellerSumDay(String token, int year, int month, int day) {
+        List<Object[]> objects = pointRepository.findDailyTotalPointsBySellerForDay(year, month, day);
         List<PointYearSellerDTO> pointTotalDTOList = new ArrayList<>();
         for(Object[] obj : objects){
             Member member = memberRepository.findById((Long) obj[1])

@@ -56,9 +56,10 @@ public interface PointRepository extends JpaRepository<Point, Long>, JpaSpecific
             "FROM Point p " +
             "WHERE FUNCTION('YEAR', p.getDate) = :year " +
             "AND FUNCTION('MONTH', p.getDate) = :month " +
+            "AND FUNCTION('DAY', p.getDate) = :day " +
             "GROUP BY FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m-%d'), p.sellerId " +
             "ORDER BY day, p.sellerId")
-    List<Object[]> findDailyTotalPointsBySellerForMonth(@Param("year") int year, @Param("month") int month);
+    List<Object[]> findDailyTotalPointsBySellerForDay(@Param("year") int year, @Param("month") int month, @Param("day") int day);
 
 
 
