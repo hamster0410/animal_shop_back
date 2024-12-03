@@ -1,6 +1,5 @@
 package animal_shop.community.member.repository;
 
-import animal_shop.community.member.dto.ChangePasswordDTO;
 import animal_shop.community.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,4 +32,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     String findAuthentication(@Param("email") String email);
 
     Optional<Member> findByMail(String email);
+
 }
