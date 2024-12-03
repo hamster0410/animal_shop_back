@@ -24,6 +24,8 @@ public class ItemDetailDTO {
 
    private String category;
 
+   private String detailed_category;
+
    private Long comment_count;
 
    private List<String> thumbnail_url;
@@ -48,6 +50,7 @@ public class ItemDetailDTO {
        this.item_detail = item.getItemDetail();
        this.options = list;
        this.category = item.getCategory();
+       this.detailed_category = item.getDetailed_category();
        this.seller = item.getMember().getNickname();
        this.species = item.getSpecies();
        this.comment_count = item.getComment_count();

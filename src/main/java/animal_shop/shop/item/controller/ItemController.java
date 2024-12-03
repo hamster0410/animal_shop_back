@@ -83,12 +83,15 @@ public class ItemController {
     }
     @GetMapping("/search")
     public ResponseEntity<?>search_item(@RequestHeader(value = "Authorization",required = false)String token,
+                                        @RequestParam(value = "species", required = false) String species,
+                                        @RequestParam(value = "category", required = false) String category,
+                                        @RequestParam(value = "detailed_category", required = false) String detailed_category,
                                         @RequestParam(value = "searchTerm",required = false)String searchTerm,
                                         @RequestParam(value = "searchBy",required = false)String searchBy,
                                         @RequestParam(value = "page",defaultValue = "1")int page){
         ResponseDTO responseDTO = null;
         try {
-            ItemDTOListResponse item = itemService.search_item(token, searchBy, searchTerm, page-1);
+            ItemDTOListResponse item = itemService.searchItems(searchBy, searchTerm, species, category, detailed_category, page-1);
             return ResponseEntity.ok().body(item);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()

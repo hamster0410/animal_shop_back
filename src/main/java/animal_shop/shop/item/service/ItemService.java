@@ -16,6 +16,7 @@
     import org.springframework.data.domain.PageRequest;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.domain.Sort;
+    import org.springframework.data.jpa.domain.Specification;
     import org.springframework.mail.javamail.JavaMailSender;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
@@ -375,28 +376,88 @@
             optionRepository.save(option);
         }
 
-        public ItemDTOListResponse search_item(String token,String searchBy, String searchTerm, int page) {
-            // 사용자 인증
-            String userId = tokenProvider.extractIdByAccessToken(token);
-
+//        public ItemDTOListResponse search_item(String token,String searchBy, String searchTerm, String species, String category, String detailed_category, int page) {
+//            // 사용자 인증
+//            String userId = tokenProvider.extractIdByAccessToken(token);
+//
+//            // Pageable 설정 (페이지 당 10개로 제한)
+//            Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
+//
+//            // 아이템 검색
+//            Page<Item> items;
+//            if (searchTerm != null && searchBy != null && !searchTerm.isEmpty() && !searchBy.isEmpty()) {
+//                if (searchBy.equals("item")) {
+//                    if(species == null){   //전체 조회
+//                        items = itemRepository.findByItemNameContainingIgnoreCase(searchTerm,pageable);
+//                    }else if(category == null){ //종으로 조회
+//                        items = itemRepository.findBySpeciesWithThumbnailsItemNameContainingIgnoreCase(species,searchTerm,pageable);
+//                    }else if(detailed_category == null){ //카테고리로 조회
+//                        items = itemRepository.findBySpeciesAndCategoryWithThumbnailsItemNameContainingIgnoreCase(species,category,searchTerm,pageable);
+//                    }else{ //세부 카테고리로 조회
+//                        items = itemRepository.findBySpeciesAndCategoryAndDetailedCategoryWithThumbnailsItemNameContainingIgnoreCase(species,category,detailed_category,searchTerm,pageable);
+//                    }
+//                }else if(searchBy.equals("seller")){
+//                    if(species == null){   //전체 조회
+//                        items = itemRepository.findByMemberNicknameContainingWithOptions(searchTerm,pageable);
+//                    }else if(category == null){ //종으로 조회
+//                        items = itemRepository.findBySpeciesWithThumbnailsMemberNicknameContainingIgnoreCase(species,searchTerm,pageable);
+//                    }else if(detailed_category == null){ //카테고리로 조회
+//                        items = itemRepository.findBySpeciesAndCategoryWithThumbnailsMemberNicknameContainingIgnoreCase(species,category,searchTerm,pageable);
+//                    }else{ //세부 카테고리로 조회
+//                        items = itemRepository.findBySpeciesAndCategoryAndDetailedCategoryWithThumbnailsMemberNicknameContainingIgnoreCase(species,category,detailed_category,searchTerm,pageable);
+//                    }
+//                }else{ //둘 다 종합 검색
+//                    if(species == null){   //전체 조회
+//                        items = itemRepository.findByMemberNicknameAndItemNameContainingWithOptions(searchTerm,pageable);
+//                    }else if(category == null){ //종으로 조회
+//                        items = itemRepository.findBySpeciesWithThumbnailsMemberNicknameAndItemNameContainingIgnoreCase(species,searchTerm,pageable);
+//                    }else if(detailed_category == null){ //카테고리로 조회
+//                        items = itemRepository.findBySpeciesAndCategoryWithThumbnailsMemberNicknameAndItemNameContainingIgnoreCase(species,category,searchTerm,pageable);
+//                    }else{ //세부 카테고리로 조회
+//                        items = itemRepository.findBySpeciesAndCategoryAndDetailedCategoryWithThumbnailsMemberNicknameAndItemNameContainingIgnoreCase(species,category,detailed_category,searchTerm,pageable);
+//                    }
+//                }
+//            } else {
+//                items = itemRepository.findAllByOrderByCreatedDateDesc(pageable); // 검색어가 없으면 전체 조회
+//            }
+//
+//            // DTO 변환 (Item -> ItemDetailDTO)
+//            List<ItemDetailDTO> itemDTOs = items.map(ItemDetailDTO::new).getContent();
+//
+//            // 검색 결과 반환
+//            return ItemDTOListResponse.builder()
+//                    .itemDTOLists(itemDTOs)
+//                    .total_count(items.getTotalElements())
+//                    .build();
+//        }
+        //사랑해요 specification
+        public ItemDTOListResponse searchItems(String searchBy, String searchTerm,  String species, String category, String detailedCategory, int page) {
+            Specification<Item> specification = Specification.where(null);
             // Pageable 설정 (페이지 당 10개로 제한)
             Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
-
-            // 아이템 검색
-            Page<Item> items;
-            if (searchTerm != null && searchBy != null && !searchTerm.isEmpty() && !searchBy.isEmpty()) {
+            if (searchTerm != null && !searchTerm.isEmpty()) {
                 if (searchBy.equals("item")) {
-                    items = itemRepository.findByItemNameContainingIgnoreCase(searchTerm,pageable);
-                }else if(searchBy.equals("seller")){
-                    items = itemRepository.findByMemberNicknameContainingWithOptions(searchTerm,pageable);
-                }else{
-                    throw new IllegalStateException("searchBy is empty");
+                    specification = specification.and(ItemSpecification.searchByItemName(searchTerm));
+                } else if (searchBy.equals("seller")) {
+                    specification = specification.and(ItemSpecification.searchByMemberNickname(searchTerm));
+                }else if (searchBy.equals("with")) {
+                    specification = specification.and(ItemSpecification.searchByItemNameOrMemberNickname(searchTerm));
                 }
-
-            } else {
-                items = itemRepository.findAllSearch(ItemSellStatus.STOP, pageable); // 검색어가 없으면 전체 조회
             }
 
+            if (species != null) {
+                specification = specification.and(ItemSpecification.searchBySpecies(species));
+            }
+
+            if (category != null) {
+                specification = specification.and(ItemSpecification.searchByCategory(category));
+            }
+
+            if (detailedCategory != null) {
+                specification = specification.and(ItemSpecification.searchByDetailedCategory(detailedCategory));
+            }
+
+            Page<Item> items = itemRepository.findAll(specification, pageable);
             // DTO 변환 (Item -> ItemDetailDTO)
             List<ItemDetailDTO> itemDTOs = items.map(ItemDetailDTO::new).getContent();
 
@@ -406,7 +467,6 @@
                     .total_count(items.getTotalElements())
                     .build();
         }
-
 
     }
 
