@@ -1,27 +1,23 @@
 package animal_shop.global.controller;
 
 import animal_shop.global.dto.FileDownloadDTO;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -253,24 +249,34 @@ public class FileApiController {
 
             // Resource 생성
             Resource resource = new FileSystemResource(file);
+            String[] nameParts = fileDownloadDTO.getFilePath().split("_");  // "_"로 파일 이름 분리
+            String newFileName = nameParts.length > 2 ? nameParts[2] : nameParts[0];  // 첫 번째 "_" 이후 부분을 새 파일명으로 사용
+            System.out.println("here 1 " + fileDownloadDTO.getFilePath());
+            System.out.println("here 2 " + newFileName);
 
-            // 한글 파일 이름 인코딩
-            String encodedFileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())
-                    .replace("+", "%20"); // 공백 처리
 
-            // 헤더 설정
+
+            // 파일 이름 인코딩 (UTF-8로 한글 및 특수문자 처리)
+            String encodedFileName = URLEncoder.encode(newFileName, StandardCharsets.UTF_8.toString())
+                    .replace("+", "%20"); // 공백을 %20으로 처리
+            // MIME 타입 추정 (파일 확장자에 맞게)
+            String mimeType = getMimeType(fileDownloadDTO.getFilePath());
+            // 헤더 설정: UTF-8 인코딩을 지원하는 방식으로 처리
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
-            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+            headers.add(HttpHeaders.CONTENT_TYPE, mimeType);
 
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(resource);
 
         } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
     private MediaType getMediaTypeForFileName(String filename) {
         if (filename.endsWith(".png")) {
@@ -286,5 +292,27 @@ public class FileApiController {
         }
     }
 
+    // 확장자에 맞는 MIME 타입 반환
+    private String getMimeType(String filePath) {
+        String mimeType = null;
+        try {
+            mimeType = Files.probeContentType(Paths.get(filePath)); // Java NIO 방식으로 MIME 타입 추정
+            if (mimeType == null) {
+                mimeType = "application/octet-stream"; // 기본 MIME 타입
+            }
+        } catch (IOException e) {
+            mimeType = "application/octet-stream"; // 예외 발생 시 기본 MIME 타입
+        }
+        return mimeType;
+    }
+
+
+    private static String getFileExtension(String fileName) {
+        if (fileName.lastIndexOf('.') > 0) {
+            return fileName.substring(fileName.lastIndexOf('.') + 1);
+        } else {
+            return ""; // 확장자가 없는 경우 빈 문자열 반환
+        }
+    }
 
 }
