@@ -240,25 +240,34 @@ public class FileApiController {
     }
 //    @GetMapping("/downloadfile/{fileName:.+}")
 //    public ResponseEntity<Resource> downloadFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
-//        // Load file as Resource
-//        Path filePath = Path.of(fileDownloadDTO.getFilePath());
-//
-//        String contentType = null;
 //        try {
-//            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-//        } catch (IOException ex) {
-//            logger.info("Could not determine file type.");
-//        }
+//            // 파일 경로 설정
+//            String basePath = fileDownloadDTO.getFilePath();
+//            File file = new File(basePath);
 //
-//        // Fallback to the default content type if type could not be determined
-//        if(contentType == null) {
-//            contentType = "application/octet-stream";
-//        }
+//            if (!file.exists()) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//            }
 //
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(contentType))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-//                .body(resource);
+//            // Resource 생성
+//            Resource resource = new FileSystemResource(file);
+//
+//            // 한글 파일 이름 인코딩
+//            String encodedFileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())
+//                    .replace("+", "%20"); // 공백 처리
+//
+//            // 헤더 설정
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
+//            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+//
+//            return ResponseEntity.ok()
+//                    .headers(headers)
+//                    .body(resource);
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
 //    }
 
     private MediaType getMediaTypeForFileName(String filename) {
