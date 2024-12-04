@@ -33,6 +33,9 @@ public class DirectoryInitializer {
     @Value("${file.upload-dir-pet}")  // 파일 저장 경로를 application.properties에 설정
     private String petUploadDir;
 
+    @Value("${file.upload-dir-notices}")
+    private String noticesUploadDir;
+
     @PostConstruct
     public void init() {
         createDirectoryIfNotExists(commentUploadDir);
@@ -41,6 +44,7 @@ public class DirectoryInitializer {
         createDirectoryIfNotExists(itemUploadDir);
         createDirectoryIfNotExists(itemCommentUploadDir);
         createDirectoryIfNotExists(petUploadDir);
+        createDirectoryIfNotExists(noticesUploadDir);
     }
 
     private void createDirectoryIfNotExists(String dirPath) {
