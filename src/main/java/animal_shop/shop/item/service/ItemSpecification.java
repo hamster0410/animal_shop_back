@@ -59,7 +59,7 @@ public class ItemSpecification {
             }else if(status.equals("sold_out")){
                 return criteriaBuilder.equal(root.get("itemSellStatus"),1);
             }else if(status.equals("sell")){
-                return criteriaBuilder.equal(root.get("itemSellStatus"),1);
+                return criteriaBuilder.equal(root.get("itemSellStatus"),0);
             }else{
                 return null;
             }
