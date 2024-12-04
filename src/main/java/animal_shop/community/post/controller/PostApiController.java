@@ -27,6 +27,7 @@ public class PostApiController {
     @Autowired
     private TokenProvider tokenProvider;
 
+
     @GetMapping({"/", "/best"})
     public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
         try {
@@ -207,6 +208,10 @@ public class PostApiController {
                     .body(responseDTO);
         }
     }
+
+
+
+
 
 
 
