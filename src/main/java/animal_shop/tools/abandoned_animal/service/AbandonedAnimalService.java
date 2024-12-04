@@ -48,7 +48,7 @@ public class AbandonedAnimalService {
 
         while (true) {
             // API 호출 URL 생성
-            String API_URL = callBackUrl + "?serviceKey=" + serviceKey + "&dataType=" + dataType + "&numOfRows=12&pageNo=" + pageNo + "&_type=json";
+            String API_URL = callBackUrl + "?serviceKey=" + serviceKey + "&dataType=" + dataType + "&numOfRows=1000&pageNo=" + pageNo + "&_type=json";
             System.out.println("API 호출 URL: " + API_URL);
 
             // RestTemplate을 사용하여 API 호출
