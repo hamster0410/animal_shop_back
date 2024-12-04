@@ -26,7 +26,10 @@ public class NoticesDTO {
 //        this.priority = priority;
 //    }
     // Notices 엔티티를 DTO로 변환하는 생성자
-    public NoticesDTO(Long id, String title, String content, Integer priority, LocalDateTime created_date, String attachmentUrl) {
+    public NoticesDTO(Long id, String title, String content,
+                      Integer priority,
+                      LocalDateTime created_date,
+                      String attachmentUrl) {
         this.id = id;
         this.title = title;
         this.content = content;

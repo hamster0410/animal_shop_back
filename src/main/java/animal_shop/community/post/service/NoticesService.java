@@ -120,10 +120,7 @@ public class NoticesService {
         if (!member.getRole().toString().equals("ADMIN")) {
             throw new IllegalStateException("User is not ADMIN");
         }
-        // ID 검증
-        if (noticesDTO.getId() == null) {
-            throw new IllegalArgumentException("Notice ID must not be null");
-        }
+
         // 특정 공지사항 조회
         Notices notice = noticesRepository.findById(noticesDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Notice not found"));
