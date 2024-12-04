@@ -1,12 +1,12 @@
-package animal_shop.community.post.service;
+package animal_shop.tools.wiki_service.service;
 
 import animal_shop.community.comment.repository.CommentRepository;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
-import animal_shop.community.post.dto.WikiDTO;
-import animal_shop.community.post.dto.WikiDTOResponse;
-import animal_shop.community.post.entity.Wiki;
-import animal_shop.community.post.repository.WikiRepository;
+import animal_shop.tools.wiki_service.dto.WikiDTO;
+import animal_shop.tools.wiki_service.dto.WikiDTOResponse;
+import animal_shop.tools.wiki_service.entity.Wiki;
+import animal_shop.tools.wiki_service.repository.WikiRepository;
 import animal_shop.global.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

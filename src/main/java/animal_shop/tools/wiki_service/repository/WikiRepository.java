@@ -1,6 +1,6 @@
-package animal_shop.community.post.repository;
+package animal_shop.tools.wiki_service.repository;
 
-import animal_shop.community.post.entity.Wiki;
+import animal_shop.tools.wiki_service.entity.Wiki;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 

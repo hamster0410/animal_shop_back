@@ -1,4 +1,4 @@
-package animal_shop.community.post.dto;
+package animal_shop.tools.wiki_service.dto;
 
 import lombok.Builder;
 import lombok.Getter;

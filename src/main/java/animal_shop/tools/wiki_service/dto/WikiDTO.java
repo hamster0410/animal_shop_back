@@ -1,7 +1,7 @@
-package animal_shop.community.post.dto;
+package animal_shop.tools.wiki_service.dto;
 
 
-import animal_shop.community.post.entity.Wiki;
+import animal_shop.tools.wiki_service.entity.Wiki;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

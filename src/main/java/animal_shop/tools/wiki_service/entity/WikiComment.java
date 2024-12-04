@@ -1,4 +1,4 @@
-package animal_shop.community.post.entity;
+package animal_shop.tools.wiki_service.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

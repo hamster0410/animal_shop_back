@@ -1,4 +1,4 @@
-package animal_shop.community.post.entity;
+package animal_shop.tools.wiki_service.entity;
 
 import animal_shop.global.dto.BaseTimeEntity;
 import jakarta.persistence.*;

@@ -1,8 +1,8 @@
-package animal_shop.community.post.controller;
+package animal_shop.tools.wiki_service.controller;
 
-import animal_shop.community.post.dto.WikiDTO;
-import animal_shop.community.post.dto.WikiDTOResponse;
-import animal_shop.community.post.service.WikiService;
+import animal_shop.tools.wiki_service.dto.WikiDTO;
+import animal_shop.tools.wiki_service.dto.WikiDTOResponse;
+import animal_shop.tools.wiki_service.service.WikiService;
 import animal_shop.global.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
