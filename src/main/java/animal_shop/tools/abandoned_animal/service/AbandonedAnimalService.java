@@ -1,9 +1,6 @@
 package animal_shop.tools.abandoned_animal.service;
 
-import animal_shop.tools.abandoned_animal.dto.AnimalDTO;
-import animal_shop.tools.abandoned_animal.dto.AnimalListDTO;
-import animal_shop.tools.abandoned_animal.dto.AnimalListDTOResponse;
-import animal_shop.tools.abandoned_animal.dto.AnimalSearchDTO;
+import animal_shop.tools.abandoned_animal.dto.*;
 import animal_shop.tools.abandoned_animal.entity.AbandonedAnimal;
 import animal_shop.tools.abandoned_animal.repository.AbandonedAnimalRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -119,6 +116,12 @@ public class AbandonedAnimalService {
 
 
 
+    }
+
+    public AnimalDetailDTO searchDetailAPI(Long animalId) {
+        AbandonedAnimal animal = animalRepository.findById(animalId)
+                .orElseThrow(() -> new IllegalArgumentException("animal is not found"));
+        return new AnimalDetailDTO(animal);
     }
 }
 

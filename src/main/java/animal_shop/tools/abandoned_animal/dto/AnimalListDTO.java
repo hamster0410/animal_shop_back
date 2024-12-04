@@ -13,6 +13,8 @@ public class AnimalListDTO {
     private String location;
     private String species;
     private String status;
+    private String popfile;
+    public String neuterYn;
 
     public AnimalListDTO(AbandonedAnimal animal){
         this.id = animal.getId();
@@ -22,5 +24,7 @@ public class AnimalListDTO {
         this.location = a[0] + a[1];
         this.species = animal.getKindCd();
         this.status = animal.getProcessState();
+        this.popfile = animal.getPopfile();
+        this.neuterYn = animal.getNeuterYn();
     }
 }

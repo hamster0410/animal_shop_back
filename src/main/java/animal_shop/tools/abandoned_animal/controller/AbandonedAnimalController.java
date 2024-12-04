@@ -1,6 +1,9 @@
 package animal_shop.tools.abandoned_animal.controller;
 
 
+import animal_shop.global.dto.ResponseDTO;
+import animal_shop.tools.abandoned_animal.dto.AnimalDTO;
+import animal_shop.tools.abandoned_animal.dto.AnimalDetailDTO;
 import animal_shop.tools.abandoned_animal.dto.AnimalListDTOResponse;
 import animal_shop.tools.abandoned_animal.dto.AnimalSearchDTO;
 import animal_shop.tools.abandoned_animal.service.AbandonedAnimalService;
@@ -29,6 +32,20 @@ public class AbandonedAnimalController {
             return ResponseEntity.ok().body(animalListDTOResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<?> detailAnimal(@RequestParam(value = "animalId") Long animalId){
+        ResponseDTO responseDTO;
+        try{
+            AnimalDetailDTO animalDetailDTO =  abandonedAnimalService.searchDetailAPI(animalId);
+            return ResponseEntity.ok().body(animalDetailDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 }
