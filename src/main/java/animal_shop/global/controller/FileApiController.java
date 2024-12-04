@@ -1,15 +1,25 @@
 package animal_shop.global.controller;
 
+import animal_shop.global.dto.FileDownloadDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -228,6 +238,28 @@ public class FileApiController {
                     .body("Error reading file".getBytes());
         }
     }
+//    @GetMapping("/downloadfile/{fileName:.+}")
+//    public ResponseEntity<Resource> downloadFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
+//        // Load file as Resource
+//        Path filePath = Path.of(fileDownloadDTO.getFilePath());
+//
+//        String contentType = null;
+//        try {
+//            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+//        } catch (IOException ex) {
+//            logger.info("Could not determine file type.");
+//        }
+//
+//        // Fallback to the default content type if type could not be determined
+//        if(contentType == null) {
+//            contentType = "application/octet-stream";
+//        }
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+//                .body(resource);
+//    }
 
     private MediaType getMediaTypeForFileName(String filename) {
         if (filename.endsWith(".png")) {
@@ -242,7 +274,6 @@ public class FileApiController {
             return MediaType.APPLICATION_OCTET_STREAM; // 기본값
         }
     }
-
 
 
 }

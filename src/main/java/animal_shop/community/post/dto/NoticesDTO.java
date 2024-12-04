@@ -19,6 +19,7 @@ public class NoticesDTO {
     private Integer priority; // 우선순위
     private LocalDateTime created_date;
     private String attachmentUrl;
+    private String name;
     // 생성자: Notices 엔티티에서 NoticesDTO로 변환
 //    public NoticesDTO(String title, String content, Integer priority) {
 //        this.title = title;
@@ -41,6 +42,8 @@ public class NoticesDTO {
         this.content = notice.getContent();
         this.priority = notice.getPriority();
         this.created_date = notice.getCreatedDate();
+        this.attachmentUrl = notice.getAttachmentUrl();
+        this.name = "ADMIN : " + notice.getSenderId();
     }
 
 }

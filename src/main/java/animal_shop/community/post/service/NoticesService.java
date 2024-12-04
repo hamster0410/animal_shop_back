@@ -97,7 +97,7 @@ public class NoticesService {
         // Pageable 설정 (페이지 당 10개로 제한)
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
 
-        Page<Notices> noticesPage = noticesRepository.findAll(pageable);
+        Page<Notices> noticesPage = noticesRepository.findAllByOrderByPriorityAsc(pageable);
 
         List<NoticesDTO> noticesDTOList = noticesPage.stream().map(NoticesDTO::new).toList();
         NoticeDTOResponse noticeDTOResponse = NoticeDTOResponse.builder()
