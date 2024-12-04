@@ -90,7 +90,7 @@ public class ItemController {
                                         @RequestParam(value = "searchBy",required = false)String searchBy,
                                         @RequestParam(value = "page", required = false) Integer page,
                                         @RequestParam(value = "pageCount", defaultValue = "10", required = false) Integer pageCount,
-                                        @RequestParam(value = "status", defaultValue = "sell", required = false)String status){
+                                        @RequestParam(value = "status", required = false)String status){
         ResponseDTO responseDTO = null;
         try {
             ItemDTOListResponse item = itemService.searchItems(searchBy, searchTerm, species, category, detailed_category, status, page, pageCount);

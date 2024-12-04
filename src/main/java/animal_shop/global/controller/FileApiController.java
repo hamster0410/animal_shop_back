@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import java.nio.file.Path;
@@ -238,37 +240,37 @@ public class FileApiController {
                     .body("Error reading file".getBytes());
         }
     }
-//    @GetMapping("/downloadfile/{fileName:.+}")
-//    public ResponseEntity<Resource> downloadFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
-//        try {
-//            // 파일 경로 설정
-//            String basePath = fileDownloadDTO.getFilePath();
-//            File file = new File(basePath);
-//
-//            if (!file.exists()) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//            }
-//
-//            // Resource 생성
-//            Resource resource = new FileSystemResource(file);
-//
-//            // 한글 파일 이름 인코딩
-//            String encodedFileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())
-//                    .replace("+", "%20"); // 공백 처리
-//
-//            // 헤더 설정
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
-//            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
-//
-//            return ResponseEntity.ok()
-//                    .headers(headers)
-//                    .body(resource);
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
+        try {
+            // 파일 경로 설정
+            String basePath = fileDownloadDTO.getFilePath();
+            File file = new File(basePath);
+
+            if (!file.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // Resource 생성
+            Resource resource = new FileSystemResource(file);
+
+            // 한글 파일 이름 인코딩
+            String encodedFileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())
+                    .replace("+", "%20"); // 공백 처리
+
+            // 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     private MediaType getMediaTypeForFileName(String filename) {
         if (filename.endsWith(".png")) {
