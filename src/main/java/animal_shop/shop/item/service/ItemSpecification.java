@@ -1,5 +1,6 @@
 package animal_shop.shop.item.service;
 
+import animal_shop.community.member.entity.Member;
 import animal_shop.shop.item.entity.Item;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -63,6 +64,20 @@ public class ItemSpecification {
             }else{
                 return null;
             }
+        };
+    }
+
+    public static Specification<Item> searchByItemStatus() {
+        return (root, query, criteriaBuilder) ->{
+            return criteriaBuilder.equal(root.get("itemSellStatus"),2);
+        };
+    }
+
+
+    public static Specification<Item> searchByUserId(Member member) {
+        return(root, query, criteriaBuilder) -> {
+            if(member == null) return null;
+            return criteriaBuilder.equal(root.get("member"), member);
         };
     }
 }

@@ -140,7 +140,22 @@ public class SellerController {
         }
     }
 
-    //문의 내용 리스트 보기
+
+    @GetMapping("/stop-item/select")
+    public ResponseEntity<?> stopItemList(@RequestHeader(value = "Authorization") String token,
+                                       @RequestParam(value = "page", defaultValue = "1") int page) {
+        ResponseDTO responseDTO;
+        try {
+            ItemDTOListResponse items = itemService.stopItemLIst(token, page - 1);
+            return ResponseEntity.ok().body(items);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+        //문의 내용 리스트 보기
     @GetMapping("/query/list")
     public ResponseEntity<?> seller_CI(@RequestHeader(value = "Authorization") String token,
                                        @RequestParam(value = "page", defaultValue = "1") int page) {

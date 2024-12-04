@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
-@Table(name = "dog_breed")
+@Table(name = "wiki")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +17,9 @@ public class Wiki extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "wiki_id")
+    private Long id;
+
     @Column(name = "breed_id")
     private Long breedId;        // 품종 ID
 
@@ -33,4 +38,6 @@ public class Wiki extends BaseTimeEntity {
     @Column(name = "temperament", length = 65535)
     private String temperament;     // 성격
 
+    @OneToMany(mappedBy = "wiki", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WikiComment> comments;
 }

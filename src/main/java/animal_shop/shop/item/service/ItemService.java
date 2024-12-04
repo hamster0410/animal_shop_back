@@ -183,6 +183,35 @@
             // 4. 엔티티 -> DTO로 변환
         }
 
+        public ItemDTOListResponse stopItemLIst(String token, int page) {
+            // 1. 사용자 인증
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            Member member = memberRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+            // 2. 판매자 자격조건
+            if (!member.getRole().toString().equals("SELLER")) {
+                throw new IllegalStateException("is not seller");
+            }
+
+            Pageable pageable = (Pageable) PageRequest.of(page, 20);
+
+            Specification<Item> specification = Specification.where(null);
+            // Pageable 설정 (페이지 당 10개로 제한)
+            specification = specification.and(ItemSpecification.searchByItemStatus());
+
+            specification = specification.and(ItemSpecification.searchByUserId(member));
+
+            Page<Item> items = itemRepository.findAll(specification, pageable);
+
+
+            // 검색 결과 반환
+            return ItemDTOListResponse.builder()
+                    .itemDTOLists(items.stream().map(ItemDetailDTO::new).toList())
+                    .total_count(items.getTotalElements())
+                    .build();
+            // 4. 엔티티 -> DTO로 변환
+        }
         public ItemDetailDTO findById(String itemId) {
             Item item = itemRepository.findById(Long.valueOf(itemId))
                     .orElseThrow(() -> new IllegalArgumentException("item not found"));
@@ -482,6 +511,7 @@
                     .total_count(total_count)
                     .build();
         }
+
 
     }
 
