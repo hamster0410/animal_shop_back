@@ -1,7 +1,9 @@
 package animal_shop.tools.abandoned_animal.service;
 
-
 import animal_shop.tools.abandoned_animal.dto.AnimalDTO;
+import animal_shop.tools.abandoned_animal.dto.AnimalListDTO;
+import animal_shop.tools.abandoned_animal.dto.AnimalListDTOResponse;
+import animal_shop.tools.abandoned_animal.dto.AnimalSearchDTO;
 import animal_shop.tools.abandoned_animal.entity.AbandonedAnimal;
 import animal_shop.tools.abandoned_animal.repository.AbandonedAnimalRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,9 +11,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 
 @Service
@@ -74,6 +83,42 @@ public class AbandonedAnimalService {
 
         // 결과 반환
         return ResponseEntity.ok().body("동물 정보 저장 완료");
+    }
+
+    public AnimalListDTOResponse searchAPIInfo(AnimalSearchDTO animalSearchDTO, int page) {
+        Specification<AbandonedAnimal> specification = Specification.where(null);
+        if(animalSearchDTO.getAge()!=null){
+            specification = specification.and(AbandonedAnimalSpecification.ageRanges(animalSearchDTO.getAge()));
+        }
+        if(animalSearchDTO.getSex()!=null){
+            specification = specification.and(AbandonedAnimalSpecification.hasSex(animalSearchDTO.getSex()));
+        }
+        if(animalSearchDTO.getNeuter()!=null){
+            specification = specification.and(AbandonedAnimalSpecification.isNeutered(animalSearchDTO.getNeuter()));
+        }
+        if(animalSearchDTO.getSpecies()!=null){
+            specification = specification.and(AbandonedAnimalSpecification.kindCdFilter(animalSearchDTO.getSpecies(), animalSearchDTO.getBreed()));
+        }
+        if(animalSearchDTO.getStatus()!=null){
+            specification = specification.and(AbandonedAnimalSpecification.noticeDateBasedOnStatus(animalSearchDTO.getStatus()));
+        }
+        if(animalSearchDTO.getLocation()!=null){
+            specification = specification.and(AbandonedAnimalSpecification.locationFilter(animalSearchDTO.getLocation()));
+        }
+        Pageable pageable = PageRequest.of(page, 20);
+        Page<AbandonedAnimal> abandonedAnimals = animalRepository.findAll(specification, pageable);
+
+        List<AnimalListDTO> animals = abandonedAnimals.map(AnimalListDTO::new).getContent();
+
+        // 검색 결과 반환
+        return AnimalListDTOResponse.builder()
+                .animalListDTOList(animals)
+                .total_count(abandonedAnimals.getTotalElements())
+                .build();
+
+
+
+
     }
 }
 

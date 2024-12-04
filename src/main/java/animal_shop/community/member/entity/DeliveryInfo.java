@@ -2,9 +2,11 @@ package animal_shop.community.member.entity;
 
 import animal_shop.community.member.dto.DeliveryInfoDTO;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
 public class DeliveryInfo {
 
     @Id

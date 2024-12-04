@@ -20,7 +20,7 @@ public class AbandonedAnimal{
     private String kindCd;
     private String colorCd;
     private Long age;
-    private Double weight;
+    private String weight;
     private String noticeNo;
     private String noticeSdt;
     private String noticeEdt;
@@ -56,7 +56,7 @@ public class AbandonedAnimal{
 
         // 나이와 무게는 숫자로 변환
         entity.setAge(parseAge(dto.getAge()));
-        entity.setWeight(parseWeight(dto.getWeight()));
+        entity.setWeight(dto.getWeight());
 
         entity.setNoticeNo(dto.getNoticeNo());
         entity.setNoticeSdt(dto.getNoticeSdt());
@@ -91,17 +91,14 @@ public class AbandonedAnimal{
     public static Long parseAge(String ageString) {
         // 숫자만 남기고 추출
         String age = ageString.replaceAll("[^0-9]", ""); // 숫자만 남김
-        if (age.length() > 4) {
-            age = age.substring(0, 4); // 4자리만 추출
+        try{
+            if (age.length() > 4) {
+                age = age.substring(0, 4); // 4자리만 추출
+            }
+            return Long.valueOf(age); // 4자리로 잘라낸 값을 Long으로 변환
+        }catch(Exception e){
+            return Long.valueOf(0L); // 4자리로 잘라낸 값을 Long으로 변환
         }
-        return Long.valueOf(age); // 4자리로 잘라낸 값을 Long으로 변환
-    }
-
-    // 무게 문자열을 Double로 변환하는 메서드
-    public static Double parseWeight(String weightString) {
-        // 숫자와 소수점만 남기고 추출
-        String weight = weightString.replaceAll("[^0-9.]", ""); // 숫자와 소수점만 남김
-        return Double.valueOf(weight); // 숫자와 소수점이 포함된 문자열을 Double로 변환
     }
 }
 

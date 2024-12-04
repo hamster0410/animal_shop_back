@@ -5,11 +5,13 @@ import animal_shop.global.admin.dto.StopItemDTO;
 import animal_shop.shop.item.entity.Item;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class StopItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
