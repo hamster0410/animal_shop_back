@@ -1,6 +1,8 @@
 package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.cart_item.dto.CartItemSearchResponse;
+import animal_shop.shop.cart_item.service.CartItemService;
 import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
@@ -18,6 +20,9 @@ public class SellerController {
 
     @Autowired
     private DeliveryService deliveryService;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     @PostMapping("/item/new")
     public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization") String token, @RequestBody ItemDTOList itemDTOList) {
@@ -351,4 +356,23 @@ public class SellerController {
         }
     }
 
+    @PostMapping("/cart-item-info")
+    ResponseEntity<?>cartItemInfo(@RequestHeader(value= "Authorization")String token,
+                                  @RequestParam(value = "year") int year,
+                                  @RequestParam(value = "month") int month
+                                  ){
+        ResponseDTO responseDTO = null;
+        try{
+            CartItemSearchResponse cartItemInfo = cartItemService.cartItemInfo(token,year,month);
+            responseDTO = ResponseDTO.builder()
+                    .message("Discount failure")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }

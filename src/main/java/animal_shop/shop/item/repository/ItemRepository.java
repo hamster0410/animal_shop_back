@@ -219,4 +219,5 @@ public interface ItemRepository extends JpaRepository<Item,Long>, JpaSpecificati
             @Param("itemSellStatus") ItemSellStatus itemSellStatus,
             Pageable pageable);
 
+//    List<Item> findByMemberId(String userId);
 }

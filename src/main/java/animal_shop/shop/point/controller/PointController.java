@@ -108,4 +108,5 @@ public class PointController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
 }
