@@ -50,5 +50,18 @@ public class ItemSpecification {
             return criteriaBuilder.equal(root.get("detailed_category"), detailedCategory);
         };
     }
+
+    public static Specification<Item> searchByStatus(String status) {
+        return (root, query, criteriaBuilder) ->{
+            if (status == null) return null;
+            if(status.equals("stop")){
+                return criteriaBuilder.equal(root.get("itemSellStatus"),2);
+            }else if(status.equals("sold_out")){
+                return criteriaBuilder.equal(root.get("itemSellStatus"),1);
+            }else{
+                return null;
+            }
+        };
+    }
 }
 

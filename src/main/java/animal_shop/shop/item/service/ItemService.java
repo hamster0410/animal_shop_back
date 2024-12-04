@@ -431,10 +431,11 @@
 //                    .build();
 //        }
         //사랑해요 specification
-        public ItemDTOListResponse searchItems(String searchBy, String searchTerm,  String species, String category, String detailedCategory, int page) {
+        public ItemDTOListResponse searchItems(String searchBy, String searchTerm,  String species, String category, String detailedCategory, String status, Integer page, int pageCount) {
             Specification<Item> specification = Specification.where(null);
             // Pageable 설정 (페이지 당 10개로 제한)
-            Pageable pageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
+
+
             if (searchTerm != null && !searchTerm.isEmpty()) {
                 if (searchBy.equals("item")) {
                     specification = specification.and(ItemSpecification.searchByItemName(searchTerm));
@@ -457,14 +458,29 @@
                 specification = specification.and(ItemSpecification.searchByDetailedCategory(detailedCategory));
             }
 
-            Page<Item> items = itemRepository.findAll(specification, pageable);
+            if (status != null){
+                specification = specification.and(ItemSpecification.searchByStatus(status));
+            }
+
+            List<ItemDetailDTO> itemDTOs;
+            long total_count;
+            if(page != null){
+                Pageable pageable = PageRequest.of(page-1, pageCount, Sort.by("createdDate").descending());
+                Page<Item> items = itemRepository.findAll(specification, pageable);
+                total_count = items.getTotalElements();
+                itemDTOs = items.map(ItemDetailDTO::new).getContent();
+            }else{
+                List<Item> items = itemRepository.findAll(specification);
+                itemDTOs = items.stream().map(ItemDetailDTO::new).toList();
+                total_count = items.size();
+            }
             // DTO 변환 (Item -> ItemDetailDTO)
-            List<ItemDetailDTO> itemDTOs = items.map(ItemDetailDTO::new).getContent();
+
 
             // 검색 결과 반환
             return ItemDTOListResponse.builder()
                     .itemDTOLists(itemDTOs)
-                    .total_count(items.getTotalElements())
+                    .total_count(total_count)
                     .build();
         }
 

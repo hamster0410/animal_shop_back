@@ -88,10 +88,12 @@ public class ItemController {
                                         @RequestParam(value = "detailed_category", required = false) String detailed_category,
                                         @RequestParam(value = "searchTerm",required = false)String searchTerm,
                                         @RequestParam(value = "searchBy",required = false)String searchBy,
-                                        @RequestParam(value = "page",defaultValue = "1")int page){
+                                        @RequestParam(value = "page", required = false) Integer page,
+                                        @RequestParam(value = "pageCount", defaultValue = "10", required = false) Integer pageCount,
+                                        @RequestParam(value = "status", defaultValue = "sell", required = false)String status){
         ResponseDTO responseDTO = null;
         try {
-            ItemDTOListResponse item = itemService.searchItems(searchBy, searchTerm, species, category, detailed_category, page-1);
+            ItemDTOListResponse item = itemService.searchItems(searchBy, searchTerm, species, category, detailed_category, status, page, pageCount);
             return ResponseEntity.ok().body(item);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
