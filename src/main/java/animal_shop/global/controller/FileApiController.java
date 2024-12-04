@@ -240,7 +240,7 @@ public class FileApiController {
                     .body("Error reading file".getBytes());
         }
     }
-    @GetMapping("/download")
+    @PostMapping("/download")
     public ResponseEntity<Resource> downloadFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
         try {
             // 파일 경로 설정
