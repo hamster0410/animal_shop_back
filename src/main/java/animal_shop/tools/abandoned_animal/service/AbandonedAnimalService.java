@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -96,9 +95,9 @@ public class AbandonedAnimalService {
         if(animalSearchDTO.getSpecies()!=null){
             specification = specification.and(AbandonedAnimalSpecification.kindCdFilter(animalSearchDTO.getSpecies(), animalSearchDTO.getBreed()));
         }
-        if(animalSearchDTO.getStatus()!=null){
-            specification = specification.and(AbandonedAnimalSpecification.noticeDateBasedOnStatus(animalSearchDTO.getStatus()));
-        }
+
+            specification = specification.and(AbandonedAnimalSpecification.noticeDateBasedOnStatus());
+
         if(animalSearchDTO.getLocation()!=null){
             specification = specification.and(AbandonedAnimalSpecification.locationFilter(animalSearchDTO.getLocation()));
         }

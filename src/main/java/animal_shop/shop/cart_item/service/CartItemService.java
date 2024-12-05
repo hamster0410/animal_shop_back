@@ -45,4 +45,8 @@ public class CartItemService {
         cartItemSearchResponse.setCartItemSearchDTOList(cartItemSearchDTOList);
         return cartItemSearchResponse;
     }
+
+    public CartItemSearchResponse ProfitItemInfo(String token, Integer year, Integer month, Integer day) {
+        return null;
+    }
 }

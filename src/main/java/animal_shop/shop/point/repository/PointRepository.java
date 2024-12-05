@@ -1,5 +1,6 @@
 package animal_shop.shop.point.repository;
 
+import animal_shop.community.member.entity.Member;
 import animal_shop.shop.point.entity.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -59,6 +60,18 @@ public interface PointRepository extends JpaRepository<Point, Long> {
             "GROUP BY FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m-%d'), p.sellerId " +
             "ORDER BY day, p.sellerId")
     List<Object[]> findDailyTotalPointsBySellerForDay(@Param("year") int year, @Param("month") int month, @Param("day") int day);
+
+    //일별 판매자별 합계
+    @Query("SELECT FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m-%d') AS day, p.sellerId, SUM(p.point) AS totalPoints " +
+            "FROM Point p " +
+            "WHERE FUNCTION('YEAR', p.getDate) = :year " +
+            "AND FUNCTION('MONTH', p.getDate) = :month " +
+            "AND FUNCTION('DAY', p.getDate) = :day " +
+            "AND p.sellerId = :member " +
+            "GROUP BY p.itemName " +
+            "ORDER BY day, p.sellerId")
+    List<Object[]> findTotalPointsByItemId(@Param("member") Member member, @Param("year") int year, @Param("month") int month, @Param("day") int day);
+
 
 
 

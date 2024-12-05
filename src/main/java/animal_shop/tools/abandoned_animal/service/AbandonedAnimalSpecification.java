@@ -102,22 +102,11 @@ public class AbandonedAnimalSpecification {
         };
     }
 
-    public static Specification<AbandonedAnimal> noticeDateBasedOnStatus(String status) {
+    public static Specification<AbandonedAnimal> noticeDateBasedOnStatus() {
         return (root, query, criteriaBuilder) -> {
             LocalDate today = LocalDate.now();
             Predicate predicate;
-
-            if ("T".equalsIgnoreCase(status)) {
-                // notice_edt가 오늘 이후 또는 오늘인 데이터
-                predicate = criteriaBuilder.like(root.get("processState"), "%보호%");
-            } else if ("F".equalsIgnoreCase(status)) {
-                // notice_edt가 오늘 이전인 데이터
-                predicate = criteriaBuilder.like(root.get("processState"), "%종료%");
-            } else {
-                // status가 유효하지 않으면 조건 없음
-                predicate = criteriaBuilder.conjunction();
-            }
-
+            predicate = criteriaBuilder.like(root.get("processState"), "%보호%");
             return predicate;
         };
     }

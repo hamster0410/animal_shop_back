@@ -1,10 +1,8 @@
 package animal_shop.community.post.controller;
 import animal_shop.community.post.dto.NoticeDTOResponse;
 import animal_shop.community.post.dto.NoticesDTO;
-import animal_shop.community.post.entity.Notices;
 import animal_shop.community.post.service.NoticesService;
 import animal_shop.global.dto.ResponseDTO;
-import animal_shop.shop.item.dto.QueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -98,7 +96,7 @@ public class NoticesController {
     @PatchMapping("/update/{noticeId}")
     public ResponseEntity<?> admin_update(@RequestHeader(value = "Authorization") String token,
                                           @PathVariable Long noticeId, // noticeId를 PathVariable로 받기
-                                          @RequestPart NoticesDTO noticesDTO,
+                                          @RequestPart(required = false) NoticesDTO noticesDTO,
                                           @RequestPart(value = "file", required = false) MultipartFile file) { // @RequestBody로 DTO 받기
         ResponseDTO responseDTO = null;
         try {

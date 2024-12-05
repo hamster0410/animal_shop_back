@@ -373,4 +373,23 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @GetMapping("/profit-item-info")
+    ResponseEntity<?>profitItemInfo(@RequestHeader(value= "Authorization")String token,
+                                  @RequestParam(value = "year", required = false) Integer year,
+                                  @RequestParam(value = "month", required = false) Integer month,
+                                    @RequestParam(value = "day", required = false) Integer day
+    ){
+        ResponseDTO responseDTO = null;
+        try{
+            System.out.println("controller " + year + " " + month);
+            CartItemSearchResponse cartItemInfo = cartItemService.ProfitItemInfo(token,year,month,day);
+            return ResponseEntity.ok().body(cartItemInfo);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
