@@ -88,5 +88,32 @@ public interface PointRepository extends JpaRepository<Point, Long> {
             @Param("day") Integer day);
 
 
+    @Query(value =
+            "SELECT " +
+                    "CASE " +
+                    "    WHEN :day IS NOT NULL THEN DATE_FORMAT(oi.created_date, '%Y-%m-%d') " +
+                    "    WHEN :month IS NOT NULL THEN DATE_FORMAT(oi.created_date, '%Y-%m') " +
+                    "    ELSE DATE_FORMAT(oi.created_date, '%Y') " +
+                    "END AS groupDate, " +
+                    "oi.order_name AS order_name, " +
+                    "i.name AS name, " +
+                    "COUNT(*) AS totalPoints " +
+
+                    "FROM order_item oi " +
+                    "JOIN item i ON oi.item_id = i.item_id " +
+                    "WHERE (:year IS NULL OR YEAR(oi.created_date) = :year) " +
+                    "AND (:month IS NULL OR MONTH(oi.created_date) = :month) " +
+                    "AND (:day IS NULL OR DAY(oi.created_date) = :day) " +
+                    "AND i.member_id = :memberId " +
+                    "GROUP BY groupDate, oi.order_name, i.item_id " +
+                    "ORDER BY groupDate, oi.order_name",
+            nativeQuery = true)
+    List<Object[]> findTotalItemByOrderItem(
+            @Param("memberId") Long memberId,
+            @Param("year") Integer year,
+            @Param("month") Integer month,
+            @Param("day") Integer day);
+
+
 
 }

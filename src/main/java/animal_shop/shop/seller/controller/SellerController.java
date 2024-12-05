@@ -7,6 +7,7 @@ import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
+import animal_shop.shop.order_item.dto.OrderedItemInfoList;
 import animal_shop.shop.point.dto.PointProfitDTOResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -386,6 +387,25 @@ public class SellerController {
             System.out.println("controller " + year + " " + month);
             PointProfitDTOResponse pointProfitDTOResponse= cartItemService.ProfitItemInfo(token,year,month,day);
             return ResponseEntity.ok().body(pointProfitDTOResponse);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/ordered-item-info")
+    ResponseEntity<?>orderedItemInfo(@RequestHeader(value= "Authorization")String token,
+                                    @RequestParam(value = "year", required = false) Integer year,
+                                    @RequestParam(value = "month", required = false) Integer month,
+                                    @RequestParam(value = "day", required = false) Integer day
+    ){
+        ResponseDTO responseDTO = null;
+        try{
+            System.out.println("controller " + year + " " + month);
+            OrderedItemInfoList orderedItemInfoList = cartItemService.OrderedItemInfo(token,year,month,day);
+            return ResponseEntity.ok().body(orderedItemInfoList);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

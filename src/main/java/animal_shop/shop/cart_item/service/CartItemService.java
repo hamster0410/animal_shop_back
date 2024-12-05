@@ -6,7 +6,10 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart_item.dto.CartItemSearchDTO;
 import animal_shop.shop.cart_item.dto.CartItemSearchResponse;
 import animal_shop.shop.cart_item.repository.CartItemRepository;
-import animal_shop.shop.item.repository.ItemRepository;
+import animal_shop.shop.order_item.dto.OrderedItemInfo;
+import animal_shop.shop.order_item.dto.OrderedOptionInfo;
+import animal_shop.shop.order_item.dto.OrderedItemInfoList;
+import animal_shop.shop.order_item.repository.OrderItemRepository;
 import animal_shop.shop.point.dto.ItemProfitInfo;
 import animal_shop.shop.point.dto.PointProfitDTO;
 import animal_shop.shop.point.dto.PointProfitDTOResponse;
@@ -35,7 +38,7 @@ public class CartItemService {
     PointRepository pointRepository;
 
     @Autowired
-    ItemRepository itemRepository;
+    OrderItemRepository orderItemRepository;
 
     public CartItemSearchResponse cartItemInfo(String token, Integer year, Integer month) {
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -90,5 +93,43 @@ public class CartItemService {
                 .build();
 
         return pointProfitDTOResponse;
+    }
+
+    public OrderedItemInfoList OrderedItemInfo(String token, Integer year, Integer month, Integer day) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+
+        List<Object[]> objects = pointRepository.findTotalItemByOrderItem(Long.valueOf(userId),year,month,day);
+
+        HashMap<String, List<OrderedOptionInfo>> hashMap = new HashMap<>();
+        List<OrderedItemInfo> orderedItemInfoList = new ArrayList<>();
+        for(Object[] obj : objects){
+            System.out.println(obj[0] + " " + obj[1] + " " + obj[2] + " " +obj[3]);
+            if(hashMap.containsKey((String)obj[2])){
+                hashMap.get((String)obj[2]).add(new OrderedOptionInfo(obj));
+            }else{
+                hashMap.put((String)obj[2],new ArrayList<>());
+                hashMap.get((String)obj[2]).add(new OrderedOptionInfo(obj));
+            }
+        }
+        for(String key : hashMap.keySet()){
+            orderedItemInfoList.add(new OrderedItemInfo(key, hashMap.get(key)));
+        }
+
+//0. 날짜
+//1. 옵션 이름
+//2. 아이템 이름
+//3. 갯수
+        String s_year;
+        String s_month;
+        String s_day;
+
+        if(year != null) s_year =year.toString(); else s_year="*";
+        if(month != null) s_month =month.toString(); else s_month="*";
+        if(day != null) s_day =day.toString(); else s_day = "*";
+        return OrderedItemInfoList.builder()
+                .orderedOptionInfoList(orderedItemInfoList)
+                .date(s_year + " : " + s_month + " : " + s_day)
+                .first_date(orderItemRepository.findEarliestOrderItemDate())
+                .build();
     }
 }
