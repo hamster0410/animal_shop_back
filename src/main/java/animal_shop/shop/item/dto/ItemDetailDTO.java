@@ -36,6 +36,8 @@ public class ItemDetailDTO {
 
    private Long stock_number;
 
+   private String suspensionReason;
+
 
    public ItemDetailDTO(Item item) {
        this.id = item.getId();
@@ -57,4 +59,26 @@ public class ItemDetailDTO {
        this.thumbnail_url = item.getThumbnail_url();
        this.image_url = item.getImage_url();
    }
+
+    public ItemDetailDTO(Item item, String suspensionReason) {
+        this.id = item.getId();
+        this.name = item.getName();
+        List<OptionDTO> list = new ArrayList<>();
+        for (Option option : item.getOptions()) {
+            OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice(), option.getId());
+            list.add(optionDTO);
+        }
+        this.sell_status = item.getItemSellStatus();
+        this.stock_number = item.getStock_number();
+        this.item_detail = item.getItemDetail();
+        this.options = list;
+        this.category = item.getCategory();
+        this.detailed_category = item.getDetailed_category();
+        this.seller = item.getMember().getNickname();
+        this.species = item.getSpecies();
+        this.comment_count = item.getComment_count();
+        this.thumbnail_url = item.getThumbnail_url();
+        this.image_url = item.getImage_url();
+        this.suspensionReason = suspensionReason;
+    }
 }

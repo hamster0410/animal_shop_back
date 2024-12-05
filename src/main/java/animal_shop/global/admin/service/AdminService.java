@@ -157,7 +157,15 @@ public class AdminService {
         }
         Page<Item> items = itemRepository.findByItemSellStatus(ItemSellStatus.STOP,pageable);
         return MainDTOBestResponse.builder()
-                .goods(items.stream().map(MainDTO::new).toList())
+                .goods(
+                        items.stream()
+                                .map(item -> {
+                                    StopItem stopItem = stopItemRepository.findById(item.getId())
+                                            .orElseThrow(() -> new IllegalArgumentException("stop item is not found"));
+                                    return new MainDTO(item,stopItem.getSuspensionReason());
+                                })
+                                .collect(Collectors.toList())
+                )
                 .total_count(items.getTotalElements())
                 .build();
     }

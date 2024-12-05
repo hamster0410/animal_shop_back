@@ -2,6 +2,8 @@
 
     import animal_shop.community.member.entity.Member;
     import animal_shop.community.member.repository.MemberRepository;
+    import animal_shop.global.admin.entity.StopItem;
+    import animal_shop.global.admin.repository.StopItemRepository;
     import animal_shop.global.security.TokenProvider;
     import animal_shop.shop.item.ItemSellStatus;
     import animal_shop.shop.item.dto.*;
@@ -43,6 +45,9 @@
 
         @Autowired
         private JavaMailSender javaMailSender;
+
+        @Autowired
+        private StopItemRepository stopItemRepository;
 
         @Transactional
         public void save(String token, ItemDTOList itemDTOList) {
@@ -203,11 +208,15 @@
             specification = specification.and(ItemSpecification.searchByUserId(member));
 
             Page<Item> items = itemRepository.findAll(specification, pageable);
-
-
             // 검색 결과 반환
             return ItemDTOListResponse.builder()
-                    .itemDTOLists(items.stream().map(ItemDetailDTO::new).toList())
+                    .itemDTOLists(items.stream()
+                            .map(item -> {
+                                StopItem stopItem = stopItemRepository.findById(item.getId())
+                                        .orElseThrow(() -> new IllegalArgumentException("stop item is not found"));
+                                return new ItemDetailDTO(item, stopItem.getSuspensionReason());
+                            })
+                            .collect(Collectors.toList()))
                     .total_count(items.getTotalElements())
                     .build();
             // 4. 엔티티 -> DTO로 변환
