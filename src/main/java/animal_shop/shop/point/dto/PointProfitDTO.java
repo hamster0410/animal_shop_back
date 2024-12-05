@@ -6,14 +6,12 @@ import java.math.BigDecimal;
 
 @Getter
 public class PointProfitDTO {
-    String date;
     BigDecimal point;
-    String itemName;
+    String optionName;
 
     public PointProfitDTO(Object[] obj){
-        this.date = (String) obj[0];
-        this.itemName = (String) obj[1];
-        this.point = (BigDecimal) obj[2];
+        this.optionName = (String) obj[2];
+        this.point = (BigDecimal) obj[3];
 
     }
 }

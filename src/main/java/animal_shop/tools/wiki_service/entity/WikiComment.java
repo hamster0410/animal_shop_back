@@ -1,11 +1,9 @@
 package animal_shop.tools.wiki_service.entity;
 
 
-import animal_shop.community.member.entity.Member;
 import animal_shop.global.dto.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 @Entity
 @Table(name = "wiki_comment")
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
 public class WikiComment extends BaseTimeEntity {
 
     @Id

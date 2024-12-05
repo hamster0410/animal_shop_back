@@ -44,7 +44,7 @@ public class ItemDetailDTO {
        this.name = item.getName();
        List<OptionDTO> list = new ArrayList<>();
        for (Option option : item.getOptions()) {
-           OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice(), option.getId());
+           OptionDTO optionDTO = new OptionDTO(option);
            list.add(optionDTO);
        }
        this.sell_status = item.getItemSellStatus();
@@ -65,7 +65,7 @@ public class ItemDetailDTO {
         this.name = item.getName();
         List<OptionDTO> list = new ArrayList<>();
         for (Option option : item.getOptions()) {
-            OptionDTO optionDTO = new OptionDTO(option.getName(), option.getPrice(), option.getId());
+            OptionDTO optionDTO = new OptionDTO(option);
             list.add(optionDTO);
         }
         this.sell_status = item.getItemSellStatus();

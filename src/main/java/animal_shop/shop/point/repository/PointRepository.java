@@ -71,13 +71,14 @@ public interface PointRepository extends JpaRepository<Point, Long> {
                     "    ELSE DATE_FORMAT(p.get_date, '%Y') " +
                     "END AS groupDate, " +
                     "p.item_name AS item_name, " +
+                    "p.option_name AS option_name, " +
                     "SUM(p.point) AS totalPoints " +
                     "FROM Point p " +
                     "WHERE (:year IS NULL OR YEAR(p.get_date) = :year) " +
                     "AND (:month IS NULL OR MONTH(p.get_date) = :month) " +
                     "AND (:day IS NULL OR DAY(p.get_date) = :day) " +
                     "AND p.seller_id = :memberId " +
-                    "GROUP BY groupDate, p.item_name " +
+                    "GROUP BY groupDate, p.item_name, p.option_name " +
                     "ORDER BY groupDate, p.item_name",
             nativeQuery = true)
     List<Object[]> findTotalPointsByItemIds(

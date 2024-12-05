@@ -83,6 +83,7 @@ public class PointService {
             PointYearSellerDTO pointYearSellerDTO = new PointYearSellerDTO((String) obj[0], (Long) obj[2], member.getNickname());
             pointTotalDTOList.add(pointYearSellerDTO);
         }
+
         return pointTotalDTOList;
     }
 

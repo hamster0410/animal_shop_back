@@ -2,17 +2,15 @@ package animal_shop.tools.wiki_service.entity;
 
 import animal_shop.global.dto.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "wiki")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter @Getter
 public class Wiki extends BaseTimeEntity {
 
     @Id
@@ -21,14 +19,12 @@ public class Wiki extends BaseTimeEntity {
     private Long id;
 
 
-    @Column(name = "attachment_url", length = 255)
-
     @Column(name = "breed_id")
     private Long breedId;        // 품종 ID
 
     private String contents;
 
-
+    @Column(name = "attachment_url", length = 255)
     private String attachmentUrl;   // 첨부파일 URL
 
     @Column(name = "breed_name", nullable = false, length = 100)

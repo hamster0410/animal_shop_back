@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class PointProfitDTOResponse {
-    List<PointProfitDTO> pointProfitDTOList;
+    String date;
+    List<ItemProfitInfo> itemProfitInfoList;
     LocalDateTime first_date;
 }
