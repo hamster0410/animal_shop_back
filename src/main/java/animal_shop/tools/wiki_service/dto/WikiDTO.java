@@ -22,7 +22,6 @@ public class WikiDTO {
     private LocalDateTime created_Date; //등록날짜,시간
 
     public WikiDTO(Wiki wiki){
-        this.id = wiki.getBreedId();
         this.breedName = wiki.getBreedName();
         this.overview = wiki.getOverview();
         this.appearance = wiki.getAppearance();

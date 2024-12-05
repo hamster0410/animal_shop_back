@@ -56,7 +56,6 @@ public class WikiService {
 
         //등록
         Wiki wiki = new Wiki();
-        wiki.setBreedId(wikiDTO.getId());
         wiki.setBreedName(wikiDTO.getBreedName());
         wiki.setOverview(wikiDTO.getOverview());
         wiki.setAppearance(wikiDTO.getAppearance());
@@ -141,7 +140,7 @@ public class WikiService {
         Wiki wiki = wikiRepository.findById(wikiDTO.getId())
                 .orElseThrow(()->new IllegalArgumentException("Wiki not found"));
 
-       wikiRepository.delete(wiki);
+        wikiRepository.delete(wiki);
     }
     @Transactional
     public void update(String token, WikiDTO wikiDTO, MultipartFile file) {

@@ -20,9 +20,6 @@ public class Wiki extends BaseTimeEntity {
     @Column(name = "wiki_id")
     private Long id;
 
-    @Column(name = "breed_id")
-    private Long breedId;        // 품종 ID
-
     @Column(name = "attachment_url", nullable = false, length = 255)
     private String attachmentUrl;   // 첨부파일 URL
 
