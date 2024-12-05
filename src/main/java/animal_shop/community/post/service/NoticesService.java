@@ -173,7 +173,6 @@ public class NoticesService {
         notice.setTitle(noticesDTO.getTitle());
         notice.setContent(noticesDTO.getContent());
         notice.setPriority(noticesDTO.getPriority());
-        notice.setAttachmentUrl(noticesDTO.getAttachmentUrl());
 
         // 첨부파일 처리 (파일이 있을 경우)
         if (file != null && !file.isEmpty()) {

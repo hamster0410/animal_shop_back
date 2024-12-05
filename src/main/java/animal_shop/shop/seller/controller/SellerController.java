@@ -1,10 +1,13 @@
 package animal_shop.shop.seller.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.cart_item.dto.CartItemSearchResponse;
+import animal_shop.shop.cart_item.service.CartItemService;
 import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
+import animal_shop.shop.point.dto.PointProfitDTOResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,9 @@ public class SellerController {
 
     @Autowired
     private DeliveryService deliveryService;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     @PostMapping("/item/new")
     public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization") String token, @RequestBody ItemDTOList itemDTOList) {
@@ -351,4 +357,40 @@ public class SellerController {
         }
     }
 
+    @GetMapping("/cart-item-info")
+    ResponseEntity<?>cartItemInfo(@RequestHeader(value= "Authorization")String token,
+                                  @RequestParam(value = "year", required = false) Integer year,
+                                  @RequestParam(value = "month", required = false) Integer month
+                                  ){
+        ResponseDTO responseDTO = null;
+        try{
+            System.out.println("controller " + year + " " + month);
+            CartItemSearchResponse cartItemInfo = cartItemService.cartItemInfo(token,year,month);
+            return ResponseEntity.ok().body(cartItemInfo);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/profit-item-info")
+    ResponseEntity<?>profitItemInfo(@RequestHeader(value= "Authorization")String token,
+                                  @RequestParam(value = "year", required = false) Integer year,
+                                  @RequestParam(value = "month", required = false) Integer month,
+                                    @RequestParam(value = "day", required = false) Integer day
+    ){
+        ResponseDTO responseDTO = null;
+        try{
+            System.out.println("controller " + year + " " + month);
+            PointProfitDTOResponse pointProfitDTOResponse= cartItemService.ProfitItemInfo(token,year,month,day);
+            return ResponseEntity.ok().body(pointProfitDTOResponse);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }

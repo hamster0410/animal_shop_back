@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ItemRepository extends JpaRepository<Item,Long>, JpaSpecificationExecutor<Item> {
 //    Page<Item> findBySpecies(Pageable pageable, String species);
@@ -218,5 +220,7 @@ public interface ItemRepository extends JpaRepository<Item,Long>, JpaSpecificati
     Page<Item> findAllSearch(
             @Param("itemSellStatus") ItemSellStatus itemSellStatus,
             Pageable pageable);
+
+    List<Item> findByMemberId(Long userId);
 
 }
