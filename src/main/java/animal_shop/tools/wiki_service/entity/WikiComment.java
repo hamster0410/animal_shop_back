@@ -1,32 +1,35 @@
 package animal_shop.tools.wiki_service.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import animal_shop.community.member.entity.Member;
+import animal_shop.global.dto.BaseTimeEntity;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.stereotype.Service;
 
 @Entity
-@Data
+@Table(name = "wiki_comment")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WikiComment {
+@Data
+public class WikiComment extends BaseTimeEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long memberNickName;
+    @Column(name = "content", nullable = false, length = 1000)
+    private String content; // 댓글 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wiki_id")
-    private Wiki wiki;
+    @JoinColumn(name = "wiki_id", nullable = false)
+    private Wiki wiki; // 연결된 Wiki
 
-    private String content;
-
-    private LocalDateTime createdDate = LocalDateTime.now();
+    @Column(name = "author", nullable = false)
+    private String author; // 작성자
 
 
 }

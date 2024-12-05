@@ -100,12 +100,12 @@ public class WikiController {
         try {
             wikiDTO.setId(breedId);
 
-       wikiService.update(token,wikiDTO,file);
+            wikiService.update(token,wikiDTO,file);
 
-       responseDTO = ResponseDTO.builder()
-               .message("success update")
-               .build();
-        return ResponseEntity.ok().body(responseDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("success update")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
         }catch (Exception e ){
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())
