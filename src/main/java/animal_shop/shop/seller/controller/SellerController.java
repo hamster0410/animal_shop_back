@@ -356,18 +356,16 @@ public class SellerController {
         }
     }
 
-    @PostMapping("/cart-item-info")
+    @GetMapping("/cart-item-info")
     ResponseEntity<?>cartItemInfo(@RequestHeader(value= "Authorization")String token,
-                                  @RequestParam(value = "year") int year,
-                                  @RequestParam(value = "month") int month
+                                  @RequestParam(value = "year", required = false) Integer year,
+                                  @RequestParam(value = "month", required = false) Integer month
                                   ){
         ResponseDTO responseDTO = null;
         try{
+            System.out.println("controller " + year + " " + month);
             CartItemSearchResponse cartItemInfo = cartItemService.cartItemInfo(token,year,month);
-            responseDTO = ResponseDTO.builder()
-                    .message("Discount failure")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
+            return ResponseEntity.ok().body(cartItemInfo);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

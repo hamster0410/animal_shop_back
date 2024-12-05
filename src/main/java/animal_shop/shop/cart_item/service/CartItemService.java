@@ -3,11 +3,15 @@ package animal_shop.shop.cart_item.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.cart_item.dto.CartItemSearchDTO;
 import animal_shop.shop.cart_item.dto.CartItemSearchResponse;
 import animal_shop.shop.cart_item.repository.CartItemRepository;
 import animal_shop.shop.item.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -25,15 +29,20 @@ public class CartItemService {
     @Autowired
     ItemRepository itemRepository;
 
-    public CartItemSearchResponse cartItemInfo(String token, int year, int month) {
+    public CartItemSearchResponse cartItemInfo(String token, Integer year, Integer month) {
+        System.out.println("service " + year + " " + month);
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
-//        List<Item> itemList = itemRepository.findByMemberId(userId);
-//        List<Object[]> objects = cartItemRepository.countCartItemsByItemAndMemberAndDate(member, year, month, itemList);
-//        for(Object[] object : objects){
-//            System.out.println(object[0] + " " + object[1] );
-//        }
-        return null;
+
+        List<Object[]> objects = cartItemRepository.countItemsByMemberAndDate(member, year, month);
+        List<CartItemSearchDTO> cartItemSearchDTOList = new ArrayList<>();
+
+        for(Object[] obj : objects){
+            cartItemSearchDTOList.add(new CartItemSearchDTO(obj,year,month));
+        }
+        CartItemSearchResponse cartItemSearchResponse = new CartItemSearchResponse();
+        cartItemSearchResponse.setCartItemSearchDTOList(cartItemSearchDTOList);
+        return cartItemSearchResponse;
     }
 }
