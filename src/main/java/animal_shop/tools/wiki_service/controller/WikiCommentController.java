@@ -18,11 +18,11 @@ public class WikiCommentController {
     @PostMapping("/{wikiId}/comments")
     public ResponseEntity<?> addComment(@RequestHeader("Authorization") String token,
                                         @PathVariable Long wikiId,
-                                        @RequestBody String  content
-                                        ) {
+                                        @RequestBody String content
+    ) {
         ResponseDTO responseDTO = null;
         try {
-            wikiCommentService.addComment(token, wikiId,content);
+            wikiCommentService.addComment(token, wikiId, content);
             responseDTO = ResponseDTO.builder()
                     .message("success")
                     .build();
@@ -35,7 +35,7 @@ public class WikiCommentController {
         }
     }
 
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<?> deleteComment(@RequestHeader("Authorization") String token,
                                            @PathVariable Long commentId) {
         try {
@@ -45,6 +45,4 @@ public class WikiCommentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
 }
