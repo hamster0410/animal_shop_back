@@ -7,6 +7,7 @@ import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
+import animal_shop.shop.point.dto.PointProfitDTOResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -383,8 +384,8 @@ public class SellerController {
         ResponseDTO responseDTO = null;
         try{
             System.out.println("controller " + year + " " + month);
-            CartItemSearchResponse cartItemInfo = cartItemService.ProfitItemInfo(token,year,month,day);
-            return ResponseEntity.ok().body(cartItemInfo);
+            PointProfitDTOResponse pointProfitDTOResponse= cartItemService.ProfitItemInfo(token,year,month,day);
+            return ResponseEntity.ok().body(pointProfitDTOResponse);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

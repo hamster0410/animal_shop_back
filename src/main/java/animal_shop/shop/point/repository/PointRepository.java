@@ -1,6 +1,5 @@
 package animal_shop.shop.point.repository;
 
-import animal_shop.community.member.entity.Member;
 import animal_shop.shop.point.entity.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -54,24 +53,38 @@ public interface PointRepository extends JpaRepository<Point, Long> {
     //일별 판매자별 합계
     @Query("SELECT FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m-%d') AS day, p.sellerId, SUM(p.point) AS totalPoints " +
             "FROM Point p " +
-            "WHERE FUNCTION('YEAR', p.getDate) = :year " +
-            "AND FUNCTION('MONTH', p.getDate) = :month " +
-            "AND FUNCTION('DAY', p.getDate) = :day " +
+            "WHERE (:year IS NULL OR FUNCTION('YEAR', p.getDate) = :year ) " +
+            "AND (:month IS NULL OR FUNCTION('MONTH', p.getDate) = :month ) " +
+            "AND (:day IS NULL OR FUNCTION('DAY', p.getDate) = :day ) " +
             "GROUP BY FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m-%d'), p.sellerId " +
             "ORDER BY day, p.sellerId")
     List<Object[]> findDailyTotalPointsBySellerForDay(@Param("year") int year, @Param("month") int month, @Param("day") int day);
 
-    //일별 판매자별 합계
-    @Query("SELECT FUNCTION('DATE_FORMAT', p.getDate, '%Y-%m-%d') AS day, p.sellerId, SUM(p.point) AS totalPoints " +
-            "FROM Point p " +
-            "WHERE FUNCTION('YEAR', p.getDate) = :year " +
-            "AND FUNCTION('MONTH', p.getDate) = :month " +
-            "AND FUNCTION('DAY', p.getDate) = :day " +
-            "AND p.sellerId = :member " +
-            "GROUP BY p.itemName " +
-            "ORDER BY day, p.sellerId")
-    List<Object[]> findTotalPointsByItemId(@Param("member") Member member, @Param("year") int year, @Param("month") int month, @Param("day") int day);
 
+
+    //판매자 시간대별 수익 합계
+    @Query(value =
+            "SELECT " +
+                    "CASE " +
+                    "    WHEN :day IS NOT NULL THEN DATE_FORMAT(p.get_date, '%Y-%m-%d') " +
+                    "    WHEN :month IS NOT NULL THEN DATE_FORMAT(p.get_date, '%Y-%m') " +
+                    "    ELSE DATE_FORMAT(p.get_date, '%Y') " +
+                    "END AS groupDate, " +
+                    "p.item_name AS item_name, " +
+                    "SUM(p.point) AS totalPoints " +
+                    "FROM Point p " +
+                    "WHERE (:year IS NULL OR YEAR(p.get_date) = :year) " +
+                    "AND (:month IS NULL OR MONTH(p.get_date) = :month) " +
+                    "AND (:day IS NULL OR DAY(p.get_date) = :day) " +
+                    "AND p.seller_id = :memberId " +
+                    "GROUP BY groupDate, p.item_name " +
+                    "ORDER BY groupDate, p.item_name",
+            nativeQuery = true)
+    List<Object[]> findTotalPointsByItemIds(
+            @Param("memberId") Long memberId,
+            @Param("year") Integer year,
+            @Param("month") Integer month,
+            @Param("day") Integer day);
 
 
 
