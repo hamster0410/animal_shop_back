@@ -21,6 +21,7 @@ import animal_shop.shop.order_item.dto.OrderHistDTOResponse;
 import animal_shop.shop.order_item.dto.OrderItemDTO;
 import animal_shop.shop.order_item.entity.OrderItem;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
+import animal_shop.shop.point.PointStatus;
 import animal_shop.shop.point.entity.Point;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -329,6 +330,7 @@ public class DeliveryService {
         point.setOptionName(deliveryItem.getOptionName());
         point.setQuantity(deliveryItem.getQuantity());
         point.setPrice(deliveryItem.getOptionPrice());
+        point.setStatus(PointStatus.valueOf("AVAILABLE"));
         point.setPoint(deliveryItem.getOptionPrice() * deliveryItem.getQuantity()); // 기본 포인트 (비즈니스 로직에 따라 조정)
         point.setGetDate(LocalDateTime.now());
         point.setDeliveryCompletedId(completed.getId());

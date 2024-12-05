@@ -1,5 +1,6 @@
 package animal_shop.shop.point.entity;
 
+import animal_shop.shop.point.PointStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,8 @@ public class Point {
 
     private Long deliveryCompletedId; // DeliveryCompleted와 간접 연관
 
+    @Enumerated(EnumType.STRING)
+    private PointStatus status = PointStatus.AVAILABLE;
 
 
 }

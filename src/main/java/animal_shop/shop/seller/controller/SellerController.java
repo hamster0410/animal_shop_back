@@ -9,6 +9,7 @@ import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
 import animal_shop.shop.order_item.dto.OrderedItemInfoList;
 import animal_shop.shop.point.dto.PointProfitDTOResponse;
+import animal_shop.shop.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class SellerController {
 
     @Autowired
     private CartItemService cartItemService;
+
+    @Autowired
+    private PointService pointService;
 
     @PostMapping("/item/new")
     public ResponseEntity<?> registerItem(@RequestHeader(value = "Authorization") String token, @RequestBody ItemDTOList itemDTOList) {
@@ -410,6 +414,27 @@ public class SellerController {
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())
                     .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/point-time")
+    public ResponseEntity<?> pointByTime(@RequestHeader(value = "Authorization") String token,
+                                         @RequestParam(value = "time") String time){
+        ResponseDTO responseDTO;
+        try{
+            pointService.pointByTime(token,time);
+
+            responseDTO = ResponseDTO.builder()
+                    .message("select")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }

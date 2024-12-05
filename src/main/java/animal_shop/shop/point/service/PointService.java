@@ -2,6 +2,7 @@ package animal_shop.shop.point.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
 import animal_shop.shop.point.dto.PointTotalDTO;
@@ -21,6 +22,9 @@ public class PointService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     public PointTotalDTOResponse getMonthSum(String token, int year) {
         List<Object[]> objects = pointRepository.findMonthlyPointSumsByYear(year);
@@ -89,5 +93,22 @@ public class PointService {
 
     public LocalDateTime getEarliestPointDate() {
         return pointRepository.findEarliestPointDate();
+    }
+
+    public void withdrawAll(String token) {
+
+    }
+
+    public void pointByTime(String token, String time) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        List<Object[]> objects;
+        if (time == null) {
+            objects =  pointRepository.myPoint(userId);
+        } else {
+            objects =  pointRepository.myPointTime(userId,time);
+        }
+        for(Object[] obj : objects){
+            System.out.println(obj[0] + " " + obj[1]);
+        }
     }
 }

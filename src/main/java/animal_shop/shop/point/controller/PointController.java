@@ -109,4 +109,25 @@ public class PointController {
         }
     }
 
+
+    @GetMapping("/withdraw-all")
+    public ResponseEntity<?> withdrawAll(@RequestHeader(value = "Authorization") String token){
+        ResponseDTO responseDTO;
+        try{
+            pointService.withdrawAll(token);
+            responseDTO = ResponseDTO.builder()
+                    .message("withdraw success")
+                    .build();
+
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 }

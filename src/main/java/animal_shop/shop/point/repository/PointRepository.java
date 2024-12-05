@@ -115,5 +115,37 @@ public interface PointRepository extends JpaRepository<Point, Long> {
             @Param("day") Integer day);
 
 
+    //판매자 시간대별 전체 합계
+    @Query(value =
+            "SELECT " +
+                    "SUM(p.point) AS totalPoints " +
+                    "FROM Point p " +
+                    "JOIN Item i ON p.item_id = i.item_id " +
+                    "WHERE p.seller_id = :userId " +
+                    "AND p.status = 'AVAILABLE'",
+            nativeQuery = true)
+    List<Object[]> myPoint(@Param("memberId")String userId);
+
+    //판매자 시간대별 수익 합계
+    @Query(value =
+            "SELECT " +
+                    "CASE " +
+                    "    WHEN :time = 'day' THEN DATE_FORMAT(p.get_date, '%Y-%m-%d') " +
+                    "    WHEN :time = 'month' THEN DATE_FORMAT(p.get_date, '%Y-%m') " +
+                    "    WHEN :time = 'year' THEN DATE_FORMAT(p.get_date, '%Y') " +
+                    "    ELSE DATE_FORMAT(p.get_date, '%Y') " + // 기본값: 년 단위
+                    "END AS groupDate, " +
+                    "SUM(p.point) AS totalPoints " +
+                    "FROM Point p " +
+                    "JOIN Item i ON p.item_id = i.item_id " +
+                    "WHERE p.seller_id = :memberId " + // memberId 추가 조건
+                    "AND p.status = 'AVAILABLE' " +
+                    "GROUP BY groupDate " +
+                    "ORDER BY groupDate",
+            nativeQuery = true)
+    List<Object[]> myPointTime(@Param("memberId")String userId, @Param("time") String time);
+
+
+
 
 }
