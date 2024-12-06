@@ -103,9 +103,9 @@ public class PointService {
         String userId = tokenProvider.extractIdByAccessToken(token);
         List<Object[]> objects;
         if (time == null) {
-            objects =  pointRepository.myPoint(userId);
+            objects =  pointRepository.myPoint(Long.valueOf(userId));
         } else {
-            objects =  pointRepository.myPointTime(userId,time);
+            objects =  pointRepository.myPointTime(Long.valueOf(userId),time);
         }
         for(Object[] obj : objects){
             System.out.println(obj[0] + " " + obj[1]);

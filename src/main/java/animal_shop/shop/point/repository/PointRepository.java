@@ -121,10 +121,10 @@ public interface PointRepository extends JpaRepository<Point, Long> {
                     "SUM(p.point) AS totalPoints " +
                     "FROM Point p " +
                     "JOIN Item i ON p.item_id = i.item_id " +
-                    "WHERE p.seller_id = :userId " +
+                    "WHERE p.seller_id = :memberId " +
                     "AND p.status = 'AVAILABLE'",
             nativeQuery = true)
-    List<Object[]> myPoint(@Param("memberId")String userId);
+    List<Object[]> myPoint(@Param("memberId")Long userId);
 
     //판매자 시간대별 수익 합계
     @Query(value =
@@ -143,7 +143,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
                     "GROUP BY groupDate " +
                     "ORDER BY groupDate",
             nativeQuery = true)
-    List<Object[]> myPointTime(@Param("memberId")String userId, @Param("time") String time);
+    List<Object[]> myPointTime(@Param("memberId")Long memberId, @Param("time") String time);
 
 
 
