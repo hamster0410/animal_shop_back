@@ -6,11 +6,13 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart_item.dto.CartItemSearchDTO;
 import animal_shop.shop.cart_item.dto.CartItemSearchResponse;
 import animal_shop.shop.cart_item.repository.CartItemRepository;
+import animal_shop.shop.order_item.dto.MyItemDTO;
 import animal_shop.shop.order_item.dto.OrderedItemInfo;
 import animal_shop.shop.order_item.dto.OrderedOptionInfo;
 import animal_shop.shop.order_item.dto.OrderedItemInfoList;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
 import animal_shop.shop.point.dto.ItemProfitInfo;
+import animal_shop.shop.point.dto.MyPointDTO;
 import animal_shop.shop.point.dto.PointProfitDTO;
 import animal_shop.shop.point.dto.PointProfitDTOResponse;
 import animal_shop.shop.point.repository.PointRepository;
@@ -131,5 +133,20 @@ public class CartItemService {
                 .date(s_year + " : " + s_month + " : " + s_day)
                 .first_date(orderItemRepository.findEarliestOrderItemDate())
                 .build();
+    }
+
+    public List<MyItemDTO> entireCartItemInfo(String token, String time, String start, String end) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        List<Object[]> objects;
+        if (time == null) {
+            objects =  cartItemRepository.cartItemForAll(Long.valueOf(userId));
+        } else {
+            objects =  cartItemRepository.cartItemForTime(time,Long.valueOf(userId),start,end);
+        }
+        List<MyItemDTO> myItemDTOList = new ArrayList<>();
+        for(Object[] obj : objects){
+            myItemDTOList.add(new MyItemDTO(obj));
+        }
+        return myItemDTOList;
     }
 }

@@ -462,6 +462,26 @@ public class SellerController {
         }
     }
 
+    @GetMapping("/entire-ci-info")
+    public ResponseEntity<?> ciByTime(@RequestHeader(value = "Authorization") String token,
+                                         @RequestParam(value = "time", required = false) String time,
+                                      @RequestParam(value = "start", required = false) String start,
+                                      @RequestParam(value = "end", required = false) String end){
+        ResponseDTO responseDTO;
+        try{
+            List<MyItemDTO> myPointDTOList = cartItemService.entireCartItemInfo(token,time,start,end);
+
+            return ResponseEntity.ok().body(myPointDTOList);
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
     @GetMapping("/search")
     public ResponseEntity<?>search_item(@RequestHeader(value = "Authorization",required = false)String token,
                                         @RequestParam(value = "species", required = false) String species,

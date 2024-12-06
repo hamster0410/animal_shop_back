@@ -22,6 +22,7 @@ public class MainDTO {
     private long option_count;
     private String category;
     private String detailed_category;
+    private long discount_rate;
     private String suspensionReason;
 
     public MainDTO(Item item){
@@ -40,6 +41,7 @@ public class MainDTO {
         this.category = item.getCategory();
         this.detailed_category = item.getDetailed_category();
         this.species = item.getSpecies();
+        this.discount_rate = item.getOptions().get(0).getDiscount_rate();
     }
     public MainDTO(Item item, String suspensionReason){
         this.id = item.getId();
@@ -58,5 +60,6 @@ public class MainDTO {
         this.detailed_category = item.getDetailed_category();
         this.species = item.getSpecies();
         this.suspensionReason = suspensionReason;
+        this.discount_rate = item.getOptions().get(0).getDiscount_rate();
     }
 }

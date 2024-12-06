@@ -28,4 +28,37 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long>{
                                              @Param("year") Integer year,
                                              @Param("month") Integer month);
 
+    @Query(value =
+            "SELECT " +
+                    "CASE " +
+                    "    WHEN :time = 'day' THEN DATE_FORMAT(ci.created_date, '%Y-%m-%d') " +
+                    "    WHEN :time = 'month' THEN DATE_FORMAT(ci.created_date, '%Y-%m') " +
+                    "    WHEN :time = 'year' THEN DATE_FORMAT(ci.created_date, '%Y') " +
+                    "    ELSE DATE_FORMAT(ci.created_date, '%Y') " + // 기본값: 년 단위
+                    "END AS groupDate, " +
+                    "COUNT(*) AS totalCartItems " +
+                    "FROM cart_item ci " +
+                    "JOIN item i ON ci.item_id = i.item_id " +
+                    "WHERE i.member_id = :userId " +
+                    "AND (:start IS NULL OR ci.created_date >= :start) " + // 시작일 조건 추가
+                    "AND (:end IS NULL OR ci.created_date <= :end) " +   // 종료일 조건 추가
+                    "GROUP BY groupDate " +
+                    "ORDER BY groupDate DESC",
+            nativeQuery = true)
+    List<Object[]> cartItemForTime(@Param("time")String time,
+                                   @Param("userId")Long userId,
+                                   @Param("start") String start,
+                                   @Param("end")String end);
+
+    @Query(value =
+            "SELECT " +
+                    "'ALL TIME', " +
+                    "COUNT(*) AS totalCartItems " +
+                    "FROM cart_item ci " +
+                    "JOIN item i ON ci.item_id = i.item_id " +
+                    "WHERE i.member_id = :userId ",
+            nativeQuery = true)
+    List<Object[]> cartItemForAll(
+                                   @Param("userId")Long userId);
+
 }
