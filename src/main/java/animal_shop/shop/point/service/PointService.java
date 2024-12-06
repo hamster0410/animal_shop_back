@@ -3,6 +3,8 @@ package animal_shop.shop.point.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.order_item.dto.MyItemDTO;
+import animal_shop.shop.order_item.repository.OrderItemRepository;
 import animal_shop.shop.point.dto.MyPointDTO;
 import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
@@ -25,6 +27,9 @@ public class PointService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -108,6 +113,8 @@ public class PointService {
         Pageable pageable = (Pageable) PageRequest.of(page,20);
         if (time == null) {
             objects =  pointRepository.myPoint(Long.valueOf(userId), pageable);
+            objects.add(objects.get(0));
+            objects.set(0,null);
         } else {
             objects =  pointRepository.myPointTime(Long.valueOf(userId),time, pageable);
         }
@@ -116,5 +123,20 @@ public class PointService {
             myPointDTOList.add(new MyPointDTO(obj));
         }
         return myPointDTOList;
+    }
+
+    public List<MyItemDTO> totalItem(String token, String time, String start, String end ) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        List<Object[]> objects;
+        if (time == null) {
+            objects =  orderItemRepository.totalItem(Long.valueOf(userId), start, end);
+        } else {
+            objects =  orderItemRepository.totalItemTime(Long.valueOf(userId), time, start, end);
+        }
+        List<MyItemDTO> myItemDTOList = new ArrayList<>();
+        for(Object[] obj : objects){
+            myItemDTOList.add(new MyItemDTO(obj));
+        }
+        return myItemDTOList;
     }
 }

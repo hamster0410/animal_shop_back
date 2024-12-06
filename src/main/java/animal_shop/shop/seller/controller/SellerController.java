@@ -7,6 +7,7 @@ import animal_shop.shop.delivery.dto.*;
 import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
+import animal_shop.shop.order_item.dto.MyItemDTO;
 import animal_shop.shop.order_item.dto.OrderedItemInfoList;
 import animal_shop.shop.point.dto.MyPointDTO;
 import animal_shop.shop.point.dto.PointProfitDTOResponse;
@@ -421,9 +422,30 @@ public class SellerController {
         }
     }
 
+    @GetMapping("/total-item-info")
+    ResponseEntity<?>totalItemInfo(@RequestHeader(value= "Authorization")String token,
+                                   @RequestParam(value = "time", required = false) String time,
+                                   @RequestParam(value = "start", required = false) String start,
+                                   @RequestParam(value = "end", required = false) String end){
+        ResponseDTO responseDTO;
+        try{
+            List<MyItemDTO> myPointDTOList = pointService.totalItem(token,time, start, end);
+
+            return ResponseEntity.ok().body(myPointDTOList);
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+
     @GetMapping("/point-time-info")
     public ResponseEntity<?> pointByTime(@RequestHeader(value = "Authorization") String token,
-                                         @RequestParam(value = "time") String time,
+                                         @RequestParam(value = "time", required = false) String time,
                                          @RequestParam(value = "page", required = false, defaultValue = "1") int page){
         ResponseDTO responseDTO;
         try{
