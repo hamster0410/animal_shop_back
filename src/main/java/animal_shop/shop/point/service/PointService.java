@@ -3,11 +3,14 @@ package animal_shop.shop.point.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.point.dto.MyPointDTO;
 import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
 import animal_shop.shop.point.dto.PointTotalDTO;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -99,16 +102,19 @@ public class PointService {
 
     }
 
-    public void pointByTime(String token, String time) {
+    public List<MyPointDTO> pointByTime(String token, String time, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         List<Object[]> objects;
+        Pageable pageable = (Pageable) PageRequest.of(page,20);
         if (time == null) {
-            objects =  pointRepository.myPoint(Long.valueOf(userId));
+            objects =  pointRepository.myPoint(Long.valueOf(userId), pageable);
         } else {
-            objects =  pointRepository.myPointTime(Long.valueOf(userId),time);
+            objects =  pointRepository.myPointTime(Long.valueOf(userId),time, pageable);
         }
+        List<MyPointDTO> myPointDTOList = new ArrayList<>();
         for(Object[] obj : objects){
-            System.out.println(obj[0] + " " + obj[1]);
+            myPointDTOList.add(new MyPointDTO(obj));
         }
+        return myPointDTOList;
     }
 }

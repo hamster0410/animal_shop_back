@@ -1,6 +1,7 @@
 package animal_shop.shop.point.repository;
 
 import animal_shop.shop.point.entity.Point;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -124,7 +125,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
                     "WHERE p.seller_id = :memberId " +
                     "AND p.status = 'AVAILABLE'",
             nativeQuery = true)
-    List<Object[]> myPoint(@Param("memberId")Long userId);
+    List<Object[]> myPoint(@Param("memberId")Long userId, Pageable pageable);
 
     //판매자 시간대별 수익 합계
     @Query(value =
@@ -141,9 +142,9 @@ public interface PointRepository extends JpaRepository<Point, Long> {
                     "WHERE p.seller_id = :memberId " + // memberId 추가 조건
                     "AND p.status = 'AVAILABLE' " +
                     "GROUP BY groupDate " +
-                    "ORDER BY groupDate",
+                    "ORDER BY groupDate DESC",
             nativeQuery = true)
-    List<Object[]> myPointTime(@Param("memberId")Long memberId, @Param("time") String time);
+    List<Object[]> myPointTime(@Param("memberId")Long memberId, @Param("time") String time, Pageable pageable);
 
 
 

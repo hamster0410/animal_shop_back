@@ -8,11 +8,14 @@ import animal_shop.shop.delivery.service.DeliveryService;
 import animal_shop.shop.item.dto.*;
 import animal_shop.shop.item.service.ItemService;
 import animal_shop.shop.order_item.dto.OrderedItemInfoList;
+import animal_shop.shop.point.dto.MyPointDTO;
 import animal_shop.shop.point.dto.PointProfitDTOResponse;
 import animal_shop.shop.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/seller")
@@ -418,17 +421,15 @@ public class SellerController {
         }
     }
 
-    @GetMapping("/point-time")
+    @GetMapping("/point-time-info")
     public ResponseEntity<?> pointByTime(@RequestHeader(value = "Authorization") String token,
-                                         @RequestParam(value = "time") String time){
+                                         @RequestParam(value = "time") String time,
+                                         @RequestParam(value = "page", required = false, defaultValue = "1") int page){
         ResponseDTO responseDTO;
         try{
-            pointService.pointByTime(token,time);
+            List<MyPointDTO> myPointDTOList = pointService.pointByTime(token,time,page -1);
 
-            responseDTO = ResponseDTO.builder()
-                    .message("select")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
+            return ResponseEntity.ok().body(myPointDTOList);
         }catch (Exception e){
 
             responseDTO = ResponseDTO.builder()
