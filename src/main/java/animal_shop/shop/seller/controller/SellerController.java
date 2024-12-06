@@ -461,4 +461,25 @@ public class SellerController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?>search_item(@RequestHeader(value = "Authorization",required = false)String token,
+                                        @RequestParam(value = "species", required = false) String species,
+                                        @RequestParam(value = "category", required = false) String category,
+                                        @RequestParam(value = "detailed_category", required = false) String detailed_category,
+                                        @RequestParam(value = "searchTerm",required = false)String searchTerm,
+                                        @RequestParam(value = "page", required = false) Integer page,
+                                        @RequestParam(value = "pageCount", defaultValue = "10", required = false) Integer pageCount,
+                                        @RequestParam(value = "status", required = false)String status){
+        ResponseDTO responseDTO = null;
+        try {
+            ItemDTOListResponse item = itemService.searchItemsBySeller(token, searchTerm, species, category, detailed_category, status, page, pageCount);
+            return ResponseEntity.ok().body(item);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }

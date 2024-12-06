@@ -20,6 +20,13 @@ public class ItemSpecification {
         };
     }
 
+    public static Specification<Item> searchByMemberId(String searchTerm) {
+        return (root, query, criteriaBuilder) -> {
+            if (searchTerm == null || searchTerm.isEmpty()) return null;
+            return criteriaBuilder.equal(root.get("member").get("id"), searchTerm);
+        };
+    }
+
     // 'itemName' 또는 'memberNickname'을 검색하는 조건
     public static Specification<Item> searchByItemNameOrMemberNickname(String searchTerm) {
         return (root, query, criteriaBuilder) -> {
