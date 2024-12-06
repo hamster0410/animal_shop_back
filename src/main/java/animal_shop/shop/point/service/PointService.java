@@ -5,16 +5,14 @@ import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.order_item.dto.MyItemDTO;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
-import animal_shop.shop.point.dto.MyPointDTO;
-import animal_shop.shop.point.dto.PointTotalDTOResponse;
-import animal_shop.shop.point.dto.PointYearSellerDTO;
-import animal_shop.shop.point.dto.PointTotalDTO;
+import animal_shop.shop.point.dto.*;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,5 +136,18 @@ public class PointService {
             myItemDTOList.add(new MyItemDTO(obj));
         }
         return myItemDTOList;
+    }
+
+    public List<PointEntireSellerDTO> getSellerSumEntire(String token, String time, String start, String end) {
+        List<Object[]> objects = pointRepository.findEntireTotalPointsBySellerForTime(time,start,end);
+        List<PointEntireSellerDTO> pointEntireSellerDTOList= new ArrayList<>();
+        for(Object[] obj : objects){
+            Member member = memberRepository.findById((Long) obj[0])
+                    .orElseThrow(() -> new IllegalArgumentException("member is not found") );
+            PointEntireSellerDTO pointYearSellerDTO = new PointEntireSellerDTO((String) obj[1], (BigDecimal) obj[2], member.getNickname());
+            pointEntireSellerDTOList.add(pointYearSellerDTO);
+        }
+
+        return pointEntireSellerDTOList;
     }
 }

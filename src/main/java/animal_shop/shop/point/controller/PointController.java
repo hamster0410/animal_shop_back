@@ -1,6 +1,7 @@
 package animal_shop.shop.point.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.point.dto.PointEntireSellerDTO;
 import animal_shop.shop.point.dto.PointTotalDTOResponse;
 import animal_shop.shop.point.dto.PointYearSellerDTO;
 import animal_shop.shop.point.service.PointService;
@@ -72,8 +73,8 @@ public class PointController {
 
     @GetMapping("/month-sum-seller")
     public ResponseEntity<?> MonthSumSeller(@RequestHeader(value = "Authorization") String token,
-                                           @RequestParam(value = "year") int year,
-                                           @RequestParam(value = "month") int month){
+                                           @RequestParam(value = "year", required = false) int year,
+                                           @RequestParam(value = "month", required = false) int month){
         ResponseDTO responseDTO;
         try{
             List<PointYearSellerDTO> pointDTOList = pointService.getSellerSumMonth(token,year,month);
@@ -104,11 +105,28 @@ public class PointController {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
                     .build();
-
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 
+    @GetMapping("/entire-sum-seller")
+    public ResponseEntity<?> EntireSumSeller(@RequestHeader(value = "Authorization") String token,
+                                          @RequestParam(value = "time") String time,
+                                          @RequestParam(value = "start", required = false) String start,
+                                          @RequestParam(value = "end", required = false)  String end){
+        ResponseDTO responseDTO;
+        try{
+            List<PointEntireSellerDTO> pointDTOList = pointService.getSellerSumEntire(token,time,start,end);
+
+            return ResponseEntity.ok().body(pointDTOList);
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
     @GetMapping("/withdraw-all")
     public ResponseEntity<?> withdrawAll(@RequestHeader(value = "Authorization") String token){
