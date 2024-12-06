@@ -467,6 +467,7 @@
 //                    .total_count(items.getTotalElements())
 //                    .build();
 //        }
+
         //사랑해요 specification
         public ItemDTOListResponse searchItems(String searchBy, String searchTerm,  String species, String category, String detailedCategory, String status, Integer page, int pageCount) {
             Specification<Item> specification = Specification.where(null);
