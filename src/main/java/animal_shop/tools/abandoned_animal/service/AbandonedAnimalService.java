@@ -16,13 +16,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -40,6 +48,9 @@ public class AbandonedAnimalService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Value("${file.upload-dir-interest}")
+    private String uploadDir;
 
 
     // @Value 어노테이션을 사용하여 프로퍼티 주입
@@ -137,31 +148,72 @@ public class AbandonedAnimalService {
     }
 
 
+
+
+
+
+
     @Transactional
-    public void interestAnimal(String token, AnimalDTO animalDTO, int page) {
-        //인증
+    public void interestAnimal(String token, InterestAnimalDTO interestAnimalDTO, int page, MultipartFile file) {
+        // 인증
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(()->new IllegalArgumentException("member is not found"));
-        //유기동물 레포지토리에 있는 애인지 확인
-        AbandonedAnimal animal = animalRepository.findById(Long.valueOf(animalDTO.getDesertionNo()))
-                .orElseThrow(()-> new IllegalArgumentException("없는 동물임"));
-        //관심동물 리스트에 집어넣기
-        // AbandonedAnimal을 InterestAnimalDTO로 변환
-        InterestAnimalDTO interestAnimalDTO = new InterestAnimalDTO();
-        interestAnimalDTO.setId(animal.getId());
-        interestAnimalDTO.setFilename(animal.getFilename());
-        interestAnimalDTO.setAge(animal.getAge());
-        interestAnimalDTO.setNoticeSdt(animal.getNoticeSdt());
-        interestAnimalDTO.setNoticeEdt(animal.getNoticeEdt());
-        interestAnimalDTO.setCareNm(animal.getCareNm());
-        interestAnimalDTO.setCareTel(animal.getCareTel());
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        // InterestAnimalDTO를 InterestAnimal 엔티티로 변환
-        InterestAnimal interestAnimal = InterestAnimal.fromDTO(interestAnimalDTO);
+        //USER 확인
+        if(!member.getRole().toString().equals("USER"))
+            throw new IllegalStateException("User is not USER");
 
-        // 관심 동물 레포지토리에 저장
+
+        // 유기동물 정보 확인 abandonedAnimal 이 animalRespository에 있나 확인
+
+        // DTO -> 엔티티 변환 (InterestAnimalDTO -> InterestAnimal 엔티티로 변환)
+        InterestAnimal interestAnimal = InterestAnimalDTO.toEntity(interestAnimalDTO, member);
+        // 페이징
+        Pageable pageable = PageRequest.of(page, 12, Sort.by("createdDate").descending());
+        InterestAnimal animal = new InterestAnimal();
+        animal.setName(interestAnimalDTO.getName());
+        animal.setCareNm(interestAnimalDTO.getCareNm());
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                // 디렉토리가 없으면 생성
+                Files.createDirectories(Paths.get(uploadDir));
+                // 파일명 중복 방지 (UUID 사용)
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                Path filePath = Paths.get(uploadDir, fileName);
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                interestAnimal.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
+            }
+        } else {
+            interestAnimal.setAttachmentUrl(""); // 파일이 없을 경우 빈 값 설정
+        }
+        // 등록
         interestAnimalRepository.save(interestAnimal);
+    }
+
+
+    //관심동물 삭제
+    @Transactional
+    public void indifferentAnimal(String token, Long id) {
+
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        //USER 확인
+        if(!member.getRole().toString().equals("USER"))
+            throw new IllegalStateException("User is not USER");
+
+        InterestAnimal interestAnimal = interestAnimalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("InterestAnimal not found"));
+
+        if (!interestAnimal.getMember().getId().equals(member.getId())) {
+            throw new IllegalStateException("Unauthorized to delete this InterestAnimal");
+        }
+        interestAnimalRepository.delete(interestAnimal);
 
     }
 }
