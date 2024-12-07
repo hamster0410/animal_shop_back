@@ -52,9 +52,11 @@ public class ShopService {
                 .toList();
 
         List<MainDTO> animal_custom = new ArrayList<>();
+        System.out.println(token  + " " +  species);
         //로그인 하지 않은 경우
         if(token==null){
             animal_custom = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
+            System.out.println("login is null");
 
             return MainDTOResponse.builder()
                     .animal_new(animal_new)
@@ -74,7 +76,7 @@ public class ShopService {
         //애완동물 정보가 없거나 리더 동물이 없는경우
         if(pet == null){
             animal_custom = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
-
+            System.out.println("pet is null");
             return MainDTOResponse.builder()
                     .animal_new(animal_new)
                     .animal_hot(animal_hot)
@@ -88,19 +90,31 @@ public class ShopService {
         if(randomNumber % 2 ==0){
             if(species.equals("dog")){
                 if(pet.getAge()<2){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"HEALTH",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","puppy", ItemSellStatus.STOP,
+                                    pageable)
+                            .stream().map(MainDTO::new).toList();
                 }else if(pet.getAge() < 8){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"ACCESSORY",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","adult", ItemSellStatus.STOP,
+                                    pageable)
+                            .stream().map(MainDTO::new).toList();
                 }else{
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"TOYS", ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","senior", ItemSellStatus.STOP,
+                                    pageable)
+                            .stream().map(MainDTO::new).toList();
                 }
             }else{
                 if(pet.getAge()<2){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"HEALTH",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","kitten", ItemSellStatus.STOP,
+                                    pageable)
+                            .stream().map(MainDTO::new).toList();
                 }else if(pet.getAge() < 8){
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"ACCESSORY", ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","adult", ItemSellStatus.STOP,
+                                    pageable)
+                            .stream().map(MainDTO::new).toList();
                 }else{
-                    animal_custom = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,"TOYS",ItemSellStatus.STOP, pageable).stream().map(MainDTO::new).toList();
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","nutritional/functional", ItemSellStatus.STOP,
+                                    pageable)
+                            .stream().map(MainDTO::new).toList();
                 }
             }
         }else {
@@ -109,28 +123,28 @@ public class ShopService {
             //강아지일 경우
             if(species.equals("dog")){
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","nutritional/functional", ItemSellStatus.STOP,
                                     pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","clothing/accessories", ItemSellStatus.STOP,
                                     pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","walking_supplies", ItemSellStatus.STOP,
                                     pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }else{
                 //고양이일 경우
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","nutritional/functional", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","tunnels/hunting_instinct", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 } else {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"SAMPLE","SAMPLE", ItemSellStatus.STOP,pageable)
+                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","fishing_rods/lasers", ItemSellStatus.STOP,pageable)
                             .stream().map(MainDTO::new).toList();
                 }
             }

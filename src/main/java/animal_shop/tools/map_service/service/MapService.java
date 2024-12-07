@@ -2,7 +2,6 @@ package animal_shop.tools.map_service.service;
 
 import animal_shop.tools.map_service.dto.MapDTO;
 import animal_shop.tools.map_service.dto.MapDTOResponse;
-import animal_shop.tools.map_service.entity.MapEntity;
 import animal_shop.tools.map_service.repository.MapRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,53 +32,53 @@ public class MapService {
     @Value("${openApi.dataType}")
     private String dataType;
 
+    private long totalPages;
 
+    private long totalCount;
     public ResponseEntity<?> mapFind() {
 
         mapRepository.deleteAll();
         int pageNo = 1; // 페이지 번호 초기화
         List<MapDTO> resultList = new ArrayList<>(); // 결과를 담을 리스트
-        long totalCount = 0; // 총 항목 수
+        totalCount = 0; // 총 항목 수
+        totalPages = Long.MAX_VALUE; // 최대 페이지를 추후 계산
 
-        // RestTemplate 초기화
         RestTemplate restTemplate = new RestTemplate();
 
-        // API 호출 반복
-        while (true) {
-            // API 호출 URL 구성
+        while (pageNo <= totalPages) {
             String API_URL = endPoint + "?serviceKey=" + serviceKey + "&dataType=" + dataType +
                     "&perPage=1000&pageNo=" + pageNo;
 
             log.info("API 호출 URL: {}", API_URL);
+            log.info("전체 페이지 : {}", totalPages);
 
             try {
                 // API 호출 및 응답 처리
                 String response = restTemplate.getForObject(API_URL, String.class);
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootNode = objectMapper.readTree(response);
-                JsonNode dataNode = rootNode.path("data");
-                JsonNode totalCountNode = rootNode.path("total_count");
 
-                // "total_count"가 숫자라면 저장
+                // total_count가 존재하면 최대 페이지 계산
+                JsonNode totalCountNode = rootNode.path("totalCount");
                 if (totalCountNode.isNumber()) {
                     totalCount = totalCountNode.asLong();
+                    totalPages = (totalCount + 1000 - 1) / 1000; // 총 페이지 계산
                 }
 
-                // "data"가 배열이라면 각 항목을 처리
+                // 데이터 처리
+                JsonNode dataNode = rootNode.path("data");
                 if (dataNode.isArray() && dataNode.size() > 0) {
                     for (JsonNode itemNode : dataNode) {
-                        // JSON 데이터를 MapDTO로 변환
                         MapDTO item = objectMapper.treeToValue(itemNode, MapDTO.class);
-                        resultList.add(item); // 결과 리스트에 추가
+                        resultList.add(item);
 
-                        MapEntity mapEntity = item.toEntity(); // 변환 메서드 호출
-                        mapRepository.save(mapEntity); // DB에 저장
+                        // 엔티티로 변환하여 DB 저장
+                        mapRepository.save(item.toEntity());
                     }
-                    log.info("현재 페이지: {}", pageNo);
+                    log.info("현재 페이지 처리 완료: {}", pageNo);
                     pageNo++; // 다음 페이지로 이동
                 } else {
-                    // 더 이상 데이터가 없는 경우 반복 종료
-                    log.info("데이터 없음. 종료.");
+                    log.info("더 이상 데이터가 없습니다. 반복 종료.");
                     break;
                 }
 
@@ -89,12 +88,10 @@ public class MapService {
             }
         }
 
-        // 로그로 결과 확인
+        // 결과 로그 확인
         log.info("총 항목 수: {}", totalCount);
-        log.info("결과 항목 수: {}", resultList.size());
-        resultList.forEach(item -> log.info("시설명: {}", item.getFacilityName())); // 각 시설명을 출력
+        log.info("수집된 데이터 수: {}", resultList.size());
 
-        // 결과를 MapDTOResponse로 감싸서 반환
         MapDTOResponse response = MapDTOResponse.builder()
                 .MapDTOList(resultList)
                 .total_count(totalCount)
@@ -102,4 +99,5 @@ public class MapService {
 
         return ResponseEntity.ok().body(response);
     }
+
 }
