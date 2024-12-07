@@ -100,6 +100,8 @@ public class AbandonedAnimal{
             return Long.valueOf(0L); // 4자리로 잘라낸 값을 Long으로 변환
         }
     }
+
+
 }
 
 
