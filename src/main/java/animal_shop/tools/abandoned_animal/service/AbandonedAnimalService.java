@@ -1,8 +1,13 @@
 package animal_shop.tools.abandoned_animal.service;
 
+import animal_shop.community.member.entity.Member;
+import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.security.TokenProvider;
 import animal_shop.tools.abandoned_animal.dto.*;
 import animal_shop.tools.abandoned_animal.entity.AbandonedAnimal;
+import animal_shop.tools.abandoned_animal.entity.InterestAnimal;
 import animal_shop.tools.abandoned_animal.repository.AbandonedAnimalRepository;
+import animal_shop.tools.abandoned_animal.repository.InterestAnimalRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -25,6 +31,15 @@ public class AbandonedAnimalService {
 
     @Autowired
     private AbandonedAnimalRepository animalRepository;
+
+    @Autowired
+    private InterestAnimalRepository interestAnimalRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
 
     // @Value 어노테이션을 사용하여 프로퍼티 주입
@@ -113,15 +128,41 @@ public class AbandonedAnimalService {
                 .total_count(abandonedAnimals.getTotalElements())
                 .build();
 
-
-
-
     }
 
     public AnimalDetailDTO searchDetailAPI(Long animalId) {
         AbandonedAnimal animal = animalRepository.findById(animalId)
                 .orElseThrow(() -> new IllegalArgumentException("animal is not found"));
         return new AnimalDetailDTO(animal);
+    }
+
+
+    @Transactional
+    public void interestAnimal(String token, AnimalDTO animalDTO, int page) {
+        //인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(()->new IllegalArgumentException("member is not found"));
+        //유기동물 레포지토리에 있는 애인지 확인
+        AbandonedAnimal animal = animalRepository.findById(Long.valueOf(animalDTO.getDesertionNo()))
+                .orElseThrow(()-> new IllegalArgumentException("없는 동물임"));
+        //관심동물 리스트에 집어넣기
+        // AbandonedAnimal을 InterestAnimalDTO로 변환
+        InterestAnimalDTO interestAnimalDTO = new InterestAnimalDTO();
+        interestAnimalDTO.setId(animal.getId());
+        interestAnimalDTO.setFilename(animal.getFilename());
+        interestAnimalDTO.setAge(animal.getAge());
+        interestAnimalDTO.setNoticeSdt(animal.getNoticeSdt());
+        interestAnimalDTO.setNoticeEdt(animal.getNoticeEdt());
+        interestAnimalDTO.setCareNm(animal.getCareNm());
+        interestAnimalDTO.setCareTel(animal.getCareTel());
+
+        // InterestAnimalDTO를 InterestAnimal 엔티티로 변환
+        InterestAnimal interestAnimal = InterestAnimal.fromDTO(interestAnimalDTO);
+
+        // 관심 동물 레포지토리에 저장
+        interestAnimalRepository.save(interestAnimal);
+
     }
 }
 

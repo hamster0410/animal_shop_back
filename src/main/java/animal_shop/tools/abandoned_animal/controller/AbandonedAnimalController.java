@@ -48,4 +48,26 @@ public class AbandonedAnimalController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    //관심동물 등록
+    @PostMapping("/Iregister")
+    public ResponseEntity<?> registerInterest(@RequestHeader(value = "Authorization")String token,
+                                              @RequestBody AnimalDTO animalDTO,
+                                              @RequestParam(value = "page",defaultValue = "1",required = false)int page) {
+        ResponseDTO responseDTO = null;
+        try {
+            abandonedAnimalService.interestAnimal(token, animalDTO, page - 1);
+            responseDTO = ResponseDTO.builder()
+                    .message("success register")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+
+
 }
