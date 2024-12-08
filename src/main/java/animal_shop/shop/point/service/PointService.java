@@ -2,20 +2,26 @@ package animal_shop.shop.point.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.shop.point.PointStatus;
+import animal_shop.shop.point.dto.WithdrawDTO;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.order_item.dto.MyItemDTO;
 import animal_shop.shop.order_item.repository.OrderItemRepository;
 import animal_shop.shop.point.dto.*;
+import animal_shop.shop.point.entity.Point;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @Service
 public class PointService {
@@ -101,9 +107,7 @@ public class PointService {
         return pointRepository.findEarliestPointDate();
     }
 
-    public void withdrawAll(String token) {
 
-    }
 
     public List<MyPointDTO> pointByTime(String token, String time, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -149,5 +153,50 @@ public class PointService {
         }
 
         return pointEntireSellerDTOList;
+    }
+
+    public long withdrawPoint(String token, WithdrawDTO withdrawDTO) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+
+        StringTokenizer st = new StringTokenizer(withdrawDTO.getDate(),"-");
+        ArrayList<String> date = new ArrayList<>();
+        while(st.hasMoreTokens()){
+            date.add(st.nextToken());
+        }
+
+        System.out.println("here");
+
+        Integer year = null;
+        Integer month = null;
+        Integer day = null;
+        if(date.size() > 2){
+            day = Integer.valueOf(date.get(2));
+        }
+        if(date.size() > 1){
+            month = Integer.valueOf(date.get(1));
+        }
+        if (!date.isEmpty()){
+            year = Integer.valueOf(date.get(0));
+        }else{
+            throw new IllegalArgumentException("date error");
+        }
+        System.out.println(year + " " + month + " " + day);
+
+
+        Specification<Point> specification = Specification.where(null);
+        // Pageable 설정 (페이지 당 10개로 제한)
+        specification = specification.and(PointSpecification.hasYearAndMonthAndDay(year,month,day));
+
+        List<Point> points = pointRepository.findAll(specification);
+        long totalPoint= 0L;
+        for(Point point : points){
+            System.out.println(point.getGetDate());
+            point.setStatus(PointStatus.valueOf("WITHDRAWN"));
+            totalPoint += point.getPoint();
+            pointRepository.save(point);
+        }
+        return totalPoint;
+
     }
 }

@@ -2,9 +2,11 @@ package animal_shop.global.admin.controller;
 
 import animal_shop.global.admin.dto.SellerResponseDTO;
 import animal_shop.global.admin.dto.StopItemDTO;
+import animal_shop.shop.point.dto.WithdrawDTO;
 import animal_shop.global.admin.service.AdminService;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.main.dto.MainDTOBestResponse;
+import animal_shop.shop.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    PointService pointService;
 
     @GetMapping("/request-list")
     public ResponseEntity<?> requestPage(@RequestHeader(value = "Authorization") String token, @RequestParam(value = "page", defaultValue = "1") int page) {
@@ -115,6 +120,29 @@ public class AdminController {
         try {
             MainDTOBestResponse mainDTOResponse = adminService.stop_list(token, page-1);
             return ResponseEntity.ok().body(mainDTOResponse);
+
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<?> withdrawPoint(@RequestHeader("Authorization") String token,
+                                          @RequestBody WithdrawDTO withdrawDTO) {
+        ResponseDTO responseDTO;
+        try {
+            long totalPoint = pointService.withdrawPoint(token, withdrawDTO);
+
+            responseDTO = ResponseDTO.builder()
+                    .message("withdrawnPoint : " + totalPoint)
+                    .build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
 
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
