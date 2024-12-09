@@ -146,17 +146,24 @@ public class OrderService {
 
             for(OrderItem orderItem : orderItems){
 
-                OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, orderItem.getItem().getThumbnail_url().get(0));
+                DeliveryItem deliveryItem = deliveryItemRepository.findByOrderItemId(orderItem.getId());
+                OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, orderItem.getItem().getThumbnail_url().get(0), deliveryItem.getId());
+
                 if(status == null){
                     orderHistDTO.addOrderItemDTO(orderItemDTO);
                 }
+                //배송 기다리는 중인 애들을 요구하는 상황에 경우
                 else if(status.equals("waiting")){
+                    //승인도 되어있지않고 철회도 되어있지않다면
                     if(!orderItem.isDelivery_revoke() && !orderItem.isDelivery_approval()){
                         orderHistDTO.addOrderItemDTO(orderItemDTO);
                     }
+                    //이미 승인이 난 친구를 요구하는 경우
                 }else if(status.equals("approve")){
+                    //배송 승인이 된거라면
                     if(orderItem.isDelivery_approval()) orderHistDTO.addOrderItemDTO(orderItemDTO);
 
+                    //배송 철회가 된 경우를 요구하는 상황에서는
                 }else {
                     if(orderItem.isDelivery_revoke()) orderHistDTO.addOrderItemDTO(orderItemDTO);
                 }
