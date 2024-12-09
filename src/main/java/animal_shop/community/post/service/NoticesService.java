@@ -111,13 +111,14 @@ public class NoticesService {
 
     @Transactional(readOnly = true)
     public NoticeDTOResponse adminSearchId(String token, NoticesDTO noticesDTO) {
+
         // 인증
         String userId = tokenProvider.extractIdByAccessToken(token);
 
         // ADMIN 권한 확인
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
-        if (!member.getRole().toString().equals("ADMIN")) {
+        if (member.getRole().toString().equals("USER")) {
             throw new IllegalStateException("User is not ADMIN");
         }
 
