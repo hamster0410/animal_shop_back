@@ -8,13 +8,13 @@ public class OptionDTO {
     private String name;
     private Long price;
     private Long optionId;
-    private Long discountRate;
+    private Long discount_rate;
 
     public OptionDTO(Option option) {
         this.optionId = option.getId();
         this.name = option.getName();
         this.price = option.getPrice();
-        this.discountRate = option.getDiscount_rate();
+        this.discount_rate = option.getDiscount_rate();
     }
 
 }

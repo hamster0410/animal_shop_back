@@ -38,7 +38,7 @@ public class WikiController {
     }
 
     @GetMapping("/select")
-    ResponseEntity<?> wiki_select(@RequestHeader(value = "Authorization") String token,
+    ResponseEntity<?> wiki_select(@RequestHeader(value = "Authorization",required = false) String token,
                                   @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         ResponseDTO responseDTO = null;
         try {

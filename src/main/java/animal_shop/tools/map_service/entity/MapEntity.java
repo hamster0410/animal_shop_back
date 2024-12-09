@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="pam")
+@Table(name="map")
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MapEntity {
