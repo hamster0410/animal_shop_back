@@ -21,6 +21,8 @@ public class ItemDTOList {
 
     private String item_detail;
 
+    private String detailed_category;
+
     private Long stock_number;
 
     private ItemSellStatus sell_status;

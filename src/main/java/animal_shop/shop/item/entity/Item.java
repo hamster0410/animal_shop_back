@@ -35,7 +35,8 @@ public class Item extends BaseTimeEntity{
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemComment> comments;
 
-
+    @JoinColumn(name = "detailed_category")
+    private String detailed_category;
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -55,8 +56,6 @@ public class Item extends BaseTimeEntity{
     @Builder.Default
     private Long total_rating = 0L;
 
-    @Column
-    private String detailed_category;
 
     private Long comment_count;
 

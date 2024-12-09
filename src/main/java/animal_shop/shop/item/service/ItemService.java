@@ -117,7 +117,6 @@
                 newOption.setItem(item); // 새 옵션에 아이템 연결
                 item.getOptions().add(newOption); // 아이템의 옵션 리스트에 추가
             }
-
             // 4. 수정된 아이템 저장
             itemRepository.save(item);
         }
