@@ -110,6 +110,7 @@
             item.setSpecies(itemDTOList.getSpecies());
             item.setThumbnail_url(itemDTOList.getThumbnailUrls());
             item.setImage_url(itemDTOList.getImageUrl());
+            item.setDetailed_category(itemDTOList.getDetailed_category());
 
             item.getOptions().clear(); // 기존 옵션 제거
 
