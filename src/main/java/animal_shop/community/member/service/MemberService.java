@@ -171,6 +171,7 @@ public class MemberService {
                     .username(member.get().getUsername())
                     .mail(member.get().getMail())
                     .nickname(member.get().getNickname())
+                    .profile(member.get().getProfile())
                     .role(member.get().getRole())
                     .build();
         }
