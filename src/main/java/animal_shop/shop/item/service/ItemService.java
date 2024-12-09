@@ -65,6 +65,7 @@
             Item item = Item.builder()
                     .name(itemDTOList.getName())
                     .category(itemDTOList.getCategory())
+                    .detailed_category(itemDTOList.getDetailed_category())
                     .itemDetail(itemDTOList.getItem_detail())
                     .comment_count(0L)
                     .species(itemDTOList.getSpecies())
