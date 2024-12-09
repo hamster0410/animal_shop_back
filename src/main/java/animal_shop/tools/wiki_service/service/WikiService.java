@@ -88,10 +88,10 @@ public class WikiService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(()->new IllegalArgumentException("member is not found"));
 
-        //ADMIN이 아닌 경우 예외 처리
-        if(!member.getRole().toString().equals("ADMIN")){
-            throw new IllegalStateException("User is not ADMIN");
-        }
+//        //ADMIN이 아닌 경우 예외 처리
+//        if(!member.getRole().toString().equals("ADMIN")){
+//            throw new IllegalStateException("User is not ADMIN");
+//        }
         Pageable pageable = (Pageable) PageRequest.of(page,10, Sort.by("createdDate").descending());
 
         Page<Wiki> wikiPage = wikiRepository.findAll(pageable);
@@ -112,9 +112,9 @@ public class WikiService {
                 .orElseThrow(()->new IllegalArgumentException("member is not found"));
 
         //ADMIN이 아닌 경우 예외 처리
-        if(!member.getRole().toString().equals("ADMIN")){
-            throw new IllegalStateException("User is not ADMIN");
-        }
+//        if(!member.getRole().toString().equals("ADMIN")){
+//            throw new IllegalStateException("User is not ADMIN");
+//        }
         Wiki wiki = wikiRepository.findById(wikiDTO.getId())
                 .orElseThrow(()->new IllegalArgumentException("Wiki not found"));
 

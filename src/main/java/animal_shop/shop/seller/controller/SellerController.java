@@ -40,7 +40,6 @@ public class SellerController {
 
         try {
             itemService.save(token, itemDTOList);
-            System.out.println("here 5");
             responseDTO = ResponseDTO.builder()
                     .message("save success")
                     .build();
