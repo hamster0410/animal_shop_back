@@ -34,7 +34,6 @@ public class WikiController {
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
-
     }
 
     @GetMapping("/select")
