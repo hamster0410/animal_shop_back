@@ -1,5 +1,6 @@
 package animal_shop.tools.map_service.dto;
 
+import animal_shop.tools.map_service.entity.MapEntity;
 import lombok.Getter;
 
 @Getter
@@ -10,7 +11,7 @@ public class MapDetailDTO {
     String additional_pet_fee;
     String admission_fee;
     String allowed_pet_size;
-    String category3;
+    String category;
     String indoor_available;
     String outdoor_available;
     String operating_hours;
@@ -21,6 +22,29 @@ public class MapDetailDTO {
     String road_address;
     String homepage;
     String closed_days;
+    long rating;
+    long comment_count;
 
-
+    public MapDetailDTO(MapEntity mapEntity) {
+        this.facility_name = mapEntity.getFacilityName();
+        this.latitude = mapEntity.getLatitude();
+        this.longitude = mapEntity.getLongitude();
+        this.additional_pet_fee = mapEntity.getAdditionalPetFee();
+        this.admission_fee = mapEntity.getAdmissionFee();
+        this.allowed_pet_size = mapEntity.getAllowedPetSize();
+        this.category = mapEntity.getCategory3();
+        this.indoor_available = mapEntity.getIndoorAvailable();
+        this.outdoor_available = mapEntity.getOutdoorAvailable();
+        this.operating_hours = mapEntity.getOperatingHours();
+        this.parking_available = mapEntity.getParkingAvailable();
+        this.pet_restrictions = mapEntity.getPetRestrictions();
+        this.phone_number = mapEntity.getPhoneNumber();
+        this.place_description = mapEntity.getPlaceDescription();
+        this.road_address = mapEntity.getRoadAddress();
+        this.homepage = mapEntity.getHomepage();
+        this.closed_days = mapEntity.getClosedDays();
+        // 나중에 수정 요망
+        this.rating = 0;
+        this.comment_count = 0;
+    }
 }
