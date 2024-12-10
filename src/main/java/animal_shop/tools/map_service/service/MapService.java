@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,6 +134,8 @@ public class MapService {
     public void createMapComment(String token,  MapCommentDTO mapCommentDTO) {
         //인증
         String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
         // 지도 찾기 (mapId로 지도 존재 여부 확인)
         MapEntity mapEntity = mapRepository.findById(mapCommentDTO.getMap_id())
@@ -142,8 +146,10 @@ public class MapService {
         MapComment mapComment = new MapComment();
         mapComment.setContents(mapCommentDTO.getContents());
         mapComment.setMap_id(mapCommentDTO.getMap_id());
+        System.out.println(mapCommentDTO.getMap_comment_thumbnail_url().get(0));
         mapComment.setMap_comment_thumbnail_url(mapCommentDTO.getMap_comment_thumbnail_url());
         mapComment.setRating(mapCommentDTO.getRating());
+        mapComment.setMember(member);
 
 
         mapEntity.setCommentCount(mapEntity.getCommentCount()+1);
@@ -175,6 +181,45 @@ public class MapService {
 
     }
 
+    @Transactional
+    public void deleteMapComment(String token, MapCommentDTO mapCommentDTO) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
 
+        MapComment comment = mapCommentRespository.findById(mapCommentDTO.getId())
+                .orElseThrow(()->new IllegalArgumentException("comment is not found"));
 
-}
+        MapEntity mapEntity = mapRepository.findById(mapCommentDTO.getMap_id())
+                .orElseThrow(() -> new IllegalArgumentException("Map not found with ID: " + mapCommentDTO.getMap_id()));
+        mapEntity.setTotalRating(mapEntity.getTotalRating() - comment.getRating());
+        mapEntity.setCommentCount(mapEntity.getCommentCount()-1);
+        mapCommentRespository.delete(comment);
+
+    }
+    @Transactional
+    public MapCommentDTOResponse selectMapComment(String token, MapCommentDTO mapCommentDTO, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        // 댓글 리스트 가져오기
+        Pageable pageable = (Pageable) PageRequest.of(page, 20);
+
+        List<MapComment> comments = mapCommentRespository.findAll(pageable).getContent();
+
+        // DTO 변환
+        List<MapCommentDTO> commentDTOs = new ArrayList<>();
+        for (MapComment comment : comments) {
+            MapCommentDTO dto = new MapCommentDTO(comment);
+            commentDTOs.add(dto);
+        }
+
+        // 총 댓글 수 가져오기
+        long totalCount = mapCommentRespository.count();
+
+        // 응답 DTO 생성
+        MapCommentDTOResponse response = new MapCommentDTOResponse();
+        response.setComments(commentDTOs);
+        response.setTotal_count(totalCount);
+
+        return response;
+    }
+
+    }
+
