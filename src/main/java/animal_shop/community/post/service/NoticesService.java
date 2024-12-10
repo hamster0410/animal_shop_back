@@ -91,7 +91,7 @@ public class NoticesService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
         // ADMIN 아닌 경우 예외 처리
-        if (!member.getRole().toString().equals("ADMIN")) {
+        if (member.getRole().toString().equals("USER")) {
             throw new IllegalStateException("User is not ADMIN");
         }
         // Pageable 설정 (페이지 당 10개로 제한)
