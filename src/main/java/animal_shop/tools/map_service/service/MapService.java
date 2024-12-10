@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -78,7 +76,7 @@ public class MapService {
 
         while (pageNo <= totalPages) {
             String API_URL = endPoint + "?serviceKey=" + serviceKey + "&dataType=" + dataType +
-                    "&perPage=1000&pageNo=" + pageNo;
+                    "&perPage=1000&page=" + pageNo;
 
             log.info("API 호출 URL: {}", API_URL);
             log.info("전체 페이지 : {}", totalPages);

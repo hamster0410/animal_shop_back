@@ -1,10 +1,8 @@
 package animal_shop.tools.map_service.entity;
 
-import animal_shop.tools.map_service.dto.MapDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -37,7 +35,10 @@ public class MapEntity {
     private String roadAddress;             // 도로명주소
     private String lotAddress;              // 지번주소
     private String phoneNumber;             // 전화번호
-    private String homepage;                // 홈페이지
+
+    @Column(length = 500)
+    private String homepage; // 홈페이지
+
     private String closedDays;              // 휴무일
     private String operatingHours;          // 운영시간
     private String parkingAvailable;        // 주차 가능여부
