@@ -417,7 +417,6 @@ public class DeliveryService {
                 hashMap2.put(deliveryCompleted.getOrderId(), deliveryCompleted);
             }
         }
-        System.out.println(hashMap);
         for(Long orderId :hashMap2.keySet()){
             OrderHistDTO orderHistDTO = new OrderHistDTO();
             orderHistDTO.setOrderId(orderId);

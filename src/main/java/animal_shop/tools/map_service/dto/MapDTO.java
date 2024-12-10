@@ -47,10 +47,10 @@ public class MapDTO {
     @JsonProperty("건물 번호")
     private String buildingNumber;          // 건물 번호
     @JsonProperty("위도")
-    private String latitude;                 // 위도
+    private Double latitude;                 // 위도
 
     @JsonProperty("경도")
-    private String longitude;               // 경도
+    private Double longitude;               // 경도
 
     @JsonProperty("우편번호")
     private Integer zipCode;                // 우편번호

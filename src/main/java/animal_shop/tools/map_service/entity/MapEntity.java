@@ -32,8 +32,8 @@ public class MapEntity {
     private String lotNumber;               // 번지
     private String roadName;                // 도로명 이름
     private String buildingNumber;          // 건물 번호
-    private String latitude;                // 위도
-    private String longitude;               // 경도
+    private Double latitude;                // 위도
+    private Double longitude;               // 경도
     private Integer zipCode;                // 우편번호
     private String roadAddress;             // 도로명주소
     private String lotAddress;              // 지번주소
