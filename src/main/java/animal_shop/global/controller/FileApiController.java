@@ -43,6 +43,9 @@ public class FileApiController {
     @Value("${file.upload-dir-pet}")  // 파일 저장 경로를 application.properties에 설정
     private String petUploadDir;
 
+    @Value("${file.upload-dir-map-comment}")
+    private String mapUploadDir;
+
     @PostMapping("/post-image-upload")
     public String uploadPostImage(@RequestPart("image") final MultipartFile image) {
         if (image.isEmpty()) {
@@ -168,6 +171,29 @@ public class FileApiController {
         }
     }
 
+    @PostMapping("/map-comment-image-upload")
+    public String uploadCommentImage(@RequestPart("image") final MultipartFile image){
+        if(image.isEmpty()){
+            return "";
+        }
+        String orgFilename = image.getOriginalFilename();
+        String uuid = UUID.randomUUID().toString().replaceAll("-","");
+        String extension = orgFilename.substring(orgFilename.lastIndexOf(".")+1);
+        String saveFilename = uuid + "." + extension;
+        String fileFullPath = Paths.get(mapUploadDir,saveFilename).toString();
+
+        try {
+            //파일저장
+            File uploadFile = new File(fileFullPath);
+            image.transferTo(uploadFile);
+            return "mapCommentImage_"+saveFilename;
+        } catch (IOException e) {
+            //
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @GetMapping(value = "/image-print", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public byte[] printEditorImage(@RequestParam("filename") final String filename) {
         // 업로드된 파일의 전체 경로
@@ -181,6 +207,7 @@ public class FileApiController {
             case "item" -> itemUploadDir;
             case "item-comment" -> itemCommentUploadDir;
             case "pet" -> petUploadDir;
+            case "mapCommentImage" -> mapUploadDir;
             default -> throw new RuntimeException("path is not valid");
         };
 
@@ -314,5 +341,7 @@ public class FileApiController {
             return ""; // 확장자가 없는 경우 빈 문자열 반환
         }
     }
+
+
 
 }

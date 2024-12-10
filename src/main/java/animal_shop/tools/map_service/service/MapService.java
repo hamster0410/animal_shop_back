@@ -1,19 +1,13 @@
 package animal_shop.tools.map_service.service;
 
-import animal_shop.global.security.TokenProvider;
-import animal_shop.tools.map_service.dto.*;
-import animal_shop.tools.map_service.entity.MapEntity;
-import animal_shop.tools.map_service.entity.MapSpecification;
+import animal_shop.tools.map_service.dto.MapDTO;
+import animal_shop.tools.map_service.dto.MapDTOResponse;
 import animal_shop.tools.map_service.repository.MapRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +22,22 @@ public class MapService {
 
     @Autowired
     private MapRepository mapRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private MapCommentRespository mapCommentRespository;
+
+    @Autowired
+    ItemCommentRepository itemCommentRepository;
+
+    @Autowired
+    ItemCommentLikeRepository itemCommentLikeRepository;
+
 
     @Autowired
     private TokenProvider tokenProvider;
