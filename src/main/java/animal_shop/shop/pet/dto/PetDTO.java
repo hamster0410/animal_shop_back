@@ -44,11 +44,6 @@ public class PetDTO {
     }
 
 
-    public Boolean getMain() {
-        return leader;
-    }
-
-
     public void updateEntity(Pet pet) {
 
         pet.setName(this.name);

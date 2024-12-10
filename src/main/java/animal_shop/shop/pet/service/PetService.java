@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PetService {
@@ -52,7 +53,11 @@ public class PetService {
         pet.setRegistrationCode(petDTO.getRegistrationCode());
         pet.setDescription(petDTO.getDescription()); // 자기소개 설정
         pet.setProfileImageUrl(petDTO.getProfileImageUrl()); // 프로필 이미지 URL 설정
-        pet.setLeader(petDTO.getMain());
+        if(member.getPets().isEmpty()) {
+            pet.setLeader(true);
+        }else{
+            pet.setLeader(false);
+        }
 
         //4.저장
         pet = petRepository.save(pet);
@@ -116,7 +121,18 @@ public class PetService {
         }
 
         // 필드 업데이트
-        petDTO.updateEntity(pet);
+        Optional.ofNullable(petDTO.getName()).ifPresent(pet::setName);
+        Optional.ofNullable(petDTO.getGender()).ifPresent(pet::setGender);
+        Optional.ofNullable(petDTO.getSpecies()).ifPresent(pet::setSpecies);
+        Optional.ofNullable(petDTO.getBreed()).ifPresent(pet::setBreed);
+        Optional.ofNullable(petDTO.getIsNeutered()).ifPresent(pet::setIsNeutered);
+        Optional.ofNullable(petDTO.getAge()).ifPresent(pet::setAge);
+        Optional.ofNullable(petDTO.getWeight()).ifPresent(pet::setWeight);
+        Optional.ofNullable(petDTO.getDescription()).ifPresent(pet::setDescription);
+        Optional.ofNullable(petDTO.getProfileImageUrl()).ifPresent(pet::setProfileImageUrl);
+        Optional.ofNullable(petDTO.getRegistrationCode()).ifPresent(pet::setRegistrationCode);
+        Optional.ofNullable(petDTO.isLeader()).ifPresent(pet::setLeader);
+
         petRepository.save(pet);
     }
     @Transactional(readOnly = true)
