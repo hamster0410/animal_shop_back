@@ -150,4 +150,10 @@ public class MapService {
                 .total_count(maps.getTotalElements())
                 .build();
     }
+
+//    public MapDetailDTO detail(String token, long mapId) {
+//        MapEntity mapEntity = mapRepository.findById(mapId)
+//                .orElseThrow(()->new IllegalArgumentException("facility is not found"));
+//
+//    }
 }
