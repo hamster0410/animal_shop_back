@@ -119,4 +119,51 @@ public class MapService {
         return ResponseEntity.ok().body(response);
     }
 
+    public MapPositionDTOResponse search(String token, SearchRequestDTO searchRequestDTO, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+        Specification<MapEntity> specification = Specification.where(null);
+
+        if(searchRequestDTO.getKeyword()!=null){
+            specification = specification.and(MapSpecification.searchByKeyword(searchRequestDTO.getKeyword()));
+        }
+
+        if(searchRequestDTO.getParking()!=null){
+            specification = specification.and(MapSpecification.searchByParking(searchRequestDTO.getParking()));
+        }
+
+        if(searchRequestDTO.getOutdoor()!=null){
+            specification = specification.and(MapSpecification.searchByOutdoor(searchRequestDTO.getOutdoor()));
+        }
+
+        if(searchRequestDTO.getIndoor()!=null){
+            specification = specification.and(MapSpecification.searchByIndoor(searchRequestDTO.getIndoor()));
+        }
+        System.out.println("here 1");
+        if (searchRequestDTO.getSwLatlng() != null && searchRequestDTO.getNeLatlng() != null) {
+            specification = specification.and(MapSpecification.searchByRange(
+                    searchRequestDTO.getSwLatlng().getLongitude(),
+                    searchRequestDTO.getSwLatlng().getLatitude(),
+                    searchRequestDTO.getNeLatlng().getLongitude(),
+                    searchRequestDTO.getNeLatlng().getLatitude()));
+        }
+
+
+        Page<MapEntity> maps = mapRepository.findAll(specification,pageable);
+        List<MapPositionDTO> mapPositionDTOList = maps.stream().map(MapPositionDTO::new).toList();
+        return MapPositionDTOResponse.builder()
+                .mapPositionDTOList(mapPositionDTOList)
+                .total_count(maps.getTotalElements())
+                .build();
+    }
+
+//    public MapDetailDTO detail(String token, long mapId) {
+//        MapEntity mapEntity = mapRepository.findById(mapId)
+//                .orElseThrow(()->new IllegalArgumentException("facility is not found"));
+//
+//    }
 }
