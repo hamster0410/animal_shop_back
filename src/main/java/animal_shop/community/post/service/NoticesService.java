@@ -144,7 +144,7 @@ public class NoticesService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
-        if (!member.getRole().toString().equals("ADMIN")) {
+        if (member.getRole().toString().equals("USER")) {
             throw new IllegalStateException("User is not ADMIN");
         }
 
@@ -163,7 +163,7 @@ public class NoticesService {
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
         // ADMIN 권한 확인
-        if (!member.getRole().toString().equals("ADMIN")) {
+        if (member.getRole().toString().equals("USER")) {
             throw new IllegalStateException("User is not ADMIN");
         }
         // 특정 공지사항 조회
