@@ -382,7 +382,7 @@ public class DeliveryService {
 
         return OrderHistDTOResponse.builder()
                 .orderHistDTOList(orderHistDTOList)
-                .total_count(deliveryProgresses.getTotalElements())
+                .total_count((long) orderHistDTOList.size())
                 .build();
     }
 
@@ -428,7 +428,7 @@ public class DeliveryService {
         }
         return OrderHistDTOResponse.builder()
                 .orderHistDTOList(orderHistDTOList)
-                .total_count(deliveryCompleteds.getTotalElements())
+                .total_count((long) orderHistDTOList.size())
                 .build();
     }
     public void delivery_check(String token, DeliveryCheckDTO deliveryCheckDTO) {
