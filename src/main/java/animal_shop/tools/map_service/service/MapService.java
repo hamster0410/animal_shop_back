@@ -1,10 +1,12 @@
 package animal_shop.tools.map_service.service;
 
+import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item_comment.repository.ItemCommentRepository;
 import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import animal_shop.tools.map_service.dto.*;
+import animal_shop.tools.map_service.entity.MapComment;
 import animal_shop.tools.map_service.entity.MapEntity;
 import animal_shop.tools.map_service.entity.MapSpecification;
 import animal_shop.tools.map_service.repository.MapCommentRespository;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -255,5 +258,8 @@ public class MapService {
 
         return response;
     }
-  
+
+    @Transactional
+    public void updateMapComment(String token, MapCommentDTO mapCommentDTO) {
+    }
 }
