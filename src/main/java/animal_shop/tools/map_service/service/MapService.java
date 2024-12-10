@@ -1,16 +1,12 @@
 package animal_shop.tools.map_service.service;
 
-import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item_comment.repository.ItemCommentRepository;
 import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
-import animal_shop.tools.map_service.dto.MapCommentDTO;
-import animal_shop.tools.map_service.dto.MapCommentDTOResponse;
-import animal_shop.tools.map_service.dto.MapDTO;
-import animal_shop.tools.map_service.dto.MapDTOResponse;
-import animal_shop.tools.map_service.entity.MapComment;
+import animal_shop.tools.map_service.dto.*;
 import animal_shop.tools.map_service.entity.MapEntity;
+import animal_shop.tools.map_service.entity.MapSpecification;
 import animal_shop.tools.map_service.repository.MapCommentRespository;
 import animal_shop.tools.map_service.repository.MapRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -128,7 +127,59 @@ public class MapService {
 
         return ResponseEntity.ok().body(response);
     }
+  
+    
+      
+    public MapPositionDTOResponse search(String token, SearchRequestDTO searchRequestDTO, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
 
+        Pageable pageable = PageRequest.of(page, 15);
+        Specification<MapEntity> specification = Specification.where(null);
+
+        if(searchRequestDTO.getKeyword()!=null){
+            specification = specification.and(MapSpecification.searchByKeyword(searchRequestDTO.getKeyword()));
+        }
+
+        if(searchRequestDTO.getParking()!=null){
+            specification = specification.and(MapSpecification.searchByParking(searchRequestDTO.getParking()));
+        }
+
+        if(searchRequestDTO.getOutdoor()!=null){
+            specification = specification.and(MapSpecification.searchByOutdoor(searchRequestDTO.getOutdoor()));
+        }
+
+        if(searchRequestDTO.getIndoor()!=null){
+            specification = specification.and(MapSpecification.searchByIndoor(searchRequestDTO.getIndoor()));
+        }
+        if (searchRequestDTO.getSwLatlng() != null && searchRequestDTO.getNeLatlng() != null) {
+            specification = specification.and(MapSpecification.searchByRange(
+                    searchRequestDTO.getSwLatlng().getLongitude(),
+                    searchRequestDTO.getSwLatlng().getLatitude(),
+                    searchRequestDTO.getNeLatlng().getLongitude(),
+                    searchRequestDTO.getNeLatlng().getLatitude()));
+        }
+
+        // 거리 정렬 추가
+        specification = specification.and(MapSpecification.orderByDistance(
+                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLatitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLatitude())) /2,
+                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLongitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLongitude())) /2
+        ));
+        Page<MapEntity> maps = mapRepository.findAll(specification,pageable);
+        List<MapPositionDTO> mapPositionDTOList = maps.stream().map(MapPositionDTO::new).toList();
+        return MapPositionDTOResponse.builder()
+                .mapPositionDTOList(mapPositionDTOList)
+                .total_count(maps.getTotalElements())
+                .build();
+    }
+    public MapDetailDTO detail(String token, long mapId) {
+        MapEntity mapEntity = mapRepository.findById(mapId)
+                .orElseThrow(()->new IllegalArgumentException("facility is not found"));
+        return new MapDetailDTO(mapEntity);
+    }
+      
     //반려동물 동반 시설에 댓글 달기
     @Transactional
     public void createMapComment(String token,  MapCommentDTO mapCommentDTO) {
@@ -158,29 +209,12 @@ public class MapService {
         mapCommentRespository.save(mapComment);
     }
     //댓글 수정
-    @Transactional
-    public void updateMapComment(String token, MapCommentDTO mapCommentDTO) {
-        //인증
-        String userId = tokenProvider.extractIdByAccessToken(token);
-
-        //댓글 찾기
-        MapComment comment = mapCommentRespository.findById(mapCommentDTO.getId())
-                .orElseThrow(()->new IllegalArgumentException("comment is not found"));
-
-       //총 평점 수정(        mapEntity.setTotalRating(mapEntity.getTotalRating() + mapCommentDTO.getRating());)
-        MapEntity mapEntity = mapRepository.findById(mapCommentDTO.getMap_id())
-                .orElseThrow(() -> new IllegalArgumentException("Map not found with ID: " + mapCommentDTO.getMap_id()));
-       mapEntity.setTotalRating(mapEntity.getTotalRating() - comment.getRating() + mapCommentDTO.getRating());
-
-        comment.setContents(mapCommentDTO.getContents());
-        comment.setRating(mapCommentDTO.getRating());
-        comment.setMap_comment_thumbnail_url(mapCommentDTO.getMap_comment_thumbnail_url());
-
-        mapCommentRespository.save(comment);
-
-
-    }
-
+//     @Transactional
+//     public void updateMapComment(String token, MapCommentDTO mapCommentDTO) {
+      
+      
+      
+      
     @Transactional
     public void deleteMapComment(String token, MapCommentDTO mapCommentDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -193,8 +227,9 @@ public class MapService {
         mapEntity.setTotalRating(mapEntity.getTotalRating() - comment.getRating());
         mapEntity.setCommentCount(mapEntity.getCommentCount()-1);
         mapCommentRespository.delete(comment);
-
     }
+  
+      
     @Transactional
     public MapCommentDTOResponse selectMapComment(String token, MapCommentDTO mapCommentDTO, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -220,6 +255,5 @@ public class MapService {
 
         return response;
     }
-
-    }
-
+  
+}

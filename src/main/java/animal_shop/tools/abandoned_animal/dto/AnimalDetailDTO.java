@@ -46,7 +46,7 @@ public class AnimalDetailDTO {
 
     private String noticeComment;  // 특이사항
 
-    private String desertionNo;
+    private String desertion_no;
 
     public AnimalDetailDTO(AbandonedAnimal animal){
         this.id = animal.getId();
@@ -69,7 +69,7 @@ public class AnimalDetailDTO {
         this.processState = animal.getProcessState();
         this.sexCd = animal.getSexCd();
         this.specialMark = animal.getSpecialMark();
-        this.desertionNo = animal.getDesertionNo();
+        this.desertion_no = animal.getDesertionNo();
 
     }
 }

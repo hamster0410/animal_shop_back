@@ -382,7 +382,7 @@ public class DeliveryService {
 
         return OrderHistDTOResponse.builder()
                 .orderHistDTOList(orderHistDTOList)
-                .total_count(deliveryProgresses.getTotalElements())
+                .total_count((long) orderHistDTOList.size())
                 .build();
     }
 
@@ -417,7 +417,6 @@ public class DeliveryService {
                 hashMap2.put(deliveryCompleted.getOrderId(), deliveryCompleted);
             }
         }
-        System.out.println(hashMap);
         for(Long orderId :hashMap2.keySet()){
             OrderHistDTO orderHistDTO = new OrderHistDTO();
             orderHistDTO.setOrderId(orderId);
@@ -428,15 +427,23 @@ public class DeliveryService {
         }
         return OrderHistDTOResponse.builder()
                 .orderHistDTOList(orderHistDTOList)
-                .total_count(deliveryCompleteds.getTotalElements())
+                .total_count((long) orderHistDTOList.size())
                 .build();
     }
     public void delivery_check(String token, DeliveryCheckDTO deliveryCheckDTO) {
 
-        DeliveryProgress deliveryProgress = deliveryProgressRepository.findById(deliveryCheckDTO.getDeliveryProgressId())
-                .orElseThrow(() -> new IllegalArgumentException("deliveryProgress is not found"));
-        deliveryProgress.setDeliveryStatus(DeliveryStatus.COMPLETED);
-        moveToCompleted(deliveryProgress);
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        for(Long id : deliveryCheckDTO.getDeliveryProgressId()){
+            DeliveryProgress deliveryProgress = deliveryProgressRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("deliveryProgress is not found"));
+
+            if(!Long.valueOf(userId).equals(deliveryProgress.getBuyerId())){
+                throw new IllegalArgumentException("not buyer");
+            }
+
+            deliveryProgress.setDeliveryStatus(DeliveryStatus.COMPLETED);
+            moveToCompleted(deliveryProgress);
+        }
     }
 
 }

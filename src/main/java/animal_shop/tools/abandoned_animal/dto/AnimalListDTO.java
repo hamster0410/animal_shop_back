@@ -15,6 +15,7 @@ public class AnimalListDTO {
     private String status;
     private String popfile;
     public String neuterYn;
+    public String desertion_no;
 
     public AnimalListDTO(AbandonedAnimal animal){
         this.id = animal.getId();
@@ -26,5 +27,6 @@ public class AnimalListDTO {
         this.status = animal.getProcessState();
         this.popfile = animal.getPopfile();
         this.neuterYn = animal.getNeuterYn();
+        this.desertion_no = animal.getDesertionNo();
     }
 }
