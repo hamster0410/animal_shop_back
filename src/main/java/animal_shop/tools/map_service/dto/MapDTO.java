@@ -104,6 +104,9 @@ public class MapDTO {
 
     @JsonProperty("최종작성일")
     private String lastUpdated;             // 최종작성일
+
+    private long commentCount;
+    private long totalRating;
     // Entity를 DTO로 변환하는 생성자
     public MapDTO(MapEntity entity) {
         this.facilityName = entity.getFacilityName();
@@ -137,6 +140,8 @@ public class MapDTO {
         this.placeDescription = entity.getPlaceDescription();
         this.additionalPetFee = entity.getAdditionalPetFee();
         this.lastUpdated = entity.getLastUpdated();
+        this.totalRating = entity.getTotalRating();
+        this.commentCount = entity.getCommentCount();
     }
 
     // Entity -> DTO 변환
@@ -176,5 +181,7 @@ public class MapDTO {
         mapEntity.setPlaceDescription(this.getPlaceDescription());
         mapEntity.setAdditionalPetFee(this.getAdditionalPetFee());
         mapEntity.setLastUpdated(this.getLastUpdated());
+        mapEntity.setCommentCount(this.getCommentCount());
+        mapEntity.setTotalRating(this.getTotalRating());
         return mapEntity;}
 }

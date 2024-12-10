@@ -39,6 +39,8 @@ public class ItemCommentService {
 
     @Autowired
     ItemCommentLikeRepository itemCommentLikeRepository;
+
+
     @Transactional
     public ItemCommentDTOResponse getCommentsByItemId(Long itemId, String token, int page) {
 
@@ -63,10 +65,7 @@ public class ItemCommentService {
             commentDTOS = comments.stream()
                     .map(ItemCommentDTO::new)  // Comment 객체를 CommentDTO로 변환
                     .toList();
-
         }
-
-
         return ItemCommentDTOResponse
                 .builder()
                 .comments(commentDTOS)
