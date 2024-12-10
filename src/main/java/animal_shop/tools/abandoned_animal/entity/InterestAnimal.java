@@ -40,6 +40,8 @@ public class InterestAnimal {
     @JoinColumn(name = "member_id") // FK 설정
     private Member member;
 
+    private String desertionNo;
+
 
     public InterestAnimal(Member member, AbandonedAnimal abandonedAnimal) {
         this.attachment_url = abandonedAnimal.getPopfile();
@@ -50,6 +52,7 @@ public class InterestAnimal {
         this.sex_cd = abandonedAnimal.getSexCd();
         this.age = LocalDate.now().getYear() - abandonedAnimal.getAge();
         this.member = member;
+        this.desertionNo = abandonedAnimal.getDesertionNo();
     }
 
 }

@@ -96,9 +96,9 @@ public class AbandonedAnimalController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<?>deleteInterest(@RequestHeader(value = "Authorization")String token,
-                                           @PathVariable Long id){
+                                           @RequestParam(name = "animalId") Long id){
         ResponseDTO responseDTO = null;
         try{
             abandonedAnimalService.indifferentAnimal(token,id);

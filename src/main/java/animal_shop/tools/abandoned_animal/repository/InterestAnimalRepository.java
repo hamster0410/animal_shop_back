@@ -11,5 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface InterestAnimalRepository extends JpaRepository<InterestAnimal,Long> {
     Page<InterestAnimal> findByMember(Member member, Pageable pageable);
 
+    boolean existsByMemberAndDesertionNo(Member member, String desertion_no);
+
+
     //관심 동물 레포지토리
 }
