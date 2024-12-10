@@ -38,6 +38,8 @@ public class ItemDetailDTO {
 
    private String suspensionReason;
 
+   private boolean now_discount;
+
 
    public ItemDetailDTO(Item item) {
        this.id = item.getId();
@@ -58,6 +60,12 @@ public class ItemDetailDTO {
        this.comment_count = item.getComment_count();
        this.thumbnail_url = item.getThumbnail_url();
        this.image_url = item.getImage_url();
+       this.now_discount = false;
+       for(Option o : item.getOptions()){
+           if(o.getDiscount_rate() > 0){
+               now_discount = true;
+           }
+       }
    }
 
     public ItemDetailDTO(Item item, String suspensionReason) {
