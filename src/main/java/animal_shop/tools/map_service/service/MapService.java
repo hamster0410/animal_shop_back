@@ -261,5 +261,30 @@ public class MapService {
 
     @Transactional
     public void updateMapComment(String token, MapCommentDTO mapCommentDTO) {
+        // 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        // USER인지 확인
+        if (!member.getRole().toString().equals("USER")) {
+            throw new IllegalStateException("User is not USER");
+        }
+
+        // 댓글 찾기
+        MapComment comment = mapCommentRespository.findById(mapCommentDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+
+        // 총 평점 수정
+        MapEntity mapEntity = mapRepository.findById(mapCommentDTO.getMap_id())
+                .orElseThrow(() -> new IllegalArgumentException("Map not found with ID: " + mapCommentDTO.getMap_id()));
+        mapEntity.setTotalRating(mapEntity.getTotalRating() - comment.getRating() + mapCommentDTO.getRating());
+
+        // 댓글 수정
+        comment.setContents(mapCommentDTO.getContents());
+        comment.setRating(mapCommentDTO.getRating());
+        comment.setMap_comment_thumbnail_url(mapCommentDTO.getMap_comment_thumbnail_url());
+
+        mapCommentRespository.save(comment);
     }
 }
