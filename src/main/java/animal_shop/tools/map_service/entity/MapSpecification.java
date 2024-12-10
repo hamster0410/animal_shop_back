@@ -1,5 +1,6 @@
 package animal_shop.tools.map_service.entity;
 
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -67,4 +68,27 @@ public class MapSpecification {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
+    public static Specification<MapEntity> orderByDistance(double baseLatitude, double baseLongitude) {
+        return (root, query, criteriaBuilder) -> {
+            // 위도 차이의 절대값
+            Expression<Double> latitudeDifference = criteriaBuilder.abs(
+                    criteriaBuilder.diff(root.get("latitude"), baseLatitude)
+            );
+
+            // 경도 차이의 절대값
+            Expression<Double> longitudeDifference = criteriaBuilder.abs(
+                    criteriaBuilder.diff(root.get("longitude"), baseLongitude)
+            );
+
+            // 절대값 차이의 합
+            Expression<Double> totalDifference = criteriaBuilder.sum(latitudeDifference, longitudeDifference);
+
+            // 정렬 추가
+            query.orderBy(criteriaBuilder.asc(totalDifference));
+
+            return null; // 정렬만 적용하므로 조건식은 없음
+        };
+    }
+
+
 }

@@ -150,7 +150,6 @@ public class MapService {
         if(searchRequestDTO.getIndoor()!=null){
             specification = specification.and(MapSpecification.searchByIndoor(searchRequestDTO.getIndoor()));
         }
-        System.out.println("here 1");
         if (searchRequestDTO.getSwLatlng() != null && searchRequestDTO.getNeLatlng() != null) {
             specification = specification.and(MapSpecification.searchByRange(
                     searchRequestDTO.getSwLatlng().getLongitude(),
@@ -158,6 +157,12 @@ public class MapService {
                     searchRequestDTO.getNeLatlng().getLongitude(),
                     searchRequestDTO.getNeLatlng().getLatitude()));
         }
+
+        // 거리 정렬 추가
+        specification = specification.and(MapSpecification.orderByDistance(
+                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLatitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLatitude())) /2,
+                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLongitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLongitude())) /2
+        ));
 
 
         Page<MapEntity> maps = mapRepository.findAll(specification,pageable);
