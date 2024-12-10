@@ -18,7 +18,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -91,6 +93,8 @@ public class PointService {
     }
 
     public List<PointYearSellerDTO> getSellerSumDay(String token, int year, int month, int day) {
+
+
         List<Object[]> objects = pointRepository.findDailyTotalPointsBySellerForDay(year, month, day);
         List<PointYearSellerDTO> pointTotalDTOList = new ArrayList<>();
         for(Object[] obj : objects){
@@ -129,6 +133,19 @@ public class PointService {
 
     public List<MyItemDTO> totalItem(String token, String time, String start, String end ) {
         String userId = tokenProvider.extractIdByAccessToken(token);
+        // end 날짜에 시간을 추가 (23:59:59)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if(end!=null){
+            LocalDateTime endDateTime = LocalDate.parse(end, formatter).atStartOfDay().plusDays(1).minusSeconds(1);
+            end = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        if(start!=null){
+            LocalDateTime startDateTime = LocalDate.parse(start, formatter).atStartOfDay();
+            start = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
         List<Object[]> objects;
         if (time == null) {
             objects =  orderItemRepository.totalItem(Long.valueOf(userId), start, end);
@@ -143,6 +160,18 @@ public class PointService {
     }
 
     public List<PointEntireSellerDTO> getSellerSumEntire(String token, String time, String start, String end) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if(end!=null){
+            LocalDateTime endDateTime = LocalDate.parse(end, formatter).atStartOfDay().plusDays(1).minusSeconds(1);
+            end = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        if(start!=null){
+            LocalDateTime startDateTime = LocalDate.parse(start, formatter).atStartOfDay();
+            start = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
         List<Object[]> objects = pointRepository.findEntireTotalPointsBySellerForTime(time,start,end);
         List<PointEntireSellerDTO> pointEntireSellerDTOList= new ArrayList<>();
         for(Object[] obj : objects){

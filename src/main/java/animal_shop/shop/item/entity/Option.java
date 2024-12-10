@@ -9,7 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Builder
 @Getter
 @Setter
 @Entity
@@ -28,7 +27,7 @@ public class Option {
 
     private Long price;
 
-    private Long discount_rate;
+    private Long discount_rate=0L;
 
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;

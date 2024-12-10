@@ -14,6 +14,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     LocalDateTime findEarliestOrderItemDate();
 
     //판매자 시간대별 아이템 합계
+
     @Query(value =
             "SELECT " +
                     "CASE " +
@@ -34,8 +35,8 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<Object[]> totalItemTime(
             @Param("memberId") Long memberId,
             @Param("time") String time,
-            @Param("start") String start,
-            @Param("end") String end);
+            @Param("start") String start,  // String으로 받기
+            @Param("end") String end);     // String으로 받기
 
     //판매자 총 아이템 합계
     @Query(value =

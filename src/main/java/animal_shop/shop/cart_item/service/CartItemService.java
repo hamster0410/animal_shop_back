@@ -19,6 +19,9 @@ import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,6 +141,19 @@ public class CartItemService {
     public List<MyItemDTO> entireCartItemInfo(String token, String time, String start, String end) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         List<Object[]> objects;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if(end!=null){
+            LocalDateTime endDateTime = LocalDate.parse(end, formatter).atStartOfDay().plusDays(1).minusSeconds(1);
+            end = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        if(start!=null){
+            LocalDateTime startDateTime = LocalDate.parse(start, formatter).atStartOfDay();
+            start = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+
         if (time == null) {
             objects =  cartItemRepository.cartItemForAll(Long.valueOf(userId));
         } else {
