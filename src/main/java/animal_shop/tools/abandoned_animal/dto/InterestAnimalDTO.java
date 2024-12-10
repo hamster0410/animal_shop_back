@@ -1,8 +1,6 @@
 package animal_shop.tools.abandoned_animal.dto;
 
-import animal_shop.community.member.entity.Member;
 import animal_shop.tools.abandoned_animal.entity.InterestAnimal;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,22 +9,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InterestAnimalDTO {
+    private long id;
 
     private String attachmentUrl;   // 첨부파일 URL
 
-    private Long id;    //동물번호
+    private String kind_cd;
 
-    private String name;   //동물 이름
+    private String neuter_yn;
 
-    private String careNm;  //보호소 이름
+    private String special_mark;
 
-    public static InterestAnimal toEntity(InterestAnimalDTO dto, Member member) {
-        return InterestAnimal.builder()
-//                .id(dto.getId())
-                .name(dto.getName())
-                .careNm(dto.getCareNm())
-                .attachmentUrl(dto.getAttachmentUrl())
-                .member(member) // 해당 관심동물에 연결된 Member 설정
-                .build();
+    private String sex_cd;
+
+    private long age;
+
+    private String care_nm;
+
+    public InterestAnimalDTO(InterestAnimal interestAnimal) {
+        this.id = interestAnimal.getId();
+        this.attachmentUrl = interestAnimal.getAttachment_url();
+        this.kind_cd = interestAnimal.getKind_cd();
+        this.neuter_yn = interestAnimal.getNeuter_yn();
+        this.special_mark = interestAnimal.getSpecial_mark();
+        this.sex_cd = interestAnimal.getSex_cd();
+        this.age = interestAnimal.getAge();
+        this.care_nm = interestAnimal.getCare_nm();
     }
 }

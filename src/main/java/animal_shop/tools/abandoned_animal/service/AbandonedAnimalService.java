@@ -16,21 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
 
 
 @Service
@@ -38,7 +30,7 @@ import java.util.UUID;
 public class AbandonedAnimalService {
 
     @Autowired
-    private AbandonedAnimalRepository animalRepository;
+    private AbandonedAnimalRepository abandonedAnimalRepository;
 
     @Autowired
     private InterestAnimalRepository interestAnimalRepository;
@@ -66,7 +58,7 @@ public class AbandonedAnimalService {
     public ResponseEntity<?> storeAPIInfo() {
         int pageNo = 1;  // 첫 페이지 번호
 
-        animalRepository.deleteAll();;
+        abandonedAnimalRepository.deleteAll();;
 
         while (true) {
             // API 호출 URL 생성
@@ -89,7 +81,7 @@ public class AbandonedAnimalService {
                     for (JsonNode itemNode : itemsNode) {
                         AnimalDTO item = objectMapper.treeToValue(itemNode, AnimalDTO.class);
                         AbandonedAnimal animalEntity = AbandonedAnimal.fromDTO(item);
-                        animalRepository.save(animalEntity); // DB에 저장
+                        abandonedAnimalRepository.save(animalEntity); // DB에 저장
                     }
                     // 다음 페이지로 넘어가기 위해 pageNo 증가
                     log.info("now Page" + pageNo);
@@ -129,7 +121,7 @@ public class AbandonedAnimalService {
             specification = specification.and(AbandonedAnimalSpecification.locationFilter(animalSearchDTO.getLocation()));
         }
         Pageable pageable = PageRequest.of(page, 20);
-        Page<AbandonedAnimal> abandonedAnimals = animalRepository.findAll(specification, pageable);
+        Page<AbandonedAnimal> abandonedAnimals = abandonedAnimalRepository.findAll(specification, pageable);
 
         List<AnimalListDTO> animals = abandonedAnimals.map(AnimalListDTO::new).getContent();
 
@@ -142,55 +134,20 @@ public class AbandonedAnimalService {
     }
 
     public AnimalDetailDTO searchDetailAPI(Long animalId) {
-        AbandonedAnimal animal = animalRepository.findById(animalId)
+        AbandonedAnimal animal = abandonedAnimalRepository.findById(animalId)
                 .orElseThrow(() -> new IllegalArgumentException("animal is not found"));
         return new AnimalDetailDTO(animal);
     }
 
 
-
-
-
-
-
     @Transactional
-    public void interestAnimal(String token, InterestAnimalDTO interestAnimalDTO, int page, MultipartFile file) {
-        // 인증
+    public void interestAnimal(String token,String desertion_no) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(() -> new IllegalArgumentException("member is not found")  );
 
-        //USER 확인
-        if(!member.getRole().toString().equals("USER"))
-            throw new IllegalStateException("User is not USER");
-
-
-        // 유기동물 정보 확인 abandonedAnimal 이 animalRespository에 있나 확인
-
-        // DTO -> 엔티티 변환 (InterestAnimalDTO -> InterestAnimal 엔티티로 변환)
-        InterestAnimal interestAnimal = InterestAnimalDTO.toEntity(interestAnimalDTO, member);
-        // 페이징
-        Pageable pageable = PageRequest.of(page, 12, Sort.by("createdDate").descending());
-        InterestAnimal animal = new InterestAnimal();
-        animal.setName(interestAnimalDTO.getName());
-        animal.setCareNm(interestAnimalDTO.getCareNm());
-
-        if (file != null && !file.isEmpty()) {
-            try {
-                // 디렉토리가 없으면 생성
-                Files.createDirectories(Paths.get(uploadDir));
-                // 파일명 중복 방지 (UUID 사용)
-                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get(uploadDir, fileName);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                interestAnimal.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
-            }
-        } else {
-            interestAnimal.setAttachmentUrl(""); // 파일이 없을 경우 빈 값 설정
-        }
-        // 등록
+        AbandonedAnimal abandonedAnimal = abandonedAnimalRepository.findByDesertionNo(desertion_no);
+        InterestAnimal interestAnimal = new InterestAnimal(member,abandonedAnimal);
         interestAnimalRepository.save(interestAnimal);
     }
 
@@ -203,17 +160,29 @@ public class AbandonedAnimalService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        //USER 확인
-        if(!member.getRole().toString().equals("USER"))
-            throw new IllegalStateException("User is not USER");
 
         InterestAnimal interestAnimal = interestAnimalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("InterestAnimal not found"));
 
-        if (!interestAnimal.getMember().getId().equals(member.getId())) {
-            throw new IllegalStateException("Unauthorized to delete this InterestAnimal");
-        }
+        //USER 확인
+        if(!Long.valueOf(userId).equals(interestAnimal.getMember().getId()))
+            throw new IllegalStateException("User is not USER");
+
         interestAnimalRepository.delete(interestAnimal);
+
+    }
+
+    public InterestDTOResponse listInterestAnimal(String token, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found")  );
+
+        Pageable pageable = (Pageable) PageRequest.of(page,10);
+        Page<InterestAnimal> interestAnimals = interestAnimalRepository.findByMember(member,pageable);
+        return InterestDTOResponse.builder()
+                .interestAnimalDTOList(interestAnimals.stream().map(InterestAnimalDTO::new).toList())
+                .total_count(interestAnimals.getTotalElements())
+                .build();
 
     }
 }

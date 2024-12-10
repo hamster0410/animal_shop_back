@@ -1,7 +1,6 @@
 package animal_shop.tools.abandoned_animal.dto;
 
 import animal_shop.tools.abandoned_animal.entity.AbandonedAnimal;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
@@ -47,6 +46,8 @@ public class AnimalDetailDTO {
 
     private String noticeComment;  // 특이사항
 
+    private String desertionNo;
+
     public AnimalDetailDTO(AbandonedAnimal animal){
         this.id = animal.getId();
         this.age = animal.getAge();
@@ -68,6 +69,7 @@ public class AnimalDetailDTO {
         this.processState = animal.getProcessState();
         this.sexCd = animal.getSexCd();
         this.specialMark = animal.getSpecialMark();
+        this.desertionNo = animal.getDesertionNo();
 
     }
 }
