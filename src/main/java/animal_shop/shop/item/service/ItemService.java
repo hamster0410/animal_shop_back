@@ -55,7 +55,7 @@
 
             Member member = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("member is not found"));
             // seller가 아닌 경우 예외 처리
-            if (!member.getRole().toString().equals("SELLER")) {
+            if (member.getRole().toString().equals("USER")) {
                 throw new IllegalStateException("User is not a seller");
             }
 
@@ -94,7 +94,7 @@
             Member member = memberRepository.findById(Long.valueOf(userId))
                     .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
-            if (!member.getRole().toString().equals("SELLER")) {
+            if (member.getRole().toString().equals("USER")) {
                 throw new IllegalStateException("is not seller");
             }
 
@@ -107,7 +107,6 @@
             item.setItemDetail(itemDTOList.getItem_detail());
             item.setCategory(itemDTOList.getCategory());
             item.setStock_number(itemDTOList.getStock_number());
-            item.setItemSellStatus(itemDTOList.getSell_status());
             item.setSpecies(itemDTOList.getSpecies());
             item.setThumbnail_url(itemDTOList.getThumbnailUrls());
             item.setImage_url(itemDTOList.getImageUrl());
@@ -115,11 +114,19 @@
 
             item.getOptions().clear(); // 기존 옵션 제거
 
+            boolean nowdiscount = false;
             for (Option newOption : itemDTOList.getOption()) {
+                if(newOption.getDiscount_rate() > 0) nowdiscount = true;
                 newOption.setItem(item); // 새 옵션에 아이템 연결
                 item.getOptions().add(newOption); // 아이템의 옵션 리스트에 추가
             }
             // 4. 수정된 아이템 저장
+            if(nowdiscount){
+                item.setItemSellStatus(ItemSellStatus.valueOf("DISCOUNT"));
+            }else{
+                item.setItemSellStatus(itemDTOList.getSell_status());
+            }
+
             itemRepository.save(item);
         }
 
@@ -524,7 +531,7 @@
         }
 
 
-        public ItemDTOListResponse searchItemsBySeller(String token, String searchTerm, String species, String category, String detailedCategory, String status, Integer page, Integer pageCount) {
+        public ItemDTOListResponse searchItemsBySeller(String token, String searchTerm, String species, String category, String detailedCategory, String status, Boolean discount, Integer page, Integer pageCount) {
             String userId = tokenProvider.extractIdByAccessToken(token);
 
             Specification<Item> specification = Specification.where(null);
@@ -552,6 +559,10 @@
 
             if (status != null){
                 specification = specification.and(ItemSpecification.searchByStatus(status));
+            }
+
+            if (discount != null){
+                specification = specification.and(ItemSpecification.searchByDiscount(discount));
             }
 
             List<ItemDetailDTO> itemDTOs;

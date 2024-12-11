@@ -67,7 +67,10 @@ public class ItemSpecification {
             }else if(status.equals("sold_out")){
                 return criteriaBuilder.equal(root.get("itemSellStatus"),1);
             }else if(status.equals("sell")){
-                return criteriaBuilder.equal(root.get("itemSellStatus"),0);
+                return criteriaBuilder.or(
+                        criteriaBuilder.equal(root.get("itemSellStatus"), 0),
+                        criteriaBuilder.equal(root.get("itemSellStatus"), 3)
+                );
             }else{
                 return null;
             }
@@ -87,5 +90,20 @@ public class ItemSpecification {
             return criteriaBuilder.equal(root.get("member"), member);
         };
     }
+    public static Specification<Item> searchByDiscount(Boolean discount) {
+        return (root, query, criteriaBuilder) -> {
+            if (discount == null) return null;
+            if (discount) {
+                return criteriaBuilder.equal(root.get("itemSellStatus"), 3);
+
+
+            } else {
+
+                return criteriaBuilder.notEqual(root.get("itemSellStatus"), 3);  // 상태가 2인 Item만 가져오기
+            }
+        };
+    }
+
+
 }
 
