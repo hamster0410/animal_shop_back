@@ -28,6 +28,7 @@ public class HeartService {
 
     @Autowired
     private HeartRepository heartRepository;
+
     @Transactional
     public void addHeart(String token, Long postId) {
         //member 찾기
