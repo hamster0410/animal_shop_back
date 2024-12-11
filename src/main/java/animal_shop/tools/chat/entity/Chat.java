@@ -1,6 +1,8 @@
 package animal_shop.tools.chat.entity;
 
-import animal_shop.tools.chat.dto.ChatDto;
+import animal_shop.tools.chat.dto.ChatDTO;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -10,6 +12,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Document(collection = "chats")
@@ -19,27 +23,39 @@ import java.time.format.DateTimeFormatter;
 @Builder
 public class Chat {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    private String senderId;
+    private Long senderId;
     private String senderNickname;
-    private String recipientId;
+    private Long recipientId;
     private String recipientNickname;
-    private String roomId;
+    private String chatRoomId;
     private String message;
 
     @CreatedDate
     private LocalDateTime date;
 
-    public ChatDto toDto() {
+    public ChatDTO toDto() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-        return ChatDto.builder()
+        return ChatDTO.builder()
                 .senderId(getSenderId())
                 .senderNickname(getSenderNickname())
                 .recipientId(getRecipientId())
                 .recipientNickname(getRecipientNickname())
                 .message(getMessage())
-                .date(getDate().format(formatter))
+                .date(OffsetDateTime.parse(getDate().format(formatter)))
+                .build();
+    }
+
+    public static ChatDTO convertToDTO (Chat chat) {
+        return ChatDTO.builder()
+                .id(chat.getId())
+                .chatRoomId(chat.getChatRoomId())
+                .senderId(chat.getSenderId())
+                .senderNickname(chat.getSenderNickname())
+                .message(chat.getMessage())
+                .date(chat.getDate().atZone(ZoneId.of("Asia/Seoul")).toOffsetDateTime())
                 .build();
     }
 }

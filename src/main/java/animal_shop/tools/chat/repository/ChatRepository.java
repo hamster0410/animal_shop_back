@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface ChatRepository extends MongoRepository<Chat, String> {
-    List<Chat> findByRoomId(String roomId);
+    List<Chat> findByChatRoomId(String chatRoomId);
+
 }
 
