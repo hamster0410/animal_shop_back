@@ -144,6 +144,10 @@ public class MapService {
             specification = specification.and(MapSpecification.searchByKeyword(searchRequestDTO.getKeyword()));
         }
 
+        if(searchRequestDTO.getCategory()!=null){
+            specification = specification.and(MapSpecification.searchByCategory(searchRequestDTO.getCategory()));
+        }
+
         if(searchRequestDTO.getParking()!=null){
             specification = specification.and(MapSpecification.searchByParking(searchRequestDTO.getParking()));
         }
