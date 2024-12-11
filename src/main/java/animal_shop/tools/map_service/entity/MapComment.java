@@ -22,7 +22,7 @@ public class MapComment {
 
     private String contents;
 
-    private long map_id;
+    private long mapId;
 
     @ElementCollection
     @CollectionTable(name = "map_comment_thumbnail_urls", joinColumns = @JoinColumn(name = "map_comment_id"))

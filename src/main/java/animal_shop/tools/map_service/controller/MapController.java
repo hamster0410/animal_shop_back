@@ -4,8 +4,6 @@ package animal_shop.tools.map_service.controller;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.tools.map_service.dto.MapCommentDTO;
 import animal_shop.tools.map_service.dto.MapCommentDTOResponse;
-import animal_shop.tools.map_service.dto.MapDTO;
-import animal_shop.tools.map_service.dto.MapDTOResponse;
 import animal_shop.tools.map_service.dto.MapDetailDTO;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import animal_shop.tools.map_service.dto.SearchRequestDTO;
@@ -74,7 +72,7 @@ public class MapController {
     }
   
     //댓글 생성
-    @PostMapping("/register")
+    @PostMapping("/comment/register")
     public ResponseEntity<?> createMapComment(@RequestHeader("Authorization") String token,
                                               @RequestBody MapCommentDTO mapCommentDTO) {
         ResponseDTO responseDTO = null;
@@ -92,7 +90,43 @@ public class MapController {
         }
     }
 
-    @PatchMapping("/update")
+
+    @Transactional(readOnly = true)
+    @GetMapping("/comment/check")
+    public ResponseEntity<?> selectMapComment(@RequestHeader("Authorization") String token,
+                                              @RequestParam(name = "commentId") long comment_id) {
+
+        ResponseDTO responseDTO = null;
+        try {
+            boolean check = mapService.checkMapComment(token,comment_id);
+            return ResponseEntity.ok().body(check);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/comment/select")
+    public ResponseEntity<?> selectMapComment(@RequestHeader("Authorization") String token,
+                                              @RequestParam(name = "mapId") long map_id,
+                                              @RequestParam(value = "page", defaultValue = "1") int page) {
+
+        ResponseDTO responseDTO = null;
+        try {
+            MapCommentDTOResponse mapCommentDTOResponse = mapService.selectMapComment(token, map_id, page - 1);
+            return ResponseEntity.ok().body(mapCommentDTOResponse);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PatchMapping("/comment/update")
     public ResponseEntity<?> updateMapComment(@RequestHeader("Authorization") String token,
                                               @RequestBody MapCommentDTO mapCommentDTO) {
         ResponseDTO responseDTO = null;
@@ -110,35 +144,17 @@ public class MapController {
         }
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/comment/delete")
     public ResponseEntity<?> deleteMapComment(@RequestHeader("Authorization") String token,
-                                              @RequestBody MapCommentDTO mapCommentDTO
+                                              @RequestParam(name = "commentId") long comment_id
     ) {
         ResponseDTO responseDTO = null;
         try {
-            mapService.deleteMapComment(token, mapCommentDTO);
+            mapService.deleteMapComment(token, comment_id);
             responseDTO = ResponseDTO.builder()
                     .message("success delete")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO = ResponseDTO.builder()
-                    .message(e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @GetMapping("/select")
-    public ResponseEntity<?> selectMapComment(@RequestHeader("Authorization") String token,
-                                              @RequestBody MapCommentDTO mapCommentDTO,
-                                              @RequestParam(value = "page", defaultValue = "1") int page) {
-
-        ResponseDTO responseDTO = null;
-        try {
-            MapCommentDTOResponse mapCommentDTOResponse = mapService.selectMapComment(token, mapCommentDTO, page - 1);
-            return ResponseEntity.ok().body(mapCommentDTOResponse);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .message(e.getMessage())

@@ -197,8 +197,7 @@ public class MapService {
         // 댓글 등록
         MapComment mapComment = new MapComment();
         mapComment.setContents(mapCommentDTO.getContents());
-        mapComment.setMap_id(mapCommentDTO.getMap_id());
-        System.out.println(mapCommentDTO.getMap_comment_thumbnail_url().get(0));
+        mapComment.setMapId(mapCommentDTO.getMap_id());
         mapComment.setMap_comment_thumbnail_url(mapCommentDTO.getMap_comment_thumbnail_url());
         mapComment.setRating(mapCommentDTO.getRating());
         mapComment.setMember(member);
@@ -213,31 +212,16 @@ public class MapService {
 //     @Transactional
 //     public void updateMapComment(String token, MapCommentDTO mapCommentDTO) {
       
-      
-      
-      
-    @Transactional
-    public void deleteMapComment(String token, MapCommentDTO mapCommentDTO) {
-        String userId = tokenProvider.extractIdByAccessToken(token);
 
-        MapComment comment = mapCommentRespository.findById(mapCommentDTO.getId())
-                .orElseThrow(()->new IllegalArgumentException("comment is not found"));
-
-        MapEntity mapEntity = mapRepository.findById(mapCommentDTO.getMap_id())
-                .orElseThrow(() -> new IllegalArgumentException("Map not found with ID: " + mapCommentDTO.getMap_id()));
-        mapEntity.setTotalRating(mapEntity.getTotalRating() - comment.getRating());
-        mapEntity.setCommentCount(mapEntity.getCommentCount()-1);
-        mapCommentRespository.delete(comment);
-    }
   
       
     @Transactional
-    public MapCommentDTOResponse selectMapComment(String token, MapCommentDTO mapCommentDTO, int page) {
+    public MapCommentDTOResponse selectMapComment(String token, long map_id, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         // 댓글 리스트 가져오기
         Pageable pageable = (Pageable) PageRequest.of(page, 20);
 
-        List<MapComment> comments = mapCommentRespository.findAll(pageable).getContent();
+        Page<MapComment> comments = mapCommentRespository.findByMapId(map_id, pageable);
 
         // DTO 변환
         List<MapCommentDTO> commentDTOs = new ArrayList<>();
@@ -247,7 +231,7 @@ public class MapService {
         }
 
         // 총 댓글 수 가져오기
-        long totalCount = mapCommentRespository.count();
+        long totalCount = comments.getTotalElements();
 
         // 응답 DTO 생성
         MapCommentDTOResponse response = new MapCommentDTOResponse();
@@ -261,14 +245,15 @@ public class MapService {
     public void updateMapComment(String token, MapCommentDTO mapCommentDTO) {
         // 인증
         String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         // USER인지 확인
-        if (!member.getRole().toString().equals("USER")) {
+        if (userId == null) {
             throw new IllegalStateException("User is not USER");
         }
 
+        System.out.println(mapCommentDTO.getMap_id());
+        System.out.println(mapCommentDTO.getRating());
+        System.out.println(mapCommentDTO.getMap_comment_thumbnail_url());
         // 댓글 찾기
         MapComment comment = mapCommentRespository.findById(mapCommentDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
@@ -284,5 +269,34 @@ public class MapService {
         comment.setMap_comment_thumbnail_url(mapCommentDTO.getMap_comment_thumbnail_url());
 
         mapCommentRespository.save(comment);
+    }
+
+    @Transactional
+    public void deleteMapComment(String token, long comment_id) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+
+        MapComment comment = mapCommentRespository.findById(comment_id)
+                .orElseThrow(()->new IllegalArgumentException("comment is not found"));
+
+        MapEntity mapEntity = mapRepository.findById(comment.getMapId())
+                .orElseThrow(() -> new IllegalArgumentException("Map not found"));
+        mapEntity.setTotalRating(mapEntity.getTotalRating() - comment.getRating());
+        mapEntity.setCommentCount(mapEntity.getCommentCount()-1);
+        mapCommentRespository.delete(comment);
+    }
+
+    public boolean checkMapComment(String token, long commentId) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+        MapComment comment = mapCommentRespository.findById(commentId)
+                .orElseThrow(()->new IllegalArgumentException("comment is not found"));
+
+        if (!comment.getMember().equals(member)){
+            return false;
+        }
+        return true;
+
     }
 }

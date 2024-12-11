@@ -1,8 +1,6 @@
 package animal_shop.tools.map_service.dto;
 
-import animal_shop.community.member.entity.Member;
 import animal_shop.tools.map_service.entity.MapComment;
-import animal_shop.tools.map_service.entity.MapEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +27,7 @@ public class MapCommentDTO {
     public MapCommentDTO(MapComment mapComment){
         this.id = mapComment.getId();
         this.contents = mapComment.getContents();
-        this.map_id = mapComment.getMap_id();
+        this.map_id = mapComment.getMapId();
         this.map_comment_thumbnail_url = mapComment.getMap_comment_thumbnail_url();
         this.rating = mapComment.getRating();
 
