@@ -32,11 +32,6 @@ public class MapCommentDTO {
         this.rating = mapComment.getRating();
 
 
-
     }
-
-
-
-
 
 }

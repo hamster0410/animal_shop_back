@@ -7,6 +7,8 @@ import animal_shop.community.post.dto.*;
 import animal_shop.community.post.entity.Post;
 import animal_shop.community.post.repository.PostRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.tools.map_service.repository.MapRepository;
+import animal_shop.tools.map_service.service.MapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +35,7 @@ public class PostService {
 
     @Autowired
     private final PostRepository postRepository;
+
 
     @Autowired
     private MemberService memberService;

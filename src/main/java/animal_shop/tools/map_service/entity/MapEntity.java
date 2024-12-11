@@ -54,4 +54,10 @@ public class MapEntity {
     private String lastUpdated;             // 최종작성일
     private Long totalRating = 0L;
     private Long commentCount =0L;
+
+    private Long countLike = 0L;
+
+    public Long getCountLike() {
+        return countLike != null ? countLike : 0L;  // countLike가 null일 경우 0L을 반환
+    }
 }
