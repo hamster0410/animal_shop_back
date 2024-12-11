@@ -14,6 +14,8 @@ public class MapCommentDTO {
 
     private Long id;
 
+    private String nickname;
+
     private String contents;
 
     private long map_id;
@@ -24,14 +26,13 @@ public class MapCommentDTO {
 //    private Long countHeart = 0L;
 //    private boolean heart;
 
-    public MapCommentDTO(MapComment mapComment){
+    public MapCommentDTO(MapComment mapComment,String nickname){
         this.id = mapComment.getId();
+        this.nickname=nickname;
         this.contents = mapComment.getContents();
         this.map_id = mapComment.getMapId();
         this.map_comment_thumbnail_url = mapComment.getMap_comment_thumbnail_url();
         this.rating = mapComment.getRating();
-
-
 
     }
 
