@@ -489,10 +489,11 @@ public class SellerController {
                                         @RequestParam(value = "searchTerm",required = false)String searchTerm,
                                         @RequestParam(value = "page", required = false) Integer page,
                                         @RequestParam(value = "pageCount", defaultValue = "10", required = false) Integer pageCount,
+                                        @RequestParam(value = "discount", required = false) Boolean discount,
                                         @RequestParam(value = "status", required = false)String status){
         ResponseDTO responseDTO = null;
         try {
-            ItemDTOListResponse item = itemService.searchItemsBySeller(token, searchTerm, species, category, detailed_category, status, page, pageCount);
+            ItemDTOListResponse item = itemService.searchItemsBySeller(token, searchTerm, species, category, detailed_category, status, discount, page, pageCount);
             return ResponseEntity.ok().body(item);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
