@@ -44,6 +44,7 @@ public class SecurityConfig {
                                             "seller/*",
                                             "/heart/*","/comment/create/*","/comment/update/*","/comment/delete/*").authenticated()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/ws").permitAll()
                                     .anyRequest().permitAll()
                 );
 
