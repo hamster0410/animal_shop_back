@@ -28,8 +28,6 @@ public class Chat {
 
     private Long senderId;
     private String senderNickname;
-    private Long recipientId;
-    private String recipientNickname;
     private String chatRoomId;
     private String message;
 
@@ -41,8 +39,6 @@ public class Chat {
         return ChatDTO.builder()
                 .senderId(getSenderId())
                 .senderNickname(getSenderNickname())
-                .recipientId(getRecipientId())
-                .recipientNickname(getRecipientNickname())
                 .message(getMessage())
                 .date(OffsetDateTime.parse(getDate().format(formatter)))
                 .build();
@@ -50,7 +46,6 @@ public class Chat {
 
     public static ChatDTO convertToDTO (Chat chat) {
         return ChatDTO.builder()
-                .id(chat.getId())
                 .chatRoomId(chat.getChatRoomId())
                 .senderId(chat.getSenderId())
                 .senderNickname(chat.getSenderNickname())

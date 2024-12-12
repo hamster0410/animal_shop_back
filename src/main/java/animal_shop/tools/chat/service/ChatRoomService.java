@@ -39,4 +39,13 @@ public class ChatRoomService {
                 .sellerNickname(chatRoom.getSellerNickname())
                 .build();
     }
+
+    public List<ChatRoomDTO> getAllRoom() {
+        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
+        List<ChatRoomDTO> chatRoomDtos = new ArrayList<>();
+        for (ChatRoom chatRoom : chatRooms) {
+            chatRoomDtos.add(convertToDto(chatRoom));
+        }
+        return chatRoomDtos;
+    }
 }

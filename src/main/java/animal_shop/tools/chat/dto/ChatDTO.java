@@ -11,18 +11,14 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Builder
 public class ChatDTO {
-    private String id;
     private String chatRoomId;
     private Long senderId;
-    private Long recipientId;
     private String senderNickname;
-    private String recipientNickname;
     private String message;
     private OffsetDateTime date;
 
     public static Chat convertToEntity(ChatDTO chatDTO) {
         return Chat.builder()
-                .id(chatDTO.getId())
                 .chatRoomId(chatDTO.getChatRoomId())
                 .senderId(chatDTO.getSenderId())
                 .senderNickname(chatDTO.getSenderNickname())

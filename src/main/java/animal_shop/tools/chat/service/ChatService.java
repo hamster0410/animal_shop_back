@@ -1,5 +1,7 @@
 package animal_shop.tools.chat.service;
 
+import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.service.GlobalService;
 import animal_shop.tools.chat.dto.ChatDTO;
 import animal_shop.tools.chat.entity.Chat;
 import animal_shop.tools.chat.entity.ChatRoom;
@@ -7,6 +9,7 @@ import animal_shop.tools.chat.repository.ChatRepository;
 import animal_shop.tools.chat.repository.ChatRoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,8 +22,18 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    GlobalService globalService;
+
     @Transactional
-    public ChatRoom ensureChatRoom(Long buyerId, String buyerNickname, Long sellerId, String sellerNickname) {
+    public ChatRoom ensureChatRoom(String userId) {
+        Long sellerId = 1L;
+        Long buyerId = Long.valueOf(userId);
+        String buyerNickname = globalService.getNickname(buyerId);
+        String sellerNickname = globalService.getNickname(sellerId);
         return chatRoomRepository.findByBuyerIdAndSellerId(buyerId, sellerId)
                 .orElseGet(() -> {
                     ChatRoom newRoom = ChatRoom.builder()

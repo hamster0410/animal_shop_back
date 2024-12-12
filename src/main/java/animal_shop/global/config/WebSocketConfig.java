@@ -1,5 +1,7 @@
 package animal_shop.global.config;
 
+import animal_shop.global.security.TokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -9,6 +11,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final TokenProvider tokenProvider;
+
+    @Autowired
+    public WebSocketConfig(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
+
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -19,8 +28,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")// 모든 출처 허용
-                .addInterceptors(new WebSocketAuthInterceptor())
+                .addInterceptors(new WebSocketAuthInterceptor(tokenProvider))
                 .withSockJS(); // SockJS를 사용하려면 추가
+
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*")// 모든 출처 허용
+                .addInterceptors(new WebSocketAuthInterceptor(tokenProvider));
     }
 
 
