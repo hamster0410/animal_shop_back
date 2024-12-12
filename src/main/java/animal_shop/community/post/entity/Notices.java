@@ -3,11 +3,13 @@ package animal_shop.community.post.entity;
 
 import animal_shop.global.dto.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "notices")
-@Data
+@Getter
+@Setter
 public class Notices extends BaseTimeEntity {
 
     @Id

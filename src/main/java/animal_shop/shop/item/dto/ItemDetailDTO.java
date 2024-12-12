@@ -40,7 +40,6 @@ public class ItemDetailDTO {
 
    private boolean now_discount;
 
-
    public ItemDetailDTO(Item item) {
        this.id = item.getId();
        this.name = item.getName();

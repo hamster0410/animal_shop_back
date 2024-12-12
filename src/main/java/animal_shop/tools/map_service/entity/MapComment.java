@@ -1,14 +1,17 @@
 package animal_shop.tools.map_service.entity;
 
 import animal_shop.community.member.entity.Member;
+import animal_shop.global.dto.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Data
-public class MapComment {
+@Getter
+@Setter
+public class MapComment extends BaseTimeEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

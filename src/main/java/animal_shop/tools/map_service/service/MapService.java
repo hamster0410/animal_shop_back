@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -144,6 +145,10 @@ public class MapService {
             specification = specification.and(MapSpecification.searchByKeyword(searchRequestDTO.getKeyword()));
         }
 
+        if(searchRequestDTO.getCategory()!=null){
+            specification = specification.and(MapSpecification.searchByCategory(searchRequestDTO.getCategory()));
+        }
+
         if(searchRequestDTO.getParking()!=null){
             specification = specification.and(MapSpecification.searchByParking(searchRequestDTO.getParking()));
         }
@@ -218,15 +223,17 @@ public class MapService {
     @Transactional
     public MapCommentDTOResponse selectMapComment(String token, long map_id, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
         // 댓글 리스트 가져오기
-        Pageable pageable = (Pageable) PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 7, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<MapComment> comments = mapCommentRespository.findByMapId(map_id, pageable);
 
         // DTO 변환
         List<MapCommentDTO> commentDTOs = new ArrayList<>();
         for (MapComment comment : comments) {
-            MapCommentDTO dto = new MapCommentDTO(comment);
+            MapCommentDTO dto = new MapCommentDTO(comment,member.getNickname());
             commentDTOs.add(dto);
         }
 

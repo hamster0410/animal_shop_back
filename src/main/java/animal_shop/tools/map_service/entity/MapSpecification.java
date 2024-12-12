@@ -29,7 +29,7 @@ public class MapSpecification {
             if(searchTerm){
                 return criteriaBuilder.equal(root.get("parkingAvailable"), "Y");
             }else{
-                return criteriaBuilder.equal(root.get("parkingAvailable"), "N");
+                return null;
             }
         };
     }
@@ -40,7 +40,7 @@ public class MapSpecification {
             if(searchTerm){
                 return criteriaBuilder.equal(root.get("indoorAvailable"), "Y");
             }else{
-                return criteriaBuilder.equal(root.get("indoorAvailable"), "N");
+                return null;
             }
         };
     }
@@ -51,7 +51,7 @@ public class MapSpecification {
             if(searchTerm){
                 return criteriaBuilder.equal(root.get("outdoorAvailable"), "Y");
             }else{
-                return criteriaBuilder.equal(root.get("outdoorAvailable"), "N");
+                return null;
             }
         };
     }

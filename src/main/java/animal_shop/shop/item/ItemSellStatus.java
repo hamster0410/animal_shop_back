@@ -1,5 +1,5 @@
 package animal_shop.shop.item;
 
 public enum ItemSellStatus {
-    SELL, SOLD_OUT, STOP
+    SELL, SOLD_OUT, STOP, DISCOUNT
 }
