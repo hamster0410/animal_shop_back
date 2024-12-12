@@ -21,12 +21,19 @@ public class ChatRoomController {
     @Autowired
     private TokenProvider tokenProvider;
 
-    //사용자가 속해있는 톡방
-    @GetMapping("/list/{userId}")
+    //현재 사용자가 속해있는 톡방
+    @GetMapping("/mine")
     public ResponseEntity<List<ChatRoomDTO>> getChatRoomsByUserId(@RequestHeader("Authorization") String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         if(userId == null) throw new IllegalArgumentException("userId error");
         List<ChatRoomDTO> chatRooms = chatRoomService.getChatRoomsByUserId(Long.valueOf(userId));
+        return ResponseEntity.ok(chatRooms);
+    }
+
+    //특정 사용자가 속해있는 톡방
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ChatRoomDTO>> getChatRoomsBySpecificUserId(@PathVariable(name = "userId") Long userId) {
+        List<ChatRoomDTO> chatRooms = chatRoomService.getChatRoomsByUserId(userId);
         return ResponseEntity.ok(chatRooms);
     }
 
