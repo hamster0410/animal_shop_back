@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 )
 @EnableMongoRepositories(basePackages = "animal_shop.tools.chat")
 public class Animal_ShopApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(Animal_ShopApplication.class, args);
 	}
