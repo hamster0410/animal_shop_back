@@ -47,7 +47,6 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
             // Authentication setup
             AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(securityContext);
