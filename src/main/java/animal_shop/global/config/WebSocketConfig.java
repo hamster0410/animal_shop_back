@@ -1,61 +1,52 @@
 package animal_shop.global.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.server.HandshakeInterceptor;
-
-import java.util.Map;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    /*
-        WebSocket과 STOMP 메시징을 위한 설정을 추가.
-        이 설정은 클라이언트가 서버에 연결할 수 있는 엔드포인트와 메시지 브로커를 설정.
-     */
 
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
+    }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*")// 모든 출처 허용
+                .withSockJS(); // SockJS를 사용하려면 추가
     }
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // 메시지를 브로드캐스팅할 때 사용할 prefix 설정
-        registry.enableSimpleBroker("/topic");
-        // 클라이언트에서 메시지를 보낼 때 사용할 prefix 설정
-        registry.setApplicationDestinationPrefixes("/app");
-    }
 
-    @Bean
-    public HandshakeInterceptor handshakeInterceptor() {
-        return new HandshakeInterceptor() {
-            @Override
-            public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                           WebSocketHandler wsHandler, Map<String, Object> attributes) {
-                if (request instanceof ServletServerHttpRequest) {
-                    String authHeader = ((ServletServerHttpRequest) request).getServletRequest().getHeader("Authorization");
-                    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                        String token = authHeader.substring(7);
-                        // 추가적으로 토큰 검증 로직을 구현
-                    }
-                }
-                return true;
-            }
-
-            @Override
-            public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                       WebSocketHandler wsHandler, Exception ex) {
-                // Optional: 핸드셰이크 후 작업
-            }
-        };
-    }
 }
+
+//@Configuration
+//@EnableWebSocketMessageBroker // Stomp를 사용하기 위한 에노테이션
+//@RequiredArgsConstructor
+//public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+//
+//    private final StompHandler stompHandler;
+//
+//    @Override
+//    public void configureMessageBroker(MessageBrokerRegistry config) {
+//        config.enableSimpleBroker("/queue","topic"); // 메세지를 구독하는 요청 설정
+//        config.setApplicationDestinationPrefixes("/app"); // 메세지를 발행하는 요청 설정
+//    }
+//
+//    @Override
+//    public void registerStompEndpoints(StompEndpointRegistry registry) {
+//        registry.addEndpoint("/ws-stomp").setAllowedOrigins("*")
+//                .withSockJS(); // sock.js를 통하여 낮은 버전의 브라우저에서도 websocket이 동작할수 있게 설정
+//        registry.addEndpoint("/ws-stomp").setAllowedOrigins("*"); // api 통신 시, withSockJS() 설정을 빼야됨
+//    }
+//
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(stompHandler);
+//    }
+//}
