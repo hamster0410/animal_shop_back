@@ -41,8 +41,4 @@ public class MapCommentDTO {
         this.created_date = mapComment.getCreatedDate();
     }
 
-
-
-
-
 }

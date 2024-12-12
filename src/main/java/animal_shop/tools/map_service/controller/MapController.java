@@ -7,6 +7,7 @@ import animal_shop.tools.map_service.dto.MapCommentDTOResponse;
 import animal_shop.tools.map_service.dto.MapDetailDTO;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import animal_shop.tools.map_service.dto.SearchRequestDTO;
+import animal_shop.tools.map_service.service.MapLikeService;
 import animal_shop.tools.map_service.service.MapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,9 @@ public class MapController {
 
     @Autowired
     private MapService mapService;
+
+    @Autowired
+    MapLikeService mapLikeService;
 
     @GetMapping("/find")
     public ResponseEntity<?> find_home() {
@@ -162,6 +166,42 @@ public class MapController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @GetMapping("/add/like")
+    public ResponseEntity<?> addHeart(@RequestHeader("Authorization")String token,
+                                      @RequestParam("mapId") Long mapId){
+        ResponseDTO responseDTO = null;
+        try{
+            mapLikeService.addHeart(token,mapId);
+            responseDTO = ResponseDTO.builder()
+                    .message("success heart")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+    @GetMapping("/delete/like")
+    public ResponseEntity<?>deleteHeart(@RequestHeader("Authorization")String token,
+                                        @RequestParam("mapId")Long mapId){
+        ResponseDTO responseDTO = null;
+        try {
+            mapLikeService.deleteHeart(token,mapId);
+            responseDTO = ResponseDTO.builder()
+                    .message("delete heart")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 }
 
 
