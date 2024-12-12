@@ -225,7 +225,7 @@ public class MapService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
         // 댓글 리스트 가져오기
-        Pageable pageable = (Pageable) PageRequest.of(page, 20);
+        Pageable pageable = (Pageable) PageRequest.of(page, 7);
 
         Page<MapComment> comments = mapCommentRespository.findByMapId(map_id, pageable);
 
