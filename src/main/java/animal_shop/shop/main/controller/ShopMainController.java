@@ -56,11 +56,12 @@ public class ShopMainController {
             @RequestParam(value = "species", required = false, defaultValue = "dog")String species,
             @RequestParam(value = "category", required = false)String category,
             @RequestParam(value = "detailed_category", required = false)String detailed_category,
+            @RequestParam(value = "discount", required = false)Boolean discount,
             @RequestParam(value = "page",required = false, defaultValue = "1")int page
             ){
         ResponseDTO responseDTO;
         try{
-            MainDTOBestResponse mainDTOBestResponse = shopService.category_contents(species, category,detailed_category, page-1);
+            MainDTOBestResponse mainDTOBestResponse = shopService.category_contents(species, category,detailed_category, discount,page-1);
 
             return ResponseEntity.ok().body(mainDTOBestResponse);
 

@@ -95,10 +95,7 @@ public class ItemSpecification {
             if (discount == null) return null;
             if (discount) {
                 return criteriaBuilder.equal(root.get("itemSellStatus"), 3);
-
-
             } else {
-
                 return criteriaBuilder.notEqual(root.get("itemSellStatus"), 3);  // 상태가 2인 Item만 가져오기
             }
         };

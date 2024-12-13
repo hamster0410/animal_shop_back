@@ -19,14 +19,14 @@ public class WikiDTO {
     private String overview;        // 개요
     private String appearance;      // 외모
     private String temperament;     // 성격
-    private LocalDateTime created_Date; //등록날짜,시간
 
     public WikiDTO(Wiki wiki){
+        this.id = wiki.getId();
+        this.attachmentUrl = wiki.getAttachmentUrl();;
         this.breedName = wiki.getBreedName();
         this.overview = wiki.getOverview();
         this.appearance = wiki.getAppearance();
         this.temperament = wiki.getTemperament();
-        this.created_Date = wiki.getCreatedDate();
     }
 
 }

@@ -51,13 +51,13 @@ public class WikiController {
         }
     }
 
-    @GetMapping("/select/{breedId}")
+    @GetMapping("/select/{id}")
     public ResponseEntity<?> select_breed(@RequestHeader(value = "Authorization") String token,
-                                          @PathVariable Long breedId) {
+                                          @PathVariable Long id) {
         ResponseDTO responseDTO = null;
         try {
             WikiDTO wikiDTO = new WikiDTO();
-            wikiDTO.setId(breedId);
+            wikiDTO.setId(id);
 
             WikiDTOResponse wikiDTOResponse = wikiService.selectDetail(token, wikiDTO);
             return ResponseEntity.ok().body(wikiDTOResponse);

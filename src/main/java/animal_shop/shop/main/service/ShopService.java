@@ -119,7 +119,7 @@ public class ShopService {
                 }
             }
         }else {
-            //체중기준 추천
+            //체중기준    추천
             AnimalWeight animalWeight = animalWeightRepository.findBySpecies(pet.getBreed());
             //강아지일 경우
             if(species.equals("dog")){
@@ -169,7 +169,7 @@ public class ShopService {
 
     }
     @Transactional(readOnly = true)
-    public MainDTOBestResponse category_contents( String species, String category, String detailed_category, int page) {
+    public MainDTOBestResponse category_contents( String species, String category, String detailed_category, Boolean discount, int page) {
 
         Specification<Item> specification = Specification.where(null);
 
@@ -185,6 +185,9 @@ public class ShopService {
             specification = specification.and(ItemSpecification.searchByDetailedCategory(detailed_category));
         }
 
+        if(discount != null){
+            specification = specification.and(ItemSpecification.searchByDiscount(discount));
+        }
         List<MainDTO> itemDTOs;
         long total_count;
 
