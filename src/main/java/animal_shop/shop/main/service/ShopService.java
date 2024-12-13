@@ -6,6 +6,7 @@ import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.item.ItemSellStatus;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.repository.ItemRepository;
+import animal_shop.shop.item.service.ItemSpecification;
 import animal_shop.shop.main.dto.MainDTO;
 import animal_shop.shop.main.dto.MainDTOBestResponse;
 import animal_shop.shop.main.dto.MainDTOResponse;
@@ -16,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,26 +169,35 @@ public class ShopService {
 
     }
     @Transactional(readOnly = true)
-    public MainDTOBestResponse category_contents(String species, String category, String detailed_category, int page) {
-        if (page < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must be >= 0");
+    public MainDTOBestResponse category_contents( String species, String category, String detailed_category, int page) {
+
+        Specification<Item> specification = Specification.where(null);
+
+        if (species != null) {
+            specification = specification.and(ItemSpecification.searchBySpecies(species));
         }
 
-        Pageable pageable = PageRequest.of(page, 20);
-        Page<Item> category_goods = null;
-
-
-        if (detailed_category != null && category != null) {
-            category_goods = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,category,detailed_category,ItemSellStatus.STOP,pageable);
-        } else if (category != null) {
-            category_goods = itemRepository.findBySpeciesAndCategoryWithThumbnails(species,category,ItemSellStatus.STOP,pageable);
-        } else {
-            category_goods = itemRepository.findBySpecies(species,ItemSellStatus.STOP, pageable);
+        if (category != null) {
+            specification = specification.and(ItemSpecification.searchByCategory(category));
         }
 
+        if (detailed_category != null) {
+            specification = specification.and(ItemSpecification.searchByDetailedCategory(detailed_category));
+        }
+
+        List<MainDTO> itemDTOs;
+        long total_count;
+
+        Pageable pageable = PageRequest.of(page, 16, Sort.by("createdDate").descending());
+        Page<Item> items = itemRepository.findAll(specification, pageable);
+        total_count = items.getTotalElements();
+        itemDTOs = items.map(MainDTO::new).getContent();
+
+        // DTO 변환 (Item -> ItemDetailDTO)
+        // 검색 결과 반환
         return MainDTOBestResponse.builder()
-                .goods(category_goods.stream().map(MainDTO::new).toList())
-                .total_count(category_goods.getTotalElements())
+                .goods(itemDTOs)
+                .total_count(total_count)
                 .build();
     }
 }
