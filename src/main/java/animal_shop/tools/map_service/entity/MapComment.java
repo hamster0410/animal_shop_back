@@ -32,11 +32,6 @@ public class MapComment extends BaseTimeEntity  {
     @Column(name = "map_comment_thumbnail_url")
     private List<String> map_comment_thumbnail_url;
 
-//    @OneToMany(mappedBy = "mapComment", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ItemCommentLike> likes;
-//
     private Long rating;
-//
-//    private Long countLike;
-//
+
 }

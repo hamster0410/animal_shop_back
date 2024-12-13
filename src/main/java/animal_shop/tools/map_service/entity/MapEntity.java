@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Data
@@ -52,8 +54,12 @@ public class MapEntity {
     private String placeDescription;        // 기본 정보_장소설명
     private String additionalPetFee;        // 애견 동반 추가 요금
     private String lastUpdated;             // 최종작성일
+
     private Long totalRating = 0L;
     private Long commentCount =0L;
+
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MapLike> likes;
 
     private Long countLike = 0L;
 

@@ -94,7 +94,7 @@ public class MapController {
         }
     }
 
-
+    //사용자가 쓴 댓글인지 확인
     @Transactional(readOnly = true)
     @GetMapping("/comment/check")
     public ResponseEntity<?> selectMapComment(@RequestHeader("Authorization") String token,

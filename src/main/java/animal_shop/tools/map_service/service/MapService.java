@@ -197,6 +197,10 @@ public class MapService {
         // 지도 찾기 (mapId로 지도 존재 여부 확인)
         MapEntity mapEntity = mapRepository.findById(mapCommentDTO.getMap_id())
                 .orElseThrow(() -> new IllegalArgumentException("Map not found with ID: " + mapCommentDTO.getMap_id()));
+        //별점 1~5로 제한
+        if(mapCommentDTO.getRating() < 1 || mapCommentDTO.getRating() >5){
+            throw new IllegalStateException("rating error");
+        }
         //댓글 등록시 item의 별점 증가
         mapEntity.setTotalRating(mapEntity.getTotalRating() + mapCommentDTO.getRating());
         // 댓글 등록
