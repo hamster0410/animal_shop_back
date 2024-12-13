@@ -8,8 +8,10 @@ import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import animal_shop.tools.map_service.dto.*;
 import animal_shop.tools.map_service.entity.MapComment;
 import animal_shop.tools.map_service.entity.MapEntity;
+import animal_shop.tools.map_service.entity.MapLike;
 import animal_shop.tools.map_service.entity.MapSpecification;
 import animal_shop.tools.map_service.repository.MapCommentRespository;
+import animal_shop.tools.map_service.repository.MapLikeRepository;
 import animal_shop.tools.map_service.repository.MapRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +47,9 @@ public class MapService {
 
     @Autowired
     private MapCommentRespository mapCommentRespository;
+
+    @Autowired
+    private MapLikeRepository mapLikeRepository;
 
     @Autowired
     ItemCommentRepository itemCommentRepository;
@@ -174,16 +179,33 @@ public class MapService {
                 (Double.parseDouble(searchRequestDTO.getSwLatlng().getLongitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLongitude())) /2
         ));
         Page<MapEntity> maps = mapRepository.findAll(specification,pageable);
-        List<MapPositionDTO> mapPositionDTOList = maps.stream().map(MapPositionDTO::new).toList();
+        List<MapPositionDTO> mapPositionDTOList = new ArrayList<>();
+        for(MapEntity mapEntity : maps){
+            MapPositionDTO mapPositionDTO = new MapPositionDTO(mapEntity);
+            if(mapLikeRepository.findByMemberIdAndMapId(mapEntity.getId(), Long.valueOf(userId)) != null){
+                mapPositionDTO.setLike(true);
+            }else{
+                mapPositionDTO.setLike(false);
+            }
+            mapPositionDTOList.add(mapPositionDTO);
+        }
+
         return MapPositionDTOResponse.builder()
                 .mapPositionDTOList(mapPositionDTOList)
                 .total_count(maps.getTotalElements())
                 .build();
     }
     public MapDetailDTO detail(String token, long mapId) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
         MapEntity mapEntity = mapRepository.findById(mapId)
                 .orElseThrow(()->new IllegalArgumentException("facility is not found"));
-        return new MapDetailDTO(mapEntity);
+        MapDetailDTO mapDetailDTO = new MapDetailDTO(mapEntity);
+        if(mapLikeRepository.findByMemberIdAndMapId(mapEntity.getId(), Long.valueOf(userId)) != null){
+            mapDetailDTO.setLike(true);
+        }else{
+            mapDetailDTO.setLike(false);
+        }
+        return mapDetailDTO;
     }
       
     //반려동물 동반 시설에 댓글 달기

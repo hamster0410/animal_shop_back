@@ -2,8 +2,10 @@ package animal_shop.tools.map_service.dto;
 
 import animal_shop.tools.map_service.entity.MapEntity;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class MapDetailDTO {
     String facility_name;
     double latitude;
@@ -24,6 +26,7 @@ public class MapDetailDTO {
     String closed_days;
     long rating;
     long comment_count;
+    boolean like;
 
     public MapDetailDTO(MapEntity mapEntity) {
         this.facility_name = mapEntity.getFacilityName();

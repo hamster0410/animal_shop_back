@@ -14,6 +14,7 @@ public class MapPositionDTO {
     private String place_description;
     private Long total_rating;
     private Long comment_count;
+    private boolean like;
 
     public MapPositionDTO(MapEntity mapEntity){
         this.facility_name = mapEntity.getFacilityName();
