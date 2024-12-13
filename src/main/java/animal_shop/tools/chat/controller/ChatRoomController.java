@@ -16,6 +16,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/chat-room")
 public class ChatRoomController {
+
     private final ChatRoomService chatRoomService;
 
     @Autowired
