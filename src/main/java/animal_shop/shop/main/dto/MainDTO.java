@@ -24,6 +24,7 @@ public class MainDTO {
     private String detailed_category;
     private long discount_rate;
     private String suspensionReason;
+    private Long stock_number;
 
     public MainDTO(Item item){
         this.id = item.getId();
@@ -42,6 +43,7 @@ public class MainDTO {
         this.detailed_category = item.getDetailed_category();
         this.species = item.getSpecies();
         this.discount_rate = item.getOptions().get(0).getDiscount_rate();
+        this.stock_number = item.getStock_number();
     }
     public MainDTO(Item item, String suspensionReason){
         this.id = item.getId();
