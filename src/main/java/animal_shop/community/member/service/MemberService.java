@@ -7,6 +7,7 @@ import animal_shop.community.member.entity.SellerCandidate;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.community.member.repository.SellerCandidateRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.global.service.GlobalService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -37,6 +40,9 @@ public class MemberService {
 
     @Autowired
     private JavaMailSenderImpl javaMailSenderImpl;
+
+    @Autowired
+    private GlobalService globalService;
 
 
 
@@ -297,27 +303,7 @@ public class MemberService {
             throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
         }
     }
-//    @Transactional
-//    public void changePassword( ChangePasswordDTO changePasswordDTO) {
-//        // 1. 이메일로 해당 사용자의 정보를 가져오기
-//        Optional<Member> memberOpt = memberRepository.findByMail(changePasswordDTO.getMail());
-//
-//        // 2. 사용자가 존재하는지 확인
-//        if (memberOpt.isEmpty()) {
-//            throw new IllegalArgumentException("이메일에 해당하는 사용자가 없습니다.");
-//        }
-//
-//        Member member = memberOpt.get();
-//        if(changePasswordDTO.getCheckPassword().equals( changePasswordDTO.getNewPassword())){
-//            member.updatePassword(passwordEncoder, changePasswordDTO.getNewPassword());
-//        }else{
-//            log.warn("비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        // 5. 업데이트된 회원 정보 저장
-//        memberRepository.save(member);
-//
-//    }
+
 @Transactional
 public void changePassword(ChangePasswordDTO changePasswordDTO) {
     // 1. 이메일로 해당 사용자의 정보를 가져오기
@@ -348,6 +334,48 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
     }
 }
 
+    public void createKakao(KakaoDTO kakaoDTO) {
+        String accessToken = kakaoDTO.getAccessToken();
+        String refreshToken = kakaoDTO.getRefreshToken();
+
+        ArrayList<String> info = tokenProvider.getKakaoTokenInfo(accessToken);
+        //nickname, thumbnail, mail
+
+        //동일 id 검사
+
+        //동일 메일 검사
+        if (memberRepository.existsByMail(info.get(2))) {
+            log.warn("Mail already exists {}", info.get(2));
+            throw new IllegalArgumentException("카카오 계정 전환");
+        }
+
+        //동일 닉네임 검사
+        String nickname = globalService.getRandomNickname();
+
+        Member member = Member.builder()
+                .username(UUID.randomUUID() + info.get(0))
+                .password(UUID.randomUUID() + info.get(0))
+                .mail(info.get(2))
+                .nickname(nickname)
+                .profile(info.get(1))
+                .role(Role.USER)
+                .build();
+
+        memberRepository.save(member);
+    }
+
+    public TokenDTO loginKakao(KakaoDTO kakaoDTO) {
+        String accessToken = kakaoDTO.getAccessToken();
+        String refreshToken = kakaoDTO.getRefreshToken();
+
+        ArrayList<String> info = tokenProvider.getKakaoTokenInfo(accessToken);
+
+        final Optional<Member> originalMember = memberRepository.findByMail(info.get(2));
+
+        final String AccessToken = tokenProvider.AccessTokenCreate(String.valueOf(originalMember.get().getId()));
+        originalMember.get().updateRefreshToken(refreshToken);
+        return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(refreshToken).build();
+    }
 }
 
 
