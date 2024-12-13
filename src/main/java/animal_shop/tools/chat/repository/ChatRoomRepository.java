@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
     Optional<ChatRoom> findByBuyerIdAndSellerId(Long buyerId, Long sellerId);
-    List<ChatRoom> findByBuyerIdOrSellerId(Long buyerId, Long sellerId);
+    List<ChatRoom> findByBuyerId(Long buyerId);
 
 }
