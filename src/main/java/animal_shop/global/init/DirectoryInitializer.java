@@ -36,6 +36,9 @@ public class DirectoryInitializer {
     @Value("${file.upload-dir-notices}")
     private String noticesUploadDir;
 
+    @Value("${file.upload-dir-map-comment}")
+    private String mapUploadDir;
+
     @PostConstruct
     public void init() {
         createDirectoryIfNotExists(commentUploadDir);
@@ -45,6 +48,7 @@ public class DirectoryInitializer {
         createDirectoryIfNotExists(itemCommentUploadDir);
         createDirectoryIfNotExists(petUploadDir);
         createDirectoryIfNotExists(noticesUploadDir);
+        createDirectoryIfNotExists(mapUploadDir);
     }
 
     private void createDirectoryIfNotExists(String dirPath) {

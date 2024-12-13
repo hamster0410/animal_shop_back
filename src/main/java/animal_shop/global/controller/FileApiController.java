@@ -43,6 +43,9 @@ public class FileApiController {
     @Value("${file.upload-dir-pet}")  // 파일 저장 경로를 application.properties에 설정
     private String petUploadDir;
 
+    @Value("${file.upload-dir-notices}")
+    private String noticesUploadDir;
+
     @Value("${file.upload-dir-map-comment}")
     private String mapUploadDir;
 
