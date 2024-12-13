@@ -80,8 +80,14 @@ public class ItemCommentService {
 
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalArgumentException("item not found"));
 
-        //댓글 등록시 item의 별점 증가
+        //댓글 등록시 item의 별점과 댓글 수 증가
         item.setTotal_rating(item.getTotal_rating() + requestItemCommentDTO.getRating());
+        item.setComment_count(item.getComment_count()+1);
+
+        //만약 별점이 0이거나 6이상이면 에러
+        if(requestItemCommentDTO.getRating() < 1 || requestItemCommentDTO.getRating() > 5){
+            throw new IllegalArgumentException("rating error");
+        }
 
         ItemComment comment = ItemComment.builder()
                 .contents(requestItemCommentDTO.getContents())
@@ -92,7 +98,6 @@ public class ItemCommentService {
                 .member(member)
                 .build();
 
-        item.setComment_count(item.getComment_count()+1);
         itemRepository.save(item);
 
         itemCommentRepository.save(comment);
