@@ -17,4 +17,13 @@ public class GlobalService {
 
         return member.getNickname();
     }
+
+    public String getProfile(Long userId){
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        if(member.getProfile() == null){
+            return null;
+        }
+        return member.getProfile();
+    }
 }

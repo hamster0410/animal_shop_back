@@ -1,5 +1,6 @@
 package animal_shop.shop.point.service;
 
+import animal_shop.community.member.Role;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.shop.point.PointStatus;
@@ -187,6 +188,9 @@ public class PointService {
     public long withdrawPoint(String token, WithdrawDTO withdrawDTO) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+        if(!admin.getRole().equals(Role.ADMIN)){
+            throw new IllegalArgumentException("user is not admin");
+        }
 
         StringTokenizer st = new StringTokenizer(withdrawDTO.getDate(),"-");
         ArrayList<String> date = new ArrayList<>();
