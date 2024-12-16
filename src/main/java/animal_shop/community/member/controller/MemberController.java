@@ -92,48 +92,6 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/kakao/signup")
-    public ResponseEntity<?> kakaoSignup(@RequestBody KakaoDTO kakaoDTO) {
-        ResponseDTO responseDTO;
-        String message = "";
-        try {
-            memberService.createKakao(kakaoDTO);
-            responseDTO = ResponseDTO.builder()
-                    .message("kakao signup success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
-                    .build();
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDTO);
-        }
-    }
-
-    @PostMapping("/kakao/signin")
-    public ResponseEntity<?> kakaoSignin(@RequestBody KakaoDTO kakaoDTO) {
-        ResponseDTO responseDTO;
-        String message = "";
-        try {
-            TokenDTO tokenDTO = memberService.loginKakao(kakaoDTO);
-            responseDTO = ResponseDTO.builder()
-                    .message("kakao signup success")
-                    .build();
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
-                    .build();
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDTO);
-        }
-    }
-
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> memberDelete(@RequestHeader("Authorization") String token) {
@@ -200,7 +158,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-       @PatchMapping("/changePassword")
+    @PatchMapping("/changePassword")
     public ResponseEntity<?> changPassword(@RequestBody ChangePasswordDTO changePasswordDTO){
         ResponseDTO responseDTO = null;
         try {
@@ -217,4 +175,46 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
    }
+
+    @PostMapping("/kakao/signup")
+    public ResponseEntity<?> kakaoSignup(@RequestBody KakaoDTO kakaoDTO) {
+        ResponseDTO responseDTO;
+        String message = "";
+        try {
+            memberService.createKakao(kakaoDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("kakao signup success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @PostMapping("/kakao/signin")
+    public ResponseEntity<?> kakaoSignin(@RequestBody KakaoDTO kakaoDTO) {
+        ResponseDTO responseDTO;
+        String message = "";
+        try {
+            TokenDTO tokenDTO = memberService.loginKakao(kakaoDTO);
+            responseDTO = ResponseDTO.builder()
+                    .message("kakao signup success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
 }

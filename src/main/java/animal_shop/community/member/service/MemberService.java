@@ -11,6 +11,7 @@ import animal_shop.global.service.GlobalService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -44,7 +45,11 @@ public class MemberService {
     @Autowired
     private GlobalService globalService;
 
+    @Value("${kakao.oauth_key}")
+    private String OauthKey;
 
+    @Value("${kakao.token_api}")
+    private String kakaoGetTokenApi;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -339,9 +344,9 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
         String refreshToken = kakaoDTO.getRefreshToken();
 
         ArrayList<String> info = tokenProvider.getKakaoTokenInfo(accessToken);
-        //nickname, thumbnail, mail
+//        nickname, thumbnail, mail
 
-        //동일 id 검사
+//        동일 id 검사
 
         //동일 메일 검사
         if (memberRepository.existsByMail(info.get(2))) {
@@ -376,6 +381,12 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
         originalMember.get().updateRefreshToken(refreshToken);
         return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(refreshToken).build();
     }
+
+//    private TokenDTO getKakaoToken(KakaoDTO kakaoCode) {
+//        OauthKey;
+//        kakaoGetTokenApi;
+//    }
+
 }
 
 
