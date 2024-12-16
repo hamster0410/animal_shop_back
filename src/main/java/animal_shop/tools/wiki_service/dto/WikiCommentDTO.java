@@ -1,11 +1,12 @@
 package animal_shop.tools.wiki_service.dto;
 
 import animal_shop.tools.wiki_service.entity.WikiComment;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
-
-@Data
+@Getter
+@NoArgsConstructor
 public class WikiCommentDTO {
     private Long id;
     private String content;
