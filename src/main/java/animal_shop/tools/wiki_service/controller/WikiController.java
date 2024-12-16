@@ -17,13 +17,12 @@ public class WikiController {
     private WikiService wikiService;
 
     //등록
-    @PostMapping(value = "/register", consumes = "multipart/form-data")
+    @PostMapping(value = "/register")
     public ResponseEntity<?> wiki_register(@RequestHeader(value = "Authorization") String token,
-                                           @RequestPart MultipartFile file,
-                                           @RequestPart WikiDTO wikiDTO) {
+                                           @RequestBody WikiDTO wikiDTO) {
         ResponseDTO responseDTO = null;
         try {
-            wikiService.wikiRegister(token, file, wikiDTO);
+            wikiService.wikiRegister(token, wikiDTO);
             responseDTO = ResponseDTO.builder()
                     .message("success register")
                     .build();
