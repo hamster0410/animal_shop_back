@@ -12,8 +12,6 @@ import animal_shop.tools.calculate.dto.FoodCalcDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class CalcService {
 
@@ -37,7 +35,7 @@ public class CalcService {
                 .findFirst() // 첫 번째 값을 가져옴
                 .orElse(null); // 없으면 null 반환.
 
-        AnimalWeight animalWeight = animalWeightRepository.findBySpecies(leader.getBreed());
+        AnimalWeight animalWeight = animalWeightRepository.findByBreed(leader.getBreed());
         if(animalWeight==null){
             throw new IllegalArgumentException("animal info error");
         }
@@ -61,7 +59,7 @@ public class CalcService {
                 .orElse(null); // 없으면 null 반환.
 
 
-        AnimalWeight animalWeight = animalWeightRepository.findBySpecies(leader.getBreed());
+        AnimalWeight animalWeight = animalWeightRepository.findByBreed(leader.getBreed());
 
         if(animalWeight==null){
             throw new IllegalArgumentException("animal info error");
@@ -89,7 +87,7 @@ public class CalcService {
                 .orElse(null); // 없으면 null 반환.
 
 
-        AnimalWeight animalWeight = animalWeightRepository.findBySpecies(leader.getBreed());
+        AnimalWeight animalWeight = animalWeightRepository.findByBreed(leader.getBreed());
 
         if(animalWeight==null){
             throw new IllegalArgumentException("animal info error");

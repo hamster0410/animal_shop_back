@@ -13,6 +13,10 @@ public class AnimalWeight {
     @Column(length = 30)
     private String species;
 
+
+    @Column(length = 30)
+    private String breed;
+
     private Long low_weight;
 
     private Long high_weight;

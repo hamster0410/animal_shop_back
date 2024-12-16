@@ -82,4 +82,25 @@
                         .build();
 
             }
+
+            @Transactional
+            public void updateComment(String token, Long commentId, WikiCommentDTO wikiCommentDTO) {
+                String userId = tokenProvider.extractIdByAccessToken(token);
+                Member member = memberRepository.findById(Long.valueOf(userId))
+                        .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+                WikiComment wikiComment = wikiCommentRepository.findById(commentId)
+                        .orElseThrow(() -> new IllegalArgumentException("WikiComment not found"));
+
+                // 댓글 수정
+                if(wikiCommentDTO.getContent()!= null){
+                    wikiComment.setContent(wikiCommentDTO.getContent());
+                }
+                if(wikiCommentDTO.getAuthor()!= null){
+                    wikiComment.setAuthor(wikiComment.getAuthor());
+                }
+
+// 댓글 저장
+                wikiCommentRepository.save(wikiComment);
+            }
         }

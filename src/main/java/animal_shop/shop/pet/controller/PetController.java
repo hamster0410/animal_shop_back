@@ -1,6 +1,7 @@
 package animal_shop.shop.pet.controller;
 
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.pet.dto.PetBreedList;
 import animal_shop.shop.pet.dto.PetDTO;
 import animal_shop.shop.pet.dto.PetProfileList;
 import animal_shop.shop.pet.service.PetService;
@@ -89,15 +90,29 @@ public class PetController {
     }
     @PatchMapping("/leader/{petId}")
     ResponseEntity<?> updateLeader(@PathVariable Long petId) {
-//        petService.updateLeader(petId);
-//        return "Leader updated successfully for pet with ID" + petId  ;
-        ResponseDTO responseDTO = null;
+      ResponseDTO responseDTO = null;
         try {
             petService.updateLeader(petId);
             responseDTO = ResponseDTO.builder()
                     .message("leader success!")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
+
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/breed-list")
+    ResponseEntity<?> getBreedList(@RequestParam(name = "species") String species) {
+
+        ResponseDTO responseDTO = null;
+        try {
+            PetBreedList petBreedList = petService.getBreedList(species);
+            return ResponseEntity.ok().body(petBreedList);
 
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()

@@ -36,6 +36,17 @@ public class WikiCommentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PatchMapping("/{commentId}/update")
+    public ResponseEntity<?> updateComment(@RequestHeader("Authorization") String token,
+                                           @PathVariable Long commentId,
+                                           @RequestBody WikiCommentDTO wikiCommentDTO) {
+        try {
+            wikiCommentService.updateComment(token, commentId, wikiCommentDTO);
+            return ResponseEntity.ok().body("Comment updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @DeleteMapping("/{commentId}/delete")
     public ResponseEntity<?> deleteComment(@RequestHeader("Authorization") String token,

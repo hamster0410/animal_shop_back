@@ -3,10 +3,13 @@ package animal_shop.shop.pet.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
+import animal_shop.shop.pet.dto.PetBreedList;
 import animal_shop.shop.pet.dto.PetDTO;
 import animal_shop.shop.pet.dto.PetProfile;
 import animal_shop.shop.pet.dto.PetProfileList;
+import animal_shop.shop.pet.entity.AnimalWeight;
 import animal_shop.shop.pet.entity.Pet;
+import animal_shop.shop.pet.repository.AnimalWeightRepository;
 import animal_shop.shop.pet.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +33,9 @@ public class PetService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private AnimalWeightRepository animalWeightRepository;
 
 
 
@@ -162,4 +169,16 @@ public class PetService {
     }
 
 
+    public PetBreedList getBreedList(String species) {
+        List<AnimalWeight> animalWeight = animalWeightRepository.findBySpecies(species);
+        List<String> animals = new ArrayList<>();
+
+        for(AnimalWeight ani :  animalWeight){
+            animals.add(ani.getBreed());
+        }
+
+        return PetBreedList.builder()
+                .breeds(animals)
+                .build();
+    }
 }

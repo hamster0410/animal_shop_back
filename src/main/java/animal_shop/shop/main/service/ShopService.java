@@ -120,7 +120,7 @@ public class ShopService {
             }
         }else {
             //체중기준    추천
-            AnimalWeight animalWeight = animalWeightRepository.findBySpecies(pet.getBreed());
+            AnimalWeight animalWeight = animalWeightRepository.findByBreed(pet.getBreed());
             //강아지일 경우
             if(species.equals("dog")){
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
