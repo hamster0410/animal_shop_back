@@ -11,7 +11,6 @@ import animal_shop.global.service.GlobalService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -21,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -44,12 +40,6 @@ public class MemberService {
 
     @Autowired
     private GlobalService globalService;
-
-    @Value("${kakao.oauth_key}")
-    private String OauthKey;
-
-    @Value("${kakao.token_api}")
-    private String kakaoGetTokenApi;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -187,6 +177,12 @@ public class MemberService {
                     .build();
         }
         return null;
+    }
+
+    public MemberDTO getBymail(String email) {
+        Member member = memberRepository.findByMail(email)
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        return new MemberDTO(member);
     }
 
     @Transactional
@@ -339,53 +335,42 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
     }
 }
 
-    public void createKakao(KakaoDTO kakaoDTO) {
-        String accessToken = kakaoDTO.getAccessToken();
-        String refreshToken = kakaoDTO.getRefreshToken();
+    public void createKakao(Map<String, Object> userInfo) {
 
-        ArrayList<String> info = tokenProvider.getKakaoTokenInfo(accessToken);
-//        nickname, thumbnail, mail
-
-//        동일 id 검사
-
-        //동일 메일 검사
-        if (memberRepository.existsByMail(info.get(2))) {
-            log.warn("Mail already exists {}", info.get(2));
-            throw new IllegalArgumentException("카카오 계정 전환");
+        String username = (String)userInfo.get("nickname") + "-" + System.currentTimeMillis();
+        //동일 id 검사
+        if (memberRepository.existsByUsername(username)) {
+            log.warn("Username already exists {}", username);
+            throw new IllegalArgumentException("user name already Exists");
         }
 
+        //동일 메일 검사
+        if (memberRepository.existsByMail((String)userInfo.get("email"))) {
+            log.warn("Mail already exists {}", (String)userInfo.get("email"));
+            throw new IllegalArgumentException("change kakao email");
+        }
+        String nickname = "";
         //동일 닉네임 검사
-        String nickname = globalService.getRandomNickname();
+        while(true){
+            String temp = globalService.getRandomNickname();
+            if (!memberRepository.existsByNickname(temp)) {
+                nickname =temp;
+                break;
+            }
+        }
 
         Member member = Member.builder()
-                .username(UUID.randomUUID() + info.get(0))
-                .password(UUID.randomUUID() + info.get(0))
-                .mail(info.get(2))
+                .username(username)
+                .password(passwordEncoder.encode(username))
+                .mail((String)userInfo.get("email"))
                 .nickname(nickname)
-                .profile(info.get(1))
+                .profile((String)userInfo.get("thumbnail"))
                 .role(Role.USER)
                 .build();
 
         memberRepository.save(member);
     }
 
-    public TokenDTO loginKakao(KakaoDTO kakaoDTO) {
-        String accessToken = kakaoDTO.getAccessToken();
-        String refreshToken = kakaoDTO.getRefreshToken();
-
-        ArrayList<String> info = tokenProvider.getKakaoTokenInfo(accessToken);
-
-        final Optional<Member> originalMember = memberRepository.findByMail(info.get(2));
-
-        final String AccessToken = tokenProvider.AccessTokenCreate(String.valueOf(originalMember.get().getId()));
-        originalMember.get().updateRefreshToken(refreshToken);
-        return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(refreshToken).build();
-    }
-
-//    private TokenDTO getKakaoToken(KakaoDTO kakaoCode) {
-//        OauthKey;
-//        kakaoGetTokenApi;
-//    }
 
 }
 

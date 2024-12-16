@@ -3,18 +3,22 @@ package animal_shop.global.security;
 import animal_shop.community.member.dto.MemberDTO;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
@@ -27,6 +31,15 @@ public class  TokenProvider {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
+
+    @Value("${kakao.oauth_key}")
+    private String OauthKey;
+
+    @Value("${kakao.token_api}")
+    private String kakaoGetTokenApi;
+
+    @Value("${kakao.get_user_info}")
+    private String kakaoGetUserInfoApi;
 
     @Autowired
     MemberRepository memberRepository;
@@ -107,64 +120,114 @@ public class  TokenProvider {
         return claims.get("role", String.class);
     }
 
-    public ArrayList<String> getKakaoTokenInfo(String accessToken){
-        ArrayList<String > info = new ArrayList<>();
-        try {
-//            String accessToken = "WNH6hhhLlIsS2OCe_vkmn4diPsQvnbgyAAAAAQo9c5sAAAGTv6nmPtQ0RDl69jWm"; // 여기에 실제 엑세스 토큰을 입력하세요
-            String urlString = "https://kapi.kakao.com/v2/user/me";
+    public String getKakaoAccessToken(String code,boolean strategy) {
+        String accessToken = "";
+        String refreshToken = "";
+        String reqUrl = kakaoGetTokenApi;
 
-            // URL 객체 생성
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            // HTTP 메소드 설정
-            connection.setRequestMethod("GET");
+            //필수 헤더 세팅
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setDoOutput(true); //OutputStream으로 POST 데이터를 넘겨주겠다는 옵션.
 
-            // Authorization 헤더 설정
-            connection.setRequestProperty("Authorization", "Bearer " + accessToken);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            StringBuilder sb = new StringBuilder();
 
-            // 응답 코드 확인
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 200번 코드 확인
-                // 응답을 읽어오기 위한 스트림 설정
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-
-                // 응답 내용 읽기
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                // JSON 데이터 파싱 및 추출
-                String responseBody = response.toString();
-                JSONObject jsonResponse = new JSONObject(responseBody);
-
-                // nickname 추출
-                JSONObject properties = jsonResponse.getJSONObject("properties");
-                String nickname = properties.getString("nickname");
-
-                // thumbnail_image 추출
-                String thumbnailImage = properties.getString("thumbnail_image");
-
-                // email 추출
-                JSONObject kakaoAccount = jsonResponse.getJSONObject("kakao_account");
-                String email = kakaoAccount.getString("email");
-                // 결과 출력
-                log.info("kakao token extract data nickname = {}, thumbnail = {}, email = {}",nickname,thumbnailImage,email);
-                info.add(nickname);
-                info.add(thumbnailImage);
-                info.add(email);
-
-            } else {
-                System.out.println("Error: Failed to get response from Kakao API.");
+            //필수 쿼리 파라미터 세팅
+            sb.append("grant_type=authorization_code");
+            sb.append("&client_id=").append(OauthKey);
+            if(strategy){
+                sb.append("&redirect_uri=").append("http://localhost:8080/auth/kakao/signup");
+            }else{
+                sb.append("&redirect_uri=").append("http://localhost:8080/auth/kakao/signin");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            sb.append("&code=").append(code);
 
+            bw.write(sb.toString());
+            bw.flush();
+
+            int responseCode = conn.getResponseCode();
+            log.info("[KakaoApi.getAccessToken] responseCode = {}", responseCode);
+
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode < 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
+            while((line = br.readLine()) != null){
+                responseSb.append(line);
+            }
+            String result = responseSb.toString();
+            log.info("responseBody = {}", result);
+
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+            accessToken = element.getAsJsonObject().get("access_token").getAsString();
+            refreshToken = element.getAsJsonObject().get("refresh_token").getAsString();
+
+            br.close();
+            bw.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return info;
+        return accessToken;
+    }
+
+    public Map<String, Object> getUserInfoFromKakao(String accessToken) {
+        HashMap<String, Object> userInfo = new HashMap<>();
+        String reqUrl = kakaoGetUserInfoApi;
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+            int responseCode = conn.getResponseCode();
+            log.info("[KakaoApi.getUserInfo] responseCode : {}",  responseCode);
+
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode <= 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
+            while((line = br.readLine()) != null){
+                responseSb.append(line);
+            }
+            String result = responseSb.toString();
+            log.info("responseBody = {}", result);
+
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+
+            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+            JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+
+            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+
+            String thumbnail = properties.getAsJsonObject().get("thumbnail_image").getAsString();
+
+            userInfo.put("nickname", nickname);
+            userInfo.put("email", email);
+            userInfo.put("thumbnail", thumbnail);
+
+            br.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return userInfo;
     }
 }
