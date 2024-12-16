@@ -52,7 +52,7 @@ public class WikiController {
     }
 
     @GetMapping("/select/{id}")
-    public ResponseEntity<?> select_breed(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<?> select_breed(@RequestHeader(value = "Authorization",required = false) String token,
                                           @PathVariable Long id) {
         ResponseDTO responseDTO = null;
         try {
