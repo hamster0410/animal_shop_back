@@ -45,7 +45,7 @@ public class WikiService {
     private String uploadDir;
 
     @Transactional
-    public void wikiRegister(String token, MultipartFile file, WikiDTO wikiDTO) {
+    public void wikiRegister(String token, WikiDTO wikiDTO) {
         //뉘신지 확인
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
@@ -60,23 +60,23 @@ public class WikiService {
         wiki.setOverview(wikiDTO.getOverview());
         wiki.setAppearance(wikiDTO.getAppearance());
         wiki.setTemperament(wikiDTO.getTemperament());
-//        wiki.setAttachmentUrl(wikiDTO.getAttachmentUrl());
+        wiki.setAttachmentUrl(wikiDTO.getAttachmentUrl());
 
-        if (file != null && !file.isEmpty()) {
-            try {
-                // 디렉토리가 없으면 생성
-                Files.createDirectories(Paths.get(uploadDir));
-                // 파일명 중복 방지 (UUID 사용)
-                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get(uploadDir, fileName);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                wiki.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
-            }
-        } else {
-            wiki.setAttachmentUrl(""); // 파일이 없을 경우 빈 값 설정
-        }
+//        if (file != null && !file.isEmpty()) {
+//            try {
+//                // 디렉토리가 없으면 생성
+//                Files.createDirectories(Paths.get(uploadDir));
+//                // 파일명 중복 방지 (UUID 사용)
+//                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+//                Path filePath = Paths.get(uploadDir, fileName);
+//                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//                wiki.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
+//            } catch (IOException e) {
+//                throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
+//            }
+//        } else {
+//            wiki.setAttachmentUrl(""); // 파일이 없을 경우 빈 값 설정
+//        }
 
         wikiRepository.save(wiki);
     }
