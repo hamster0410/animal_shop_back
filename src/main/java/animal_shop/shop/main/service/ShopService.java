@@ -53,7 +53,6 @@ public class ShopService {
                 .toList();
 
         List<MainDTO> animal_custom = new ArrayList<>();
-        System.out.println(token  + " " +  species);
         //로그인 하지 않은 경우
         if(token==null){
             animal_custom = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
@@ -91,31 +90,20 @@ public class ShopService {
         if(randomNumber % 2 ==0){
             if(species.equals("dog")){
                 if(pet.getAge()<2){
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","puppy", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Dog","food","puppy",ItemSellStatus.SELL).getGoods();
                 }else if(pet.getAge() < 8){
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","adult", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Dog","food","adult",ItemSellStatus.SELL).getGoods();
                 }else{
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","senior", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Dog","food","senior",ItemSellStatus.SELL).getGoods();
                 }
             }else{
                 if(pet.getAge()<2){
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","kitten", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+
+                    animal_custom = searchItem("Cat","food","kitten",ItemSellStatus.SELL).getGoods();
                 }else if(pet.getAge() < 8){
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","adult", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Cat","food","adult",ItemSellStatus.SELL).getGoods();
                 }else{
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","nutritional/functional", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Cat","food","nutritional/functional",ItemSellStatus.SELL).getGoods();
                 }
             }
         }else {
@@ -124,36 +112,27 @@ public class ShopService {
             //강아지일 경우
             if(species.equals("dog")){
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","nutritional/functional", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Dog","food","nutritional/functional",ItemSellStatus.SELL).getGoods();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","clothing/accessories", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Dog","supplies","clothing/accessories",ItemSellStatus.SELL).getGoods();
                 } else {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","walking_supplies", ItemSellStatus.STOP,
-                                    pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Dog","supplies","walking_supplies",ItemSellStatus.SELL).getGoods();
                 }
             }else{
                 //고양이일 경우
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"food","nutritional/functional", ItemSellStatus.STOP,pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Cat","food","nutritional/functional",ItemSellStatus.SELL).getGoods();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","tunnels/hunting_instinct", ItemSellStatus.STOP,pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Cat","supplies","tunnels/hunting_instinct",ItemSellStatus.SELL).getGoods();
                 } else {
-                    animal_custom = itemRepository.findBySpeciesCategoryAndDetailedCategoryWithThumbnails(species,"supplies","fishing_rods/lasers", ItemSellStatus.STOP,pageable)
-                            .stream().map(MainDTO::new).toList();
+                    animal_custom = searchItem("Cat","supplies","fishing_rods/lasers",ItemSellStatus.SELL).getGoods();
                 }
             }
         }
         return MainDTOResponse.builder()
                 .animal_new(animal_new)
                 .animal_hot(animal_hot)
-                .animal_custom(animal_custom  )
+                .animal_custom(animal_custom)
                 .build();
     }
 
@@ -192,6 +171,49 @@ public class ShopService {
         long total_count;
 
         Pageable pageable = PageRequest.of(page, 16, Sort.by("createdDate").descending());
+        Page<Item> items = itemRepository.findAll(specification, pageable);
+        total_count = items.getTotalElements();
+        itemDTOs = items.map(MainDTO::new).getContent();
+
+        // DTO 변환 (Item -> ItemDetailDTO)
+        // 검색 결과 반환
+        return MainDTOBestResponse.builder()
+                .goods(itemDTOs)
+                .total_count(total_count)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public MainDTOBestResponse searchItem( String species, String category, String detailed_category, ItemSellStatus itemSellStatus) {
+
+        Specification<Item> specification = Specification.where(null);
+
+        if (species != null) {
+            specification = specification.and(ItemSpecification.searchBySpecies(species));
+        }
+
+        if (category != null) {
+            specification = specification.and(ItemSpecification.searchByCategory(category));
+        }
+
+        if (detailed_category != null) {
+            specification = specification.and(ItemSpecification.searchByDetailedCategory(detailed_category));
+        }
+
+        if (itemSellStatus != null) {
+            if(itemSellStatus.equals(ItemSellStatus.STOP)){
+                specification = specification.and(ItemSpecification.searchByItemStatusStop());
+            }else{
+                specification = specification.and(ItemSpecification.searchByItemStatusNotStop());
+            }
+        }
+
+        specification = specification.and(ItemSpecification.searchByItemStatusNotStop());
+
+        List<MainDTO> itemDTOs;
+        long total_count;
+
+        Pageable pageable = PageRequest.of(0, 4, Sort.by("createdDate").descending());
         Page<Item> items = itemRepository.findAll(specification, pageable);
         total_count = items.getTotalElements();
         itemDTOs = items.map(MainDTO::new).getContent();

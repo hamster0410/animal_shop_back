@@ -3,11 +3,11 @@ package animal_shop.tools.calculate.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.security.TokenProvider;
-import animal_shop.shop.item.entity.Item;
+import animal_shop.shop.item.ItemSellStatus;
 import animal_shop.shop.item.repository.ItemRepository;
-import animal_shop.shop.item.service.ItemSpecification;
-import animal_shop.shop.main.dto.MainDTO;
+
 import animal_shop.shop.main.dto.MainDTOBestResponse;
+import animal_shop.shop.main.service.ShopService;
 import animal_shop.shop.pet.entity.AnimalWeight;
 import animal_shop.shop.pet.entity.Pet;
 import animal_shop.shop.pet.repository.AnimalWeightRepository;
@@ -16,14 +16,9 @@ import animal_shop.tools.calculate.dto.CalorieCalcDTO;
 import animal_shop.tools.calculate.dto.FoodCalcDTO;
 import animal_shop.tools.calculate.dto.RecommendDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
 
 @Service
 public class CalcService {
@@ -39,6 +34,9 @@ public class CalcService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private ShopService shopService;
 
     public AgeCalcDTO ageCalc(String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
@@ -129,7 +127,7 @@ public class CalcService {
         } else if (searchBy.equalsIgnoreCase("calorie")) {
             return recommendByCalorie(species, recommendDTO);
         } else {
-            return searchItem(species, "food", null);
+            return shopService.searchItem(species, "food", null, ItemSellStatus.SELL);
         }
     }
 
@@ -139,19 +137,19 @@ public class CalcService {
 
         if (species.equals("Dog")) {
             if (age <= 20) {
-                return searchItem(species, "supplies", "toys");
+                return shopService.searchItem(species, "supplies", "toys", ItemSellStatus.SELL);
             } else if (age <= 60) {
-                return searchItem(species, "supplies", "walking_supplies");
+                return shopService.searchItem(species, "supplies", "walking_supplies", ItemSellStatus.SELL);
             } else {
-                return searchItem(species, "treats", "nutritional/functional");
+                return shopService.searchItem(species, "treats", "nutritional/functional", ItemSellStatus.SELL);
             }
         } else { // Cat
             if (age <= 20) {
-                return searchItem(species, "supplies", "litter_boxes/bathroom_aids");
+                return shopService.searchItem(species, "supplies", "litter_boxes/bathroom_aids", ItemSellStatus.SELL);
             } else if (age <= 60) {
-                return searchItem(species, "supplies", "fishing_rods/lasers");
+                return shopService.searchItem(species, "supplies", "fishing_rods/lasers", ItemSellStatus.SELL);
             } else {
-                return searchItem(species, "treats", "nutritional/functional");
+                return shopService.searchItem(species, "treats", "nutritional/functional", ItemSellStatus.SELL);
             }
         }
     }
@@ -175,57 +173,24 @@ public class CalcService {
 
     private MainDTOBestResponse recommendDogByWeight(double weight, AnimalWeight animalWeight) {
         if (weight < animalWeight.getLow_weight()) {
-            return searchItem("Dog", "treats", "nutritional/functional");
+            return shopService.searchItem("Dog", "treats", "nutritional/functional", ItemSellStatus.SELL);
         } else if (weight <= animalWeight.getHigh_weight()) {
-            return searchItem("Dog", "treats", "bone_treats");
+            return shopService.searchItem("Dog", "treats", "bone_treats", ItemSellStatus.SELL);
         } else {
-            return searchItem("Dog", "supplies", "walking_supplies");
+            return shopService.searchItem("Dog", "supplies", "walking_supplies", ItemSellStatus.SELL);
         }
     }
 
     private MainDTOBestResponse recommendCatByWeight(double weight, AnimalWeight animalWeight) {
         if (weight < animalWeight.getLow_weight()) {
-            return searchItem("Cat", "treats", "nutritional/functional");
+            return shopService.searchItem("Cat", "treats", "nutritional/functional", ItemSellStatus.SELL);
         } else if (weight <= animalWeight.getHigh_weight()) {
-            return searchItem("Cat", "supplies", "tunnels/hunting_instinct");
+            return shopService.searchItem("Cat", "supplies", "tunnels/hunting_instinct", ItemSellStatus.SELL);
         } else {
-            return searchItem("Cat", "supplies", "cat_towers/cat_wheels");
+            return shopService.searchItem("Cat", "supplies", "cat_towers/cat_wheels", ItemSellStatus.SELL);
         }
     }
 
-    @Transactional(readOnly = true)
-    public MainDTOBestResponse searchItem( String species, String category, String detailed_category) {
 
-        Specification<Item> specification = Specification.where(null);
-
-        if (species != null) {
-            specification = specification.and(ItemSpecification.searchBySpecies(species));
-        }
-
-        if (category != null) {
-            specification = specification.and(ItemSpecification.searchByCategory(category));
-        }
-
-        if (detailed_category != null) {
-            specification = specification.and(ItemSpecification.searchByDetailedCategory(detailed_category));
-        }
-
-        specification = specification.and(ItemSpecification.searchByItemStatusNotStop());
-
-        List<MainDTO> itemDTOs;
-        long total_count;
-
-        Pageable pageable = PageRequest.of(0, 4, Sort.by("createdDate").descending());
-        Page<Item> items = itemRepository.findAll(specification, pageable);
-        total_count = items.getTotalElements();
-        itemDTOs = items.map(MainDTO::new).getContent();
-
-        // DTO 변환 (Item -> ItemDetailDTO)
-        // 검색 결과 반환
-        return MainDTOBestResponse.builder()
-                .goods(itemDTOs)
-                .total_count(total_count)
-                .build();
-    }
 
 }
