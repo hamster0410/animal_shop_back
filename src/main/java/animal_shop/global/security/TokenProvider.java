@@ -1,6 +1,7 @@
 package animal_shop.global.security;
 
 import animal_shop.community.member.dto.MemberDTO;
+import animal_shop.community.member.dto.TokenDTO;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import com.google.gson.JsonElement;
@@ -13,13 +14,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.client.RestTemplate;
+
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -120,66 +123,6 @@ public class  TokenProvider {
         return claims.get("role", String.class);
     }
 
-    public String getKakaoAccessToken(String code,boolean strategy) {
-        String accessToken = "";
-        String refreshToken = "";
-        String reqUrl = kakaoGetTokenApi;
-
-        try{
-            URL url = new URL(reqUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            //필수 헤더 세팅
-            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-            conn.setDoOutput(true); //OutputStream으로 POST 데이터를 넘겨주겠다는 옵션.
-
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            StringBuilder sb = new StringBuilder();
-
-            //필수 쿼리 파라미터 세팅
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id=").append(OauthKey);
-            if(strategy){
-                sb.append("&redirect_uri=").append("http://localhost:8080/auth/kakao/signup");
-            }else{
-                sb.append("&redirect_uri=").append("http://localhost:8080/auth/kakao/signin");
-            }
-            sb.append("&code=").append(code);
-
-            bw.write(sb.toString());
-            bw.flush();
-
-            int responseCode = conn.getResponseCode();
-            log.info("[KakaoApi.getAccessToken] responseCode = {}", responseCode);
-
-            BufferedReader br;
-            if (responseCode >= 200 && responseCode < 300) {
-                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
-
-            String line = "";
-            StringBuilder responseSb = new StringBuilder();
-            while((line = br.readLine()) != null){
-                responseSb.append(line);
-            }
-            String result = responseSb.toString();
-            log.info("responseBody = {}", result);
-
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-            accessToken = element.getAsJsonObject().get("access_token").getAsString();
-            refreshToken = element.getAsJsonObject().get("refresh_token").getAsString();
-
-            br.close();
-            bw.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return accessToken;
-    }
-
     public Map<String, Object> getUserInfoFromKakao(String accessToken) {
         HashMap<String, Object> userInfo = new HashMap<>();
         String reqUrl = kakaoGetUserInfoApi;
@@ -229,5 +172,32 @@ public class  TokenProvider {
             e.printStackTrace();
         }
         return userInfo;
+    }
+
+    public ResponseEntity<Void> sendToken(TokenDTO tokenDTO) {
+        String targetUrl = "http://localhost:3000/login"; // 데이터를 보낼 엔드포인트
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // 요청 엔티티 생성
+            HttpEntity<TokenDTO> requestEntity = new HttpEntity<>(tokenDTO, headers);
+
+            // 1. 데이터를 targetUrl로 전송
+            ResponseEntity<String> response = restTemplate.postForEntity(targetUrl, requestEntity, String.class);
+            System.out.println("Response from target server: " + response.getBody());
+
+            // 2. 리다이렉트 응답 반환
+            return ResponseEntity
+                    .status(HttpStatus.FOUND) // HTTP 302 FOUND
+                    .location(URI.create("http://localhost:3000/")) // 리다이렉트할 주소
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -6,11 +6,9 @@ import animal_shop.global.dto.ResponseDTO;
 import animal_shop.global.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.Map;
 
 @Slf4j
@@ -184,56 +182,51 @@ public class MemberController {
         }
    }
 
-    @GetMapping("/kakao/signup")
-    public ResponseEntity<?> kakaoSignup(@RequestParam(name = "code")String code) {
+    @PostMapping("/kakao/signup")
+    public ResponseEntity<?> kakaoSignup(@RequestBody TokenDTO tokenDTO) {
         ResponseDTO responseDTO;
         String message = "";
         try {
-            // 1. 인가 코드 받기 (@RequestParam String code)
-
-            // 2. 토큰 받기
-            String accessToken = tokenProvider.getKakaoAccessToken(code,true);
-
             // 3. 사용자 정보 받기
-            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(accessToken);
+            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(tokenDTO.getAccessToken());
 
-            String email = (String)userInfo.get("email");
-            String nickname = (String)userInfo.get("nickname");
             memberService.createKakao(userInfo);
-
-            return ResponseEntity
-                    .status(HttpStatus.FOUND) // 302 Found
-                    .location(URI.create("http://localhost:3000/"))
+            responseDTO = ResponseDTO.builder()
+                    .message("회원가입 성공")
                     .build();
+            return ResponseEntity
+                    .ok().body(responseDTO);
         } catch (Exception e) {
 
-            return ResponseEntity
-                    .status(HttpStatus.FOUND) // 302 Found
-                    .location(URI.create("http://localhost:3000/"))
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
                     .build();
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
         }
     }
 
-    @GetMapping("/kakao/signin")
-    public ResponseEntity<?> kakaoSignin(@RequestParam(name = "code")String code) {
+    @PostMapping("/kakao/signin")
+    public ResponseEntity<?> kakaoSignin(@RequestBody TokenDTO tokenDTO) {
         ResponseDTO responseDTO;
         String message = "";
         try {
             // 1. 인가 코드 받기 (@RequestParam String code)
 
-            // 2. 토큰 받기
-            String accessToken = tokenProvider.getKakaoAccessToken(code,false);
-
             // 3. 사용자 정보 받기
-            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(accessToken);
+            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(tokenDTO.getAccessToken());
 
             String email = (String)userInfo.get("email");
             String nickname = (String)userInfo.get("nickname");
             MemberDTO memberDTO = memberService.getBymail(email);
 
-            TokenDTO tokenDTO = memberService.login(memberDTO);
+            TokenDTO tokenDTO2 = memberService.login(memberDTO);
 
-            return ResponseEntity.ok().body(tokenDTO);
+            return ResponseEntity
+                    .ok()
+                    .body(tokenDTO2);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
