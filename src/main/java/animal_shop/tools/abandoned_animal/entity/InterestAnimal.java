@@ -36,12 +36,11 @@ public class InterestAnimal {
     @Column(name = "care_nm") // DB 컬럼명이 필드명과 다를 경우
     private String care_nm;
 
+    private String desertionNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id") // FK 설정
     private Member member;
-
-    private String desertionNo;
-
 
     public InterestAnimal(Member member, AbandonedAnimal abandonedAnimal) {
         this.attachment_url = abandonedAnimal.getPopfile();
