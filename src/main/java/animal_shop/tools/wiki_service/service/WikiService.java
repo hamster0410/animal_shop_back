@@ -82,7 +82,6 @@ public class WikiService {
     }
     @Transactional(readOnly = true)
     public WikiDTOResponse select(String token, int page) {
-
         //토큰인증
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))

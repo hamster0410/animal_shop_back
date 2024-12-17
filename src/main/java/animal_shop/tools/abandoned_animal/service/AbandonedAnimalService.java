@@ -146,9 +146,8 @@ public class AbandonedAnimalService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found")  );
 
-        System.out.println("here1");
+
         AbandonedAnimal abandonedAnimal = abandonedAnimalRepository.findByDesertionNo(desertion_no);
-        System.out.println("here2");
         System.out.println(abandonedAnimal.getAge());
         InterestAnimal interestAnimal = new InterestAnimal(member,abandonedAnimal);
         // 이미 관심 동물로 등록된 경우 예외 처리
@@ -179,8 +178,10 @@ public class AbandonedAnimalService {
 
         interestAnimalRepository.delete(interestAnimal);
 
-    }
 
+
+    }
+    @Transactional
     public InterestDTOResponse listInterestAnimal(String token, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
@@ -194,5 +195,6 @@ public class AbandonedAnimalService {
                 .build();
 
     }
+
 }
 
