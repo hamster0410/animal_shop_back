@@ -166,8 +166,8 @@ public class ShopService {
                 .goods(best.stream().map(MainDTO::new).toList())
                 .total_count(best.getTotalElements())
                 .build();
-
     }
+
     @Transactional(readOnly = true)
     public MainDTOBestResponse category_contents( String species, String category, String detailed_category, Boolean discount, int page) {
 

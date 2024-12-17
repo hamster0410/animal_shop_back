@@ -211,7 +211,7 @@
 
             Specification<Item> specification = Specification.where(null);
             // Pageable 설정 (페이지 당 10개로 제한)
-            specification = specification.and(ItemSpecification.searchByItemStatus());
+            specification = specification.and(ItemSpecification.searchByItemStatusStop());
 
             specification = specification.and(ItemSpecification.searchByUserId(member));
 

@@ -13,6 +13,8 @@ public class CalorieCalcDTO {
 
     private Double weight;
 
+    private String breed;
+
     private Boolean isNeutered;
 
     private String size;

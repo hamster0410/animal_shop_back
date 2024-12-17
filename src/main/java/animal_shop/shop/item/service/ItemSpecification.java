@@ -77,9 +77,15 @@ public class ItemSpecification {
         };
     }
 
-    public static Specification<Item> searchByItemStatus() {
+    public static Specification<Item> searchByItemStatusStop() {
         return (root, query, criteriaBuilder) ->{
             return criteriaBuilder.equal(root.get("itemSellStatus"),2);
+        };
+    }
+
+    public static Specification<Item> searchByItemStatusNotStop() {
+        return (root, query, criteriaBuilder) ->{
+            return criteriaBuilder.notEqual(root.get("itemSellStatus"),2);
         };
     }
 
