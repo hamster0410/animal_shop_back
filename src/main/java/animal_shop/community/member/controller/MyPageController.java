@@ -4,6 +4,7 @@ import animal_shop.community.member.dto.MemberDTO;
 import animal_shop.community.member.dto.SellerRegisterDTO;
 import animal_shop.community.member.service.MemberService;
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +70,24 @@ public class MyPageController {
         }
     }
 
+    @GetMapping("/like-place")
+    public ResponseEntity<?> likePlace(@RequestHeader("Authorization") String token,
+                                       @RequestParam(name = "page", defaultValue = "1")int page){
+        ResponseDTO responseDTO;
+
+        try{
+            MapPositionDTOResponse mapPositionDTOResponse = memberService.likePlace(token,page-1);
+
+            return ResponseEntity.ok().body(mapPositionDTOResponse);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
 
 
 }

@@ -29,4 +29,5 @@ public class MapPositionDTO {
         }
         this.comment_count = mapEntity.getCommentCount();
     }
+
 }

@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +73,7 @@ public class DeliveryService {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
+        Pageable pageable = (Pageable) PageRequest.of(page,10, Sort.by("orderDate").descending());
 
         Page<Delivery> deliveries = deliveryRepository.findByMember(member, pageable);
         List<DeliveryDTO> deliveryDTOList = new ArrayList<>();

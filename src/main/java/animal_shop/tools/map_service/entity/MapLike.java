@@ -4,6 +4,7 @@ import animal_shop.community.member.entity.Member;
 import jakarta.persistence.*;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "map_Like")
 @NoArgsConstructor
-
+@Getter
 public class MapLike {
 
     @Id

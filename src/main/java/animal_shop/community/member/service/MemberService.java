@@ -8,9 +8,18 @@ import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.community.member.repository.SellerCandidateRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.global.service.GlobalService;
+import animal_shop.tools.map_service.dto.MapPositionDTO;
+import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
+import animal_shop.tools.map_service.entity.MapEntity;
+import animal_shop.tools.map_service.entity.MapLike;
+import animal_shop.tools.map_service.repository.MapLikeRepository;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -28,6 +37,9 @@ public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MapLikeRepository mapLikeRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -372,6 +384,30 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
     }
 
 
+    public MapPositionDTOResponse likePlace(String token, int page) {
+
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+        Specification<MapEntity> specification = Specification.where(null);
+
+        List<MapPositionDTO> mapPositionDTOList = new ArrayList<>();
+
+        Page<MapLike> mapLikes = mapLikeRepository.findByMemberId(Long.valueOf(userId),pageable);
+
+        for(MapLike mapLike : mapLikes){
+            mapPositionDTOList.add(new MapPositionDTO(mapLike.getMap()));
+        }
+
+        return MapPositionDTOResponse.builder()
+                .mapPositionDTOList(mapPositionDTOList)
+                .total_count(mapLikes.getTotalElements())
+                .build();
+
+    }
 }
 
 
