@@ -181,19 +181,27 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
    }
-
     @PostMapping("/kakao/signup")
-    public ResponseEntity<?> kakaoSignup(@RequestBody TokenDTO tokenDTO) {
+    public ResponseEntity<?> kakaoSignup(@RequestBody KakaoDTO kakaoDTO) {
         ResponseDTO responseDTO;
         String message = "";
         try {
-            // 3. 사용자 정보 받기
-            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(tokenDTO.getAccessToken());
+            // 1. 인가 코드 받기 (@RequestParam String code)
 
+            // 2. 토큰 받기
+            String accessToken = tokenProvider.getKakaoAccessToken(kakaoDTO.getCode());
+
+            // 3. 사용자 정보 받기
+            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(accessToken);
+
+            String email = (String)userInfo.get("email");
+            String nickname = (String)userInfo.get("nickname");
             memberService.createKakao(userInfo);
+
             responseDTO = ResponseDTO.builder()
-                    .message("회원가입 성공")
+                    .message("signup success")
                     .build();
+
             return ResponseEntity
                     .ok().body(responseDTO);
         } catch (Exception e) {
@@ -202,31 +210,30 @@ public class MemberController {
                     .error(e.getMessage())
                     .build();
 
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDTO);
+            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 
     @PostMapping("/kakao/signin")
-    public ResponseEntity<?> kakaoSignin(@RequestBody TokenDTO tokenDTO) {
+    public ResponseEntity<?> kakaoSignin(@RequestBody KakaoDTO kakaoDTO) {
         ResponseDTO responseDTO;
         String message = "";
         try {
             // 1. 인가 코드 받기 (@RequestParam String code)
 
+            // 2. 토큰 받기
+            String accessToken = tokenProvider.getKakaoAccessToken(kakaoDTO.getCode());
+
             // 3. 사용자 정보 받기
-            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(tokenDTO.getAccessToken());
+            Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(accessToken);
 
             String email = (String)userInfo.get("email");
             String nickname = (String)userInfo.get("nickname");
             MemberDTO memberDTO = memberService.getBymail(email);
 
-            TokenDTO tokenDTO2 = memberService.login(memberDTO);
+            TokenDTO tokenDTO = memberService.login(memberDTO);
 
-            return ResponseEntity
-                    .ok()
-                    .body(tokenDTO2);
+            return ResponseEntity.ok().body(tokenDTO);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())

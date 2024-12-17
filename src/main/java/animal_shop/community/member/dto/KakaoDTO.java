@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class KakaoDTO {
-    private String accessToken;
-    private String refreshToken;
+    private String code;
 }
