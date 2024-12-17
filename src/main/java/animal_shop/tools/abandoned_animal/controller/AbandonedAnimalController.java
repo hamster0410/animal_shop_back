@@ -4,7 +4,6 @@ package animal_shop.tools.abandoned_animal.controller;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.tools.abandoned_animal.dto.*;
-import animal_shop.tools.abandoned_animal.entity.AbandonedComment;
 import animal_shop.tools.abandoned_animal.service.AbandonedAnimalService;
 import animal_shop.tools.abandoned_animal.service.AbandonedCommnetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,14 +123,19 @@ public class AbandonedAnimalController {
     }
 
     //유기동물 게시물에 댓글 달기
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<?> addAbandonedComments(@PathVariable Long id,
+    @PostMapping("/{animalId}/comments/register")
+    public ResponseEntity<?> addAbandonedComments(@PathVariable(name = "animalId") Long id,
                                                   @RequestHeader(value = "Authorization") String token,
                                                   @RequestBody AbandonedCommentDTO abandonedCommentDTO) {
         ResponseDTO responseDTO = null;
         try{
-            AbandonedComment abandonedComment = abandonedCommnetService.addComment(token, id, abandonedCommentDTO.getContent());
-            return ResponseEntity.ok().body(abandonedComment);
+            abandonedCommnetService.addComment(token, id, abandonedCommentDTO.getContent());
+
+            responseDTO = ResponseDTO.builder()
+                    .message("register success")
+                    .build();
+
+            return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
@@ -139,15 +143,15 @@ public class AbandonedAnimalController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @PatchMapping("{id}/comments")
-    public ResponseEntity<?> modifyAbandonedComments(@PathVariable Long id,
+    @PatchMapping("{commentId}/comments/update")
+    public ResponseEntity<?> modifyAbandonedComments(@PathVariable(name = "commentId") Long id,
                                                      @RequestHeader(value="Authorization")String token,
                                                      @RequestBody AbandonedCommentDTO abandonedCommentDTO){
         ResponseDTO responseDTO = null;
         try {
             abandonedCommnetService.modifyComment(token,id,abandonedCommentDTO.getContent());
             responseDTO = ResponseDTO.builder()
-                    .message("success register")
+                    .message("update success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         }catch (Exception e){
@@ -157,14 +161,14 @@ public class AbandonedAnimalController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @DeleteMapping("/{id}/comments")
-    public ResponseEntity<?> deleteAbandonedComments(@PathVariable Long id,
+    @DeleteMapping("/{commentId}/comments/delete")
+    public ResponseEntity<?> deleteAbandonedComments(@PathVariable(name = "commentId") Long id,
                                                      @RequestHeader(value="Authorization")String token){
         ResponseDTO responseDTO = null;
         try{
             abandonedCommnetService.deleteComment(token,id);
             responseDTO = ResponseDTO.builder()
-                    .message("success delete")
+                    .message("delete success")
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
@@ -174,14 +178,15 @@ public class AbandonedAnimalController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-    @GetMapping("/findAll")
+    @GetMapping("/{animalId}/findAll")
     public ResponseEntity<?> getAllComments(
-            @RequestHeader(value = "Authorization") String token,
+            @PathVariable(name = "animalId") Long id,
+            @RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(value = "page", defaultValue = "1") int page) {
         ResponseDTO responseDTO = null;
         try {
             // 모든 댓글 가져오기
-            AbandonedCommentDTOResponse response = abandonedCommnetService.getAllComments(page - 1);
+            AbandonedCommentDTOResponse response = abandonedCommnetService.getAllComments(id,page - 1);
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()

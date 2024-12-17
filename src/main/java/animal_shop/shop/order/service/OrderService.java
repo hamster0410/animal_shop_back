@@ -4,7 +4,9 @@ import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.pay.dto.KakaoReadyRequest;
 import animal_shop.global.pay.dto.KakaoReadyResponse;
+import animal_shop.global.pay.dto.NaverpaymentDTO;
 import animal_shop.global.pay.service.KakaoPayService;
+import animal_shop.global.pay.service.NaverpayService;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.cart.dto.CartDetailDTO;
 import animal_shop.shop.cart.dto.CartDetailDTOResponse;
@@ -79,6 +81,9 @@ public class OrderService {
     private KakaoPayService kakaoPayService;
 
     @Autowired
+    private NaverpayService naverpayService;
+
+    @Autowired
     private DeliveryProgressRepository deliveryProgressRepository;
 
     @Autowired
@@ -130,6 +135,49 @@ public class OrderService {
         deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
 
         return kakaoReadyResponse;
+    }
+
+    public void nporder(OrderDTOList orderDTOList, String token) {
+        //내가 주문할 상품 찾기
+        Item item = itemRepository.findById(orderDTOList.getItemId())
+                .orElseThrow(() -> new IllegalArgumentException("item not found"));
+
+
+        //주문한 사람이 누구인지 나타냄
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member not found"));
+
+        //주문할 상품 엔티티와 수량을 이용해 주문을 생성함
+        List<OrderItem> orderItemList = new ArrayList<>();
+        List<OrderDTO> orderDTOS = orderDTOList.getOption_items();
+
+        //결제를 위한 정보
+        String orderCode = System.currentTimeMillis() + userId;
+        int quantity = 0;
+        int total_amount = 0;
+
+        for(OrderDTO o : orderDTOS){
+            OrderItem orderItem =
+                    OrderItem.createOrderItem(item, o);
+            //여기서 orderItem을 넣어주면 orderItem 테이블에도 저장되는지 확인해보자
+            quantity += orderItem.getCount();
+            total_amount += orderItem.getCount() * orderItem.getOrder_price();
+            orderItemList.add(orderItem);
+            orderItem.setPaymentStatus(PaymentStatus.valueOf("PENDING"));
+        }
+
+        Order order = Order.createOrder(member, orderItemList, orderDTOList.getDeliveryInfoDTO());
+
+        NaverpaymentDTO naverpaymentDTO = new NaverpaymentDTO(order);
+        System.out.println("merchantpaykey : "+ naverpaymentDTO.getMerchantPayKey());
+        System.out.println(naverpaymentDTO.getProductCount());
+        String tid = naverpayService.createOrder(naverpaymentDTO);
+        order.setTid(tid);
+        System.out.println("here " + tid);
+        orderRepository.save(order);
+        deliveryService.createDelivery(orderItemList.get(0).getItem().getMember(), orderItemList ,order);
+
     }
 
     @Transactional(readOnly = true)
@@ -371,4 +419,5 @@ public class OrderService {
                 .deliveryCompleted(deliveryCompleteds.getTotalElements())
                 .build();
     }
+
 }

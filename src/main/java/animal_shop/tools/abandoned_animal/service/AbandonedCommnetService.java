@@ -10,15 +10,12 @@ import animal_shop.tools.abandoned_animal.entity.AbandonedComment;
 import animal_shop.tools.abandoned_animal.repository.AbandonedAnimalRepository;
 import animal_shop.tools.abandoned_animal.repository.AbandonedCommentRepository;
 import jakarta.transaction.Transactional;
-import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class AbandonedCommnetService {
@@ -36,7 +33,7 @@ public class AbandonedCommnetService {
     MemberRepository memberRepository;
 
     @Transactional
-    public AbandonedComment addComment(String token, Long id, String content) {
+    public void addComment(String token, Long id, String content) {
         // JWT 토큰에서 userId 추출
         String userIdStr = tokenProvider.extractIdByAccessToken(token);
         Long userId = Long.valueOf(userIdStr);
@@ -60,7 +57,7 @@ public class AbandonedCommnetService {
         comment.setAuthor(username); // username을 author로 저장
 
         // 댓글 저장
-        return abandonedCommentRepository.save(comment);
+        abandonedCommentRepository.save(comment);
     }
     @Transactional
     public void modifyComment(String token, Long id, String content) {
@@ -98,12 +95,16 @@ public class AbandonedCommnetService {
     }
 
     @Transactional
-    public AbandonedCommentDTOResponse getAllComments(int page) {
+    public AbandonedCommentDTOResponse getAllComments(Long id, int page) {
         // PageRequest 생성 (한 페이지에 20개씩 출력)
         Pageable pageable = PageRequest.of(page, 20);
 
+        // 동물 정보 조회
+        AbandonedAnimal abandonedAnimal = abandonedAnimalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("동물 정보가 존재하지 않습니다."));
+
         // 댓글 조회 및 Pagination 처리
-        Page<AbandonedCommentDTO> commentPage = abandonedCommentRepository.findAllComments(pageable);
+        Page<AbandonedCommentDTO> commentPage = abandonedCommentRepository.findByAbandonedAnimal(abandonedAnimal,pageable);
 
         // 응답 데이터 생성
         return AbandonedCommentDTOResponse.builder()

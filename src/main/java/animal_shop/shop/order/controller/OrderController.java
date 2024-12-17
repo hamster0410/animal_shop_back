@@ -40,6 +40,23 @@ public class OrderController {
         }
     }
 
+    @PostMapping(value = "/nporder")
+    public ResponseEntity<?> nporder(@RequestHeader(value = "Authorization") String token,
+                                   @RequestBody OrderDTOList orderDTOList){
+        ResponseDTO responseDTO;
+
+        try{
+        orderService.nporder(orderDTOList,token);
+
+            return ResponseEntity.ok().body("good");
+        }catch (Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
     @GetMapping("/orders")
     public ResponseEntity<?> orderHist(@RequestHeader(value = "Authorization") String token,
                                        @RequestParam(value = "page" , defaultValue = "1")int page,
