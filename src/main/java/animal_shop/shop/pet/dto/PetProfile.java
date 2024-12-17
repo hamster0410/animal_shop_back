@@ -29,6 +29,8 @@ public class PetProfile {
 
     private Boolean isLeader;
 
+    private String species;
+
 
     public PetProfile(Pet pet) {
         this.id = pet.getId();
@@ -40,5 +42,10 @@ public class PetProfile {
         this.isNeutered = pet.getIsNeutered();
         this.gender = pet.getGender();
         this.isLeader = pet.getLeader();
+        if(pet.getSpecies().equals(Pet.PetSpecies.DOG)){
+            this.species = "DOG";
+        }else if(pet.getSpecies().equals(Pet.PetSpecies.CAT)){
+            this.species = "CAT";
+        }
     }
 }
