@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -82,6 +83,57 @@ public class AbandonedAnimalService {
                         AnimalDTO item = objectMapper.treeToValue(itemNode, AnimalDTO.class);
                         AbandonedAnimal animalEntity = AbandonedAnimal.fromDTO(item);
                         abandonedAnimalRepository.save(animalEntity); // DB에 저장
+                    }
+                    // 다음 페이지로 넘어가기 위해 pageNo 증가
+                    log.info("now Page" + pageNo);
+                    pageNo++;
+                } else {
+                    // 더 이상 아이템이 없다면 종료
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+
+        // 결과 반환
+        return ResponseEntity.ok().body("동물 정보 저장 완료");
+    }
+
+    @Scheduled(cron = "0 0 23 * * *", zone = "Asia/Seoul") // 매일 16시 32분 (KST)
+    public ResponseEntity<?> updateAPIInfo() {
+        int pageNo = 1;  // 첫 페이지 번호
+
+        while (true) {
+            // API 호출 URL 생성
+            String API_URL = callBackUrl + "?serviceKey=" + serviceKey + "&dataType="
+                    + dataType + "&numOfRows=1000&pageNo=" + pageNo + "&_type=json";
+            System.out.println("API 호출 URL: " + API_URL);
+
+            // RestTemplate을 사용하여 API 호출
+            RestTemplate restTemplate = new RestTemplate();
+            String response = restTemplate.getForObject(API_URL, String.class);
+
+            // JSON 응답을 Java 객체로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                JsonNode rootNode = objectMapper.readTree(response);
+                JsonNode itemsNode = rootNode.path("response").path("body").path("items").path("item");
+
+                // item 리스트로 변환
+                if (itemsNode.isArray() && itemsNode.size() > 0) {
+                    for (JsonNode itemNode : itemsNode) {
+                        AnimalDTO item = objectMapper.treeToValue(itemNode, AnimalDTO.class);
+                        AbandonedAnimal Entity = abandonedAnimalRepository.findByDesertionNo(item.getDesertionNo());
+                        if(Entity != null){
+                            log.info("updated Item {}",item.getDesertionNo());
+                            Entity.update(item);
+                            abandonedAnimalRepository.save(Entity); // DB에 저장
+                        }else{
+                            AbandonedAnimal animalEntity = AbandonedAnimal.fromDTO(item);
+                            abandonedAnimalRepository.save(animalEntity); // DB에 저장
+                        }
                     }
                     // 다음 페이지로 넘어가기 위해 pageNo 증가
                     log.info("now Page" + pageNo);
@@ -195,6 +247,7 @@ public class AbandonedAnimalService {
                 .build();
 
     }
+
 
 }
 

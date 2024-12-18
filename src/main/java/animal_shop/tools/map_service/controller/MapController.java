@@ -41,6 +41,22 @@ public class MapController {
         }
     }
 
+    @GetMapping("/update")
+    public ResponseEntity<?> mapUpdate() {
+        ResponseDTO responseDTO = null;
+        try {
+            mapService.mapUpdate();
+            responseDTO = ResponseDTO.builder()
+                    .message("success find")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
           
     @PostMapping("/search")
     public ResponseEntity<?> search_position(@RequestHeader(value = "Authorization")String token,

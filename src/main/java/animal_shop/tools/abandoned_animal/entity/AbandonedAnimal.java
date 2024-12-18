@@ -2,7 +2,6 @@ package animal_shop.tools.abandoned_animal.entity;
 
 import animal_shop.tools.abandoned_animal.dto.AnimalDTO;
 import jakarta.persistence.*;
-
 import lombok.Data;
 
 @Entity
@@ -101,6 +100,32 @@ public class AbandonedAnimal{
         }
     }
 
+
+    public void update(AnimalDTO item) {
+        this.desertionNo = item.getDesertionNo();
+        this.filename = item.getFilename();
+        this.happenDt = item.getHappenDt();
+        this.happenPlace = item.getHappenPlace();
+        this.kindCd = item.getKindCd();
+        this.colorCd = item.getColorCd();
+        this.age = parseAge(item.getAge()); // 나이 문자열을 Long으로 변환
+        this.weight = item.getWeight();
+        this.noticeNo = item.getNoticeNo();
+        this.noticeSdt = item.getNoticeSdt();
+        this.noticeEdt = item.getNoticeEdt();
+        this.popfile = item.getPopfile();
+        this.processState = item.getProcessState();
+        this.sexCd = item.getSexCd();
+        this.neuterYn = item.getNeuterYn();
+        this.specialMark = item.getSpecialMark();
+        this.careNm = item.getCareNm();
+        this.careTel = item.getCareTel();
+        this.careAddr = item.getCareAddr();
+        this.orgNm = item.getOrgNm();
+        this.chargeNm = item.getChargeNm();
+        this.officetel = item.getOfficetel();
+        this.noticeComment = item.getNoticeComment();
+    }
 
 }
 

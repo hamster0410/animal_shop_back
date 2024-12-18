@@ -29,16 +29,9 @@ public class AbandonedAnimalController {
         return abandonedAnimalService.storeAPIInfo();
     }
 
-//    @GetMapping("/interest-list")
-//    public ResponseEntity<?> listInterestAnimal(@RequestHeader(value = "Authorization") String token,
-//                                                @RequestParam(value = "page", defaultValue = "1", required = false)int page){
-//        try{
-//            AnimalListDTOResponse animalListDTOResponse =  abandonedAnimalService.searchInterestInfo(token, page-1);
-//            return ResponseEntity.ok().body(animalListDTOResponse);
-//        }catch (Exception e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
+    @GetMapping("/update")
+    public ResponseEntity<?> callUpdateApi(){return abandonedAnimalService.updateAPIInfo(); }
+
     @PostMapping("/search")
     public ResponseEntity<?> findAnimal(@RequestBody AnimalSearchDTO animalSearchDTO,
                                         @RequestParam(value = "page", defaultValue = "1", required = false)int page){

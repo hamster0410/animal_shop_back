@@ -66,4 +66,39 @@ public class MapEntity {
     public Long getCountLike() {
         return countLike != null ? countLike : 0L;  // countLike가 null일 경우 0L을 반환
     }
+
+    public void update(MapEntity entity) {
+        this.facilityName = entity.getFacilityName();
+        this.category1 = entity.getCategory1();
+        this.category2 = entity.getCategory2();
+        this.category3 = entity.getCategory3();
+        this.provinceName = entity.getProvinceName();
+        this.cityName = entity.getCityName();
+        this.townName = entity.getTownName();
+        this.villageName = entity.getVillageName();
+        this.lotNumber = entity.getLotNumber();
+        this.roadName = entity.getRoadName();
+        this.buildingNumber = entity.getBuildingNumber();
+        this.latitude = entity.getLatitude();
+        this.longitude = entity.getLongitude();
+        this.zipCode = entity.getZipCode();
+        this.roadAddress = entity.getRoadAddress();
+        this.lotAddress = entity.getLotAddress();
+        this.phoneNumber = entity.getPhoneNumber();
+        this.homepage = entity.getHomepage();
+        this.closedDays = entity.getClosedDays();
+        this.operatingHours = entity.getOperatingHours();
+        this.parkingAvailable = entity.getParkingAvailable();
+        this.admissionFee = entity.getAdmissionFee();
+        this.petFriendlyInfo = entity.getPetFriendlyInfo();
+        this.petExclusiveInfo = entity.getPetExclusiveInfo();
+        this.allowedPetSize = entity.getAllowedPetSize();
+        this.petRestrictions = entity.getPetRestrictions();
+        this.indoorAvailable = entity.getIndoorAvailable();
+        this.outdoorAvailable = entity.getOutdoorAvailable();
+        this.placeDescription = entity.getPlaceDescription();
+        this.additionalPetFee = entity.getAdditionalPetFee();
+        this.lastUpdated = entity.getLastUpdated();
+    }
+
 }

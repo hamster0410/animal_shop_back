@@ -21,7 +21,7 @@ public class DeliveryScheduler {
     }
 
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정 실행
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 매일 16시 32분 (KST)
     public void checkCompletedDeliveries() {
         List<DeliveryProgress> progresses = deliveryProgressRepository.findAllByDeliveryStatusAndDeliveredDateBefore(
                 DeliveryStatus.COMPLETED, LocalDateTime.now().minusDays(7));
