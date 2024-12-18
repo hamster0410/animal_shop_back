@@ -201,6 +201,7 @@ public class AbandonedAnimalController {
                     .build();
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
+            e.printStackTrace();
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage())
                     .build();
