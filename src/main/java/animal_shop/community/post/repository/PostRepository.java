@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAll(Pageable pageable);
 
+    Page<Post> findByMemberId(Long memberId,Pageable pageable);
     Page<Post> findAllByOrderByHitsDesc(Pageable pageable);
 
     Page<Post> findByCategory(Pageable pageable, String category);

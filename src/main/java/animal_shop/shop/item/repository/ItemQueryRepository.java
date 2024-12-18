@@ -12,4 +12,6 @@ public interface ItemQueryRepository extends JpaRepository<ItemQuery,Long> {
 
     Page<ItemQuery> findByItemId(Long itemId, Pageable pageable);
 
+    Page<ItemQuery> findByCustomerId(Long memberId, Pageable pageable);
+
 }

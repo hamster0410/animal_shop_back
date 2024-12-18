@@ -12,10 +12,4 @@ import java.util.List;
 public class QueryResponse {
     List<ResponseItemQueryDTO> responseItemQueryDTOList;
     Long total_count;
-
-    private List<ItemDetailDTO> content;  // 아이템 목록
-    private long totalItems;  // 전체 아이템 수
-
-
-
 }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NaverpaymentDTO {
     private String merchantPayKey;
+    private String merchantUserKey;
     private String productName;
     private int productCount;
     private int totalPayAmount;
@@ -22,6 +23,7 @@ public class NaverpaymentDTO {
 
     public NaverpaymentDTO(Order order) {
         this.merchantPayKey = order.getOrderCode();
+        this.merchantUserKey = order.getRecipient();
         this.productName = order.getOrderItems().get(0).getOrder_name();
         for(OrderItem orderItem : order.getOrderItems()){
             this.productCount += orderItem.getCount();

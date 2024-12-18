@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ItemCommentRepository extends JpaRepository<ItemComment,Long> {
     Page<ItemComment> findByItem(Item item, Pageable pageable);
+
+    Page<ItemComment> findByMemberId(Long userId, Pageable pageable);
 }

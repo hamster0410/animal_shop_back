@@ -4,18 +4,30 @@ import animal_shop.global.pay.dto.NaverpaymentDTO;
 import animal_shop.global.pay.entity.Naverpayment;
 import animal_shop.global.pay.repository.NaverpaymentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class NaverpayService {
 
 
     @Autowired
     NaverpaymentRepository paymentRepository;
+
+
+    @Value("${naver.pay.animalping-id}")
+    private String animalpingNpayId;
+
 
     @Value("${naver.pay.client-id}")
     private String clientId;
@@ -30,70 +42,48 @@ public class NaverpayService {
     @Transactional
     public String createOrder(NaverpaymentDTO paymentDTO) {
         // 네이버페이 API 요청 URL (샌드박스 환경)
-        String url = "https://sandbox-api.naver.com/payments/v1/orders";
+        String url = "https://sandbox-api.naver.com/v1/payments/request" ;
 
         // 요청 본문 생성
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("X-Naver-Client-Id", clientId);
         headers.set("X-Naver-Client-Secret", clientSecret);
+        headers.set("Content-Type","application/json");
 
-        // JSON 요청 데이터 작성
-        String requestBody = """
-            {
-                "merchantPayKey": "%s",
-                "productName": "%s",
-                "productCount": %d,
-                "totalPayAmount": %d,
-                "taxScopeAmount": %d,
-                "taxExScopeAmount": %d,
-                "returnUrl": "%s"
-                  }
-            """.formatted(
-                paymentDTO.getMerchantPayKey(),
-                paymentDTO.getProductName(),
-                paymentDTO.getProductCount(),
-                paymentDTO.getTotalPayAmount(),
-                paymentDTO.getTaxScopeAmount(),
-                paymentDTO.getTaxExScopeAmount(),
-                paymentDTO.getReturnUrl()
-        );
+        Map<String, Object> payParams = new HashMap<String, Object>();
+        payParams.put("merchantPayKey",paymentDTO.getMerchantPayKey());
+        payParams.put("merchantUserKey",paymentDTO.getMerchantUserKey());
+        payParams.put("productName",paymentDTO.getProductName());
+        payParams.put("productCount",paymentDTO.getProductCount());
+        payParams.put("totalPayAmount",paymentDTO.getTotalPayAmount());
+        payParams.put("taxScopeAmount",paymentDTO.getTaxScopeAmount());
+        payParams.put("taxExScopeAmount",paymentDTO.getTaxExScopeAmount());
+        payParams.put("returnUrl",paymentDTO.getReturnUrl());
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+        //상품 관련 정보
+        List<Map<String, Object>> items = new ArrayList<Map<String,Object>>();
+        Map<String, Object> item = new HashMap<String,Object>();
+        item.put("categoryType" , "PRODUCT");
+        item.put("categoryId" , "GENERAL");
+        item.put("uid" , "product");
+        item.put("name" , paymentDTO.getProductName());
+        item.put("count",paymentDTO.getProductCount());
+        items.add(item);
 
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            // 네이버페이 API 호출
-            ResponseEntity<JsonNode> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JsonNode.class);
+        payParams.put("productItems", items);
+        //해시맵을 json데이터로 전환
+        JSONObject jObj = new JSONObject(payParams);
+        HttpEntity<?> request = new HttpEntity<>(jObj.toString(), headers);
 
-            if (response.getStatusCode() == HttpStatus.OK) {
-                JsonNode responseBody = response.getBody();
-                assert responseBody != null;
+        RestTemplate restTemplate = new RestTemplate();
 
-                // 주문 ID 추출
-                String orderId = responseBody.get("orderId").asText();
+        Map<String,Object> res = restTemplate.postForObject(url, request, Map.class);
+        System.out.println(res);
+        return null;
 
-                // 데이터베이스 저장
-                Naverpayment payment = Naverpayment.builder()
-                        .merchantPayKey(paymentDTO.getMerchantPayKey())
-                        .productName(paymentDTO.getProductName())
-                        .productCount(paymentDTO.getProductCount())
-                        .totalPayAmount(paymentDTO.getTotalPayAmount())
-                        .taxScopeAmount(paymentDTO.getTaxScopeAmount())
-                        .taxExScopeAmount(paymentDTO.getTaxExScopeAmount())
-                        .returnUrl(paymentDTO.getReturnUrl())
-                        .build();
 
-                paymentRepository.save(payment);
 
-                return orderId; // 생성된 주문 ID 반환
-            } else {
-                throw new RuntimeException("네이버페이 주문 생성 실패: " + response.getStatusCode());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("네이버페이 요청 중 에러 발생", e);
-        }
     }
     // 결제 승인 메서드
     public String approvePayment(String paymentId) {

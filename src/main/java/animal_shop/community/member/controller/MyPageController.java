@@ -1,9 +1,13 @@
 package animal_shop.community.member.controller;
 
+import animal_shop.community.comment.dto.CommentResponseDTO;
 import animal_shop.community.member.dto.MemberDTO;
 import animal_shop.community.member.dto.SellerRegisterDTO;
 import animal_shop.community.member.service.MemberService;
+import animal_shop.community.post.dto.PostResponseDTO;
 import animal_shop.global.dto.ResponseDTO;
+import animal_shop.shop.item.dto.QueryResponse;
+import animal_shop.shop.item_comment.dto.ItemCommentDTOResponse;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +66,81 @@ public class MyPageController {
             return ResponseEntity.ok().body(responseDTO);
 
         }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @GetMapping("/mypost")
+    public ResponseEntity<?> mypost(@RequestHeader("Authorization") String token,
+                                       @RequestParam(name = "page", defaultValue = "1", required = false)int page){
+        ResponseDTO responseDTO;
+
+        try{
+            PostResponseDTO postResponseDTO = memberService.myPost(token,page-1);
+
+            return ResponseEntity.ok().body(postResponseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @GetMapping("/mycomment")
+    public ResponseEntity<?> mycomment(@RequestHeader("Authorization") String token,
+                                    @RequestParam(name = "page", defaultValue = "1", required = false)int page){
+        ResponseDTO responseDTO;
+
+        try{
+            CommentResponseDTO commentResponseDTO = memberService.myComment(token,page-1);
+
+            return ResponseEntity.ok().body(commentResponseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+    @GetMapping("/myquery")
+    public ResponseEntity<?> myquery(@RequestHeader("Authorization") String token,
+                                       @RequestParam(name = "page", defaultValue = "1", required = false)int page) {
+        ResponseDTO responseDTO;
+
+        try {
+            QueryResponse queryResponse = memberService.myQuery(token, page - 1);
+
+            return ResponseEntity.ok().body(queryResponse);
+
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @GetMapping("/myreview")
+    public ResponseEntity<?> myreview(@RequestHeader("Authorization") String token,
+                                     @RequestParam(name = "page", defaultValue = "1", required = false)int page) {
+        ResponseDTO responseDTO;
+
+        try {
+            ItemCommentDTOResponse itemCommentDTOResponse = memberService.myReview(token, page - 1);
+
+            return ResponseEntity.ok().body(itemCommentDTOResponse);
+
+        } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
                     .error(e.getMessage()).build();
             return ResponseEntity

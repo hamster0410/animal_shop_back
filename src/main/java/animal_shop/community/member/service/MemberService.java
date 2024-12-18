@@ -1,13 +1,33 @@
 package animal_shop.community.member.service;
 
+import animal_shop.community.comment.dto.CommentDTO;
+import animal_shop.community.comment.dto.CommentResponseDTO;
+import animal_shop.community.comment.entity.Comment;
+import animal_shop.community.comment.repository.CommentRepository;
+import animal_shop.community.heart_comment.entity.CommentHeart;
+import animal_shop.community.heart_comment.repository.CommentHeartRepository;
 import animal_shop.community.member.Role;
 import animal_shop.community.member.dto.*;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.entity.SellerCandidate;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.community.member.repository.SellerCandidateRepository;
+import animal_shop.community.post.dto.PostListDTO;
+import animal_shop.community.post.dto.PostResponseDTO;
+import animal_shop.community.post.entity.Post;
+import animal_shop.community.post.repository.PostRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.global.service.GlobalService;
+import animal_shop.shop.item.dto.QueryResponse;
+import animal_shop.shop.item.dto.ResponseItemQueryDTO;
+import animal_shop.shop.item.entity.ItemQuery;
+import animal_shop.shop.item.repository.ItemQueryRepository;
+import animal_shop.shop.item_comment.dto.ItemCommentDTO;
+import animal_shop.shop.item_comment.dto.ItemCommentDTOResponse;
+import animal_shop.shop.item_comment.entity.ItemComment;
+import animal_shop.shop.item_comment.repository.ItemCommentRepository;
+import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
+import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import animal_shop.tools.map_service.dto.MapPositionDTO;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import animal_shop.tools.map_service.entity.MapEntity;
@@ -40,6 +60,25 @@ public class MemberService {
 
     @Autowired
     private MapLikeRepository mapLikeRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private CommentHeartRepository commentHeartRepository;
+
+    @Autowired
+    private ItemQueryRepository itemQueryRepository;
+
+    @Autowired
+    private ItemCommentRepository itemCommentRepository;
+
+    @Autowired
+    private ItemCommentLikeRepository itemCommentLikeRepository;
+
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -407,6 +446,102 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
                 .total_count(mapLikes.getTotalElements())
                 .build();
 
+    }
+
+    public PostResponseDTO myPost(String token, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<Post> posts = postRepository.findByMemberId(Long.valueOf(userId),pageable);
+
+        List<PostListDTO> postListDTOList = posts.stream().map(PostListDTO::new).toList();
+
+        return PostResponseDTO.builder()
+                .posts(postListDTOList)
+                .totalCount(posts.getTotalElements())
+                .build();
+    }
+
+    public CommentResponseDTO myComment(String token, int page) {
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<Comment> comments = commentRepository.findByMemberId(userId,pageable);
+
+        List<CommentDTO> commentDTOS = new ArrayList<>();
+        for(Comment comment : comments){
+            CommentDTO commentDTO = new CommentDTO(comment);
+            CommentHeart commentheart = commentHeartRepository.findByMemberIdAndCommentId(comment.getId(), userId);
+            commentDTO.setHeart(commentheart!=null);
+            commentDTOS.add(commentDTO);
+        }
+
+        return CommentResponseDTO
+                .builder()
+                .comments(commentDTOS)
+                .totalCommentCount(comments.getTotalElements())
+                .build();
+    }
+
+    public QueryResponse myQuery(String token, int page) {
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<ItemQuery> itemQueries = itemQueryRepository.findByCustomerId(userId,pageable);
+
+        // 4. DTO 변환
+        List<ResponseItemQueryDTO> responseItemQueryDTOList = itemQueries
+                .getContent()
+                .stream()
+                .map(ResponseItemQueryDTO::new)
+                .toList();
+        // 5. QueryResponse 생성 및 반환
+        return QueryResponse.builder()
+                .responseItemQueryDTOList(responseItemQueryDTOList)
+                .total_count(itemQueries.getTotalElements())
+                .build();
+    }
+
+    public ItemCommentDTOResponse myReview(String token, int page) {
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+        List<ItemCommentDTO> commentDTOS = new ArrayList<>();
+
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<ItemComment> itemComments = itemCommentRepository.findByMemberId(userId,pageable);
+
+
+        for(ItemComment comment : itemComments){
+            ItemCommentDTO commentDTO = new ItemCommentDTO(comment);
+            ItemCommentLike commentLike = itemCommentLikeRepository.findByItemCommentIdAndMemberId(comment.getId(), Long.valueOf(userId));
+            commentDTO.setHeart(commentLike!=null);
+            commentDTOS.add(commentDTO);
+        }
+
+        return ItemCommentDTOResponse
+                .builder()
+                .comments(commentDTOS)
+                .total_count(itemComments.getTotalElements())
+                .build();
     }
 }
 
