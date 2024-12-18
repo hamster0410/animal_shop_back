@@ -41,6 +41,9 @@ public class AbandonedAnimalService {
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Autowired
+    private EmailService emailService;
+
     @Value("${file.upload-dir-interest}")
     private String uploadDir;
 
@@ -196,5 +199,80 @@ public class AbandonedAnimalService {
 
     }
 
+    @Transactional
+    public void modifyStatus(String token, ByeAnimalDTO byeAnimalDTO) {
+        // 인증
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("Member is not found"));
+
+        // ADMIN 권한 확인
+        if (!"ADMIN".equals(member.getRole().toString())) {
+            throw new IllegalArgumentException("Member is not an ADMIN");
+        }
+
+        // ByeAnimalDTO에서 값 추출
+        String desertionNo = byeAnimalDTO.getDesertionNo();
+        String newState = byeAnimalDTO.getNewState();
+        String careNm = byeAnimalDTO.getCareNm();
+        String kindCd = byeAnimalDTO.getKindCd();
+
+        // 유기 동물 조회
+        AbandonedAnimal abandonedAnimal = abandonedAnimalRepository.findByDesertionNo(desertionNo);
+        if (abandonedAnimal == null) {
+            throw new IllegalArgumentException("Abandoned animal not found with desertion number: " + desertionNo);
+        }
+
+        String currentState = abandonedAnimal.getProcessState(); // 현재 상태 확인
+
+        if (newState == null || newState.isBlank()) {
+            throw new IllegalArgumentException("New state is null or empty");
+        }
+
+        // 상태 변경 조건 확인 및 처리
+        if ("보호중".equals(currentState)) {
+            abandonedAnimal.setProcessState(newState); // 상태 변경
+
+            // 관심 동물을 등록한 회원들에게 이메일 알림
+            List<InterestAnimal> interestedAnimals = interestAnimalRepository.findByDesertionNo(desertionNo);
+            for (InterestAnimal interestedAnimal : interestedAnimals) {
+                Member interestedMember = interestedAnimal.getMember();
+                if (interestedMember != null && interestedMember.getMail() != null) {
+                    // 메일 내용 구성
+                    String subject = "유기 동물 상태 변경 알림";
+                    String body = generateEmailBody(desertionNo, newState, careNm, kindCd);
+
+                    // 이메일 전송
+                    emailService.sendEmail(interestedMember.getMail(), subject, body);
+                }
+            }
+
+            // 변경된 동물 상태 저장
+            abandonedAnimalRepository.save(abandonedAnimal);
+        } else {
+            throw new IllegalArgumentException("Animal is not in 보호중 state, cannot be updated");
+        }
+    }
+
+    /**
+     * 이메일 본문 생성 메서드
+     */
+    private String generateEmailBody(String desertionNo, String newState, String careNm, String kindCd) {
+        return String.format("""
+                <h1>유기 동물 상태 변경 알림</h1>
+                <p>안녕하세요</p>
+                <p>관심을 표현해 주셨던 동물의 상태가 업데이트되었습니다.</p>
+                <ul>
+                    <li><b>보호소 이름:</b> %s</li>
+                    <li><b>유기 번호:</b> %s</li>
+                    <li><b>품종:</b> %s</li>
+                    <li><b>상태:</b> %s</li>
+                </ul>
+                <p>앞으로도 많은 관심 부탁드립니다. 감사합니다!</p>
+                """, careNm, desertionNo, kindCd, newState);
+    }
 }
+
+
+
 

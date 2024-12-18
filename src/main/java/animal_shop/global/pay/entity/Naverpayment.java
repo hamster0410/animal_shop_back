@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class Naverpayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="order_id")
     private Long id;
 
     private String merchantPayKey;

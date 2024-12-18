@@ -195,4 +195,25 @@ public class AbandonedAnimalController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @PostMapping("/manageStatus")
+    public ResponseEntity<?> animalStatus(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody ByeAnimalDTO byeAnimalDTO) {  // 사용자로부터 변경할 상태 받기
+        ResponseDTO responseDTO = null;
+        try {
+            abandonedAnimalService.modifyStatus(token, byeAnimalDTO);  // 변경된 상태와 함께 메서드 호출
+            responseDTO = ResponseDTO.builder()
+                    .message("good")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+
 }
