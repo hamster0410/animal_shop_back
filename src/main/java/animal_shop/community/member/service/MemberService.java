@@ -6,6 +6,8 @@ import animal_shop.community.comment.entity.Comment;
 import animal_shop.community.comment.repository.CommentRepository;
 import animal_shop.community.heart_comment.entity.CommentHeart;
 import animal_shop.community.heart_comment.repository.CommentHeartRepository;
+import animal_shop.community.heart_post.entity.Heart;
+import animal_shop.community.heart_post.repository.HeartRepository;
 import animal_shop.community.member.Role;
 import animal_shop.community.member.dto.*;
 import animal_shop.community.member.entity.Member;
@@ -63,6 +65,9 @@ public class MemberService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private HeartRepository heartRepository;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -449,14 +454,15 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
     }
 
     public PostResponseDTO myPost(String token, int page) {
-        String userId = tokenProvider.extractIdByAccessToken(token);
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
         if(userId == null){
             throw new IllegalArgumentException("user is not found");
         }
 
         Pageable pageable = PageRequest.of(page, 15);
 
-        Page<Post> posts = postRepository.findByMemberId(Long.valueOf(userId),pageable);
+        Page<Post> posts = postRepository.findByMemberId(userId,pageable);
 
         List<PostListDTO> postListDTOList = posts.stream().map(PostListDTO::new).toList();
 
@@ -541,6 +547,79 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
                 .builder()
                 .comments(commentDTOS)
                 .total_count(itemComments.getTotalElements())
+                .build();
+    }
+
+    public PostResponseDTO likePost(String token, int page) {
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<Heart> hearts = heartRepository.findByMemberId(userId,pageable);
+        List<Post> posts = new ArrayList<>();
+        for(Heart heart : hearts){
+            posts.add(heart.getPost());
+        }
+
+        List<PostListDTO> postListDTOList = posts.stream().map(PostListDTO::new).toList();
+
+        return PostResponseDTO.builder()
+                .posts(postListDTOList)
+                .totalCount(hearts.getTotalElements())
+                .build();
+    }
+
+    public CommentResponseDTO likeComment(String token, int page) {
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<CommentHeart> commentHearts = commentHeartRepository.findByMemberId(userId, pageable);
+        List<Comment> comments = new ArrayList<>();
+        for(CommentHeart commentHeart : commentHearts){
+            comments.add(commentHeart.getComment());
+        }
+
+        List<CommentDTO> commentDTOS = comments.stream().map(CommentDTO::new).toList();
+
+        return CommentResponseDTO.builder()
+                .comments(commentDTOS)
+                .totalCommentCount(commentHearts.getTotalElements())
+                .build();
+
+    }
+
+    public ItemCommentDTOResponse likeReview(String token, int page) {
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<ItemCommentLike> itemCommentLikes = itemCommentLikeRepository.findByMemberId(userId,pageable);
+
+        List<ItemComment> itemComments = new ArrayList<>();
+        for(ItemCommentLike commentLike : itemCommentLikes){
+            itemComments.add(commentLike.getItemComment());
+        }
+
+        List<ItemCommentDTO> responseItemQueryDTOList = itemComments.stream().map(ItemCommentDTO::new).toList();
+
+        return ItemCommentDTOResponse
+                .builder()
+                .comments(responseItemQueryDTOList)
+                .total_count(itemCommentLikes.getTotalElements())
                 .build();
     }
 }

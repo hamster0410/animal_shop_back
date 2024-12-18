@@ -5,10 +5,12 @@ import animal_shop.community.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name="HEART")
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 추가
 public class Heart{
 

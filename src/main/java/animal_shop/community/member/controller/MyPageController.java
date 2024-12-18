@@ -149,9 +149,66 @@ public class MyPageController {
         }
     }
 
+    @GetMapping("/like-post")
+    public ResponseEntity<?> likePost(@RequestHeader("Authorization") String token,
+                                    @RequestParam(name = "page", defaultValue = "1", required = false)int page){
+        ResponseDTO responseDTO;
+
+        try{
+            PostResponseDTO postResponseDTO = memberService.likePost(token,page-1);
+
+            return ResponseEntity.ok().body(postResponseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @GetMapping("/like-comment")
+    public ResponseEntity<?> likeComment(@RequestHeader("Authorization") String token,
+                                       @RequestParam(name = "page", defaultValue = "1", required = false)int page){
+        ResponseDTO responseDTO;
+
+        try{
+            CommentResponseDTO commentResponseDTO = memberService.likeComment(token,page-1);
+
+            return ResponseEntity.ok().body(commentResponseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @GetMapping("/like-review")
+    public ResponseEntity<?> likeReview(@RequestHeader("Authorization") String token,
+                                      @RequestParam(name = "page", defaultValue = "1", required = false)int page) {
+        ResponseDTO responseDTO;
+
+        try {
+            ItemCommentDTOResponse itemCommentDTOResponse = memberService.likeReview(token, page - 1);
+
+            return ResponseEntity.ok().body(itemCommentDTOResponse);
+
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
     @GetMapping("/like-place")
     public ResponseEntity<?> likePlace(@RequestHeader("Authorization") String token,
-                                       @RequestParam(name = "page", defaultValue = "1")int page){
+                                       @RequestParam(name = "page", defaultValue = "1", required = false)int page){
         ResponseDTO responseDTO;
 
         try{
