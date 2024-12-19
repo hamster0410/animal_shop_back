@@ -31,9 +31,9 @@ public class MapCommentDTO {
 //    private Long countHeart = 0L;
 //    private boolean heart;
 
-    public MapCommentDTO(MapComment mapComment,String nickname){
+    public MapCommentDTO(MapComment mapComment){
         this.id = mapComment.getId();
-        this.nickname=nickname;
+        this.nickname=mapComment.getMember().getNickname();
         this.contents = mapComment.getContents();
         this.map_id = mapComment.getMapId();
         this.map_comment_thumbnail_url = mapComment.getMap_comment_thumbnail_url();

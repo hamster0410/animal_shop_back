@@ -327,8 +327,9 @@ public class MapService {
     @Transactional
     public MapCommentDTOResponse selectMapComment(String token, long map_id, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        if(userId == null){
+            throw new IllegalArgumentException("member is not found");
+        }
         // 댓글 리스트 가져오기
         Pageable pageable = PageRequest.of(page, 7, Sort.by(Sort.Direction.DESC, "createdDate"));
 
@@ -337,7 +338,7 @@ public class MapService {
         // DTO 변환
         List<MapCommentDTO> commentDTOs = new ArrayList<>();
         for (MapComment comment : comments) {
-            MapCommentDTO dto = new MapCommentDTO(comment,member.getNickname());
+            MapCommentDTO dto = new MapCommentDTO(comment);
             commentDTOs.add(dto);
         }
 
