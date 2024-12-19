@@ -112,4 +112,22 @@ public class AbandonedCommnetService {
                 .total_count(commentPage.getTotalElements()) // 전체 댓글 개수
                 .build();
     }
+
+    public Boolean getMyComments(String token, Long commentId) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        if(userId == null){
+            throw new IllegalStateException("user is not found");
+        }
+
+        //댓글 찾기
+        AbandonedComment abandonedComment = abandonedCommentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
+
+        if(abandonedComment.getUserId().equals(Long.valueOf(userId))){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }

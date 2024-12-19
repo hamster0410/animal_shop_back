@@ -188,6 +188,22 @@ public class AbandonedAnimalController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+    @GetMapping("/{commentId}/myComment")
+    public ResponseEntity<?> getAllComments(
+            @PathVariable(name = "commentId") Long commentId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        ResponseDTO responseDTO = null;
+        try {
+            // 모든 댓글 가져오기
+            Boolean mycomment = abandonedCommnetService.getMyComments(token, commentId);
+            return ResponseEntity.ok().body(mycomment);
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
     @PostMapping("/manageStatus")
     public ResponseEntity<?> animalStatus(
