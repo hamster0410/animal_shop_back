@@ -82,10 +82,6 @@ public class WikiService {
     }
     @Transactional(readOnly = true)
     public WikiDTOResponse select(String token, int page) {
-        //토큰인증
-        String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(()->new IllegalArgumentException("member is not found"));
 
         Pageable pageable = (Pageable) PageRequest.of(page,10, Sort.by("createdDate").descending());
 
@@ -101,10 +97,6 @@ public class WikiService {
     }
     @Transactional(readOnly = true)
     public WikiDTOResponse selectDetail(String token, WikiDTO wikiDTO) {
-        //토큰인증
-        String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(()->new IllegalArgumentException("member is not found"));
 
         //ADMIN이 아닌 경우 예외 처리
 //        if(!member.getRole().toString().equals("ADMIN")){
@@ -178,6 +170,10 @@ public void update(String token, WikiDTO wikiDTO, MultipartFile file) {
     String userId = tokenProvider.extractIdByAccessToken(token);
     Member member = memberRepository.findById(Long.valueOf(userId))
             .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+
+    if(!member.getRole().toString().equals("ADMIN")){
+        throw new IllegalStateException("User is not ADMIN");
+    }
 
     // Wiki 엔티티 조회
     Wiki wiki = wikiRepository.findById(wikiDTO.getId())
