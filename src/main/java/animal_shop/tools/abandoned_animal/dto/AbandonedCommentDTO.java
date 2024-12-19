@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class AbandonedCommentDTO {
+    private Long id;
     private String content;
     private String author;
     private LocalDateTime createdDate;      // 생성 시간
