@@ -23,9 +23,7 @@ public class MyPageDTO {
 
     private String petProfile;
 
-    private String AccessToken;
-
-    private String RefreshToken;
+    private Long petWikiId;
 
     private Role role;
 }

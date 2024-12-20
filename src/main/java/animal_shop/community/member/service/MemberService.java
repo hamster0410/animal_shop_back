@@ -36,6 +36,7 @@ import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import animal_shop.tools.map_service.entity.MapEntity;
 import animal_shop.tools.map_service.entity.MapLike;
 import animal_shop.tools.map_service.repository.MapLikeRepository;
+import animal_shop.tools.wiki_service.repository.WikiRepository;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,12 +86,14 @@ public class MemberService {
     @Autowired
     private ItemCommentLikeRepository itemCommentLikeRepository;
 
-
     @Autowired
     private TokenProvider tokenProvider;
 
     @Autowired
     private SellerCandidateRepository sellerCandidateRepository;
+
+    @Autowired
+    private WikiRepository wikiRepository;
 
     @Autowired
     private JavaMailSenderImpl javaMailSenderImpl;
@@ -221,13 +224,17 @@ public class MemberService {
     public MyPageDTO getByToken(String token) {
         System.out.println("Member Service getByToken");
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
-        System.out.println(userId);
         Optional<Member> member = memberRepository.findById(userId);
         if (member.isPresent()) {
             String petProfile = null;
+            Long petWikiId= null;
             for(Pet p : member.get().getPets()){
                 if(p.getLeader()){
                     petProfile = p.getProfileImageUrl();
+                    System.out.println(p.getBreed());
+                    petWikiId = wikiRepository.findByBreedName(p.getBreed()).get().getId();
+                    System.out.println(petWikiId);
+
                 }
             }
             return MyPageDTO.builder()
@@ -238,6 +245,7 @@ public class MemberService {
                     .profile(member.get().getProfile())
                     .petProfile(petProfile)
                     .role(member.get().getRole())
+                    .petWikiId(petWikiId)
                     .build();
         }
         return null;

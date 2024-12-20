@@ -2,6 +2,7 @@ package animal_shop.tools.wiki_service.controller;
 
 import animal_shop.tools.wiki_service.dto.WikiDTO;
 import animal_shop.tools.wiki_service.dto.WikiDTOResponse;
+import animal_shop.tools.wiki_service.entity.Wiki;
 import animal_shop.tools.wiki_service.service.WikiService;
 import animal_shop.global.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,14 @@ public class WikiController {
         }
     }
 
-    @GetMapping("/select/{breed_name}")
+    @GetMapping("/select/{id}")
     public ResponseEntity<?> select_breed(@RequestHeader(value = "Authorization",required = false) String token,
-                                          @PathVariable String breed_name) {
+                                          @PathVariable Long id) {
         ResponseDTO responseDTO = null;
         try {
-            System.out.println(breed_name);
-            WikiDTOResponse wikiDTOResponse = wikiService.selectDetail(token, breed_name);
+            WikiDTO wikiDTO = new WikiDTO();
+            wikiDTO.setId(id);
+            WikiDTOResponse wikiDTOResponse = wikiService.selectDetail(token, wikiDTO);
             return ResponseEntity.ok().body(wikiDTOResponse);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()
@@ -64,7 +66,6 @@ public class WikiController {
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
-
     }
 
     @DeleteMapping("/delete/{breedId}")

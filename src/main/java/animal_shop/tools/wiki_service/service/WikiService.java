@@ -96,12 +96,23 @@ public class WikiService {
 
     }
     @Transactional(readOnly = true)
-    public WikiDTOResponse selectDetail(String token, String breedName) {
+    public WikiDTOResponse selectDetail(String token, WikiDTO wikiDTO) {
 
         //ADMIN이 아닌 경우 예외 처리
-//        if(!member.getRole().toString().equals("ADMIN")){
-//            throw new IllegalStateException("User is not ADMIN");
-//        }
+        Wiki wiki = wikiRepository.findById(wikiDTO.getId())
+                .orElseThrow(()->new IllegalArgumentException("Wiki not found"));
+
+        List<WikiDTO> wikiDTOList = List.of(new WikiDTO(wiki));
+
+        //빌더 패턴
+        return WikiDTOResponse.builder()
+                .wikiDTOList(wikiDTOList)
+                .total_count(1L)
+                .build();
+    }
+
+
+    public WikiDTOResponse selectMyDetail(String token, String breedName) {
         Wiki wiki = wikiRepository.findByBreedName(breedName)
                 .orElseThrow(()->new IllegalArgumentException("Wiki not found"));
 
@@ -112,8 +123,8 @@ public class WikiService {
                 .wikiDTOList(wikiDTOList)
                 .total_count(1L)
                 .build();
-
     }
+
     @Transactional
     public void delete(String token, WikiDTO wikiDTO) {
         //토큰인증
@@ -211,6 +222,5 @@ public void update(String token, WikiDTO wikiDTO, MultipartFile file) {
 
     // 저장
     wikiRepository.save(wiki);
-}
-
+    }
 }
