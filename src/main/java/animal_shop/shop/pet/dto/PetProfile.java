@@ -31,6 +31,7 @@ public class PetProfile {
 
     private String species;
 
+    private String description;
 
     public PetProfile(Pet pet) {
         this.id = pet.getId();
@@ -47,5 +48,6 @@ public class PetProfile {
         }else if(pet.getSpecies().equals(Pet.PetSpecies.CAT)){
             this.species = "CAT";
         }
+        this.description = pet.getDescription();
     }
 }
