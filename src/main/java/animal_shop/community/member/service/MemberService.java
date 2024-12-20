@@ -30,6 +30,7 @@ import animal_shop.shop.item_comment.entity.ItemComment;
 import animal_shop.shop.item_comment.repository.ItemCommentRepository;
 import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
 import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
+import animal_shop.shop.pet.entity.Pet;
 import animal_shop.tools.map_service.dto.MapPositionDTO;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import animal_shop.tools.map_service.entity.MapEntity;
@@ -217,18 +218,25 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberDTO getByToken(String token) {
+    public MyPageDTO getByToken(String token) {
         System.out.println("Member Service getByToken");
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
         System.out.println(userId);
         Optional<Member> member = memberRepository.findById(userId);
         if (member.isPresent()) {
-            return MemberDTO.builder()
+            String petProfile = null;
+            for(Pet p : member.get().getPets()){
+                if(p.getLeader()){
+                    petProfile = p.getProfileImageUrl();
+                }
+            }
+            return MyPageDTO.builder()
                     .id(member.get().getId())
                     .username(member.get().getUsername())
                     .mail(member.get().getMail())
                     .nickname(member.get().getNickname())
                     .profile(member.get().getProfile())
+                    .petProfile(petProfile)
                     .role(member.get().getRole())
                     .build();
         }

@@ -2,6 +2,7 @@ package animal_shop.community.member.controller;
 
 import animal_shop.community.comment.dto.CommentResponseDTO;
 import animal_shop.community.member.dto.MemberDTO;
+import animal_shop.community.member.dto.MyPageDTO;
 import animal_shop.community.member.dto.SellerRegisterDTO;
 import animal_shop.community.member.service.MemberService;
 import animal_shop.community.post.dto.PostResponseDTO;
@@ -25,8 +26,8 @@ public class MyPageController {
     @GetMapping("/update")
     public ResponseEntity<?> memberInfo(@RequestHeader("Authorization") String token){
         try{
-            MemberDTO memberDto = memberService.getByToken(token);
-            return ResponseEntity.ok().body(memberDto);
+            MyPageDTO myPageDTO = memberService.getByToken(token);
+            return ResponseEntity.ok().body(myPageDTO);
         }catch (Exception e){
             log.error("mypage failed  error: {}", e.getMessage());
 

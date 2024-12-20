@@ -50,15 +50,13 @@ public class WikiController {
         }
     }
 
-    @GetMapping("/select/{id}")
+    @GetMapping("/select/{breed_name}")
     public ResponseEntity<?> select_breed(@RequestHeader(value = "Authorization",required = false) String token,
-                                          @PathVariable Long id) {
+                                          @PathVariable String breed_name) {
         ResponseDTO responseDTO = null;
         try {
-            WikiDTO wikiDTO = new WikiDTO();
-            wikiDTO.setId(id);
-
-            WikiDTOResponse wikiDTOResponse = wikiService.selectDetail(token, wikiDTO);
+            System.out.println(breed_name);
+            WikiDTOResponse wikiDTOResponse = wikiService.selectDetail(token, breed_name);
             return ResponseEntity.ok().body(wikiDTOResponse);
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()

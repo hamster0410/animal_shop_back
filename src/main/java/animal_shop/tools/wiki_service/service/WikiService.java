@@ -96,13 +96,13 @@ public class WikiService {
 
     }
     @Transactional(readOnly = true)
-    public WikiDTOResponse selectDetail(String token, WikiDTO wikiDTO) {
+    public WikiDTOResponse selectDetail(String token, String breedName) {
 
         //ADMIN이 아닌 경우 예외 처리
 //        if(!member.getRole().toString().equals("ADMIN")){
 //            throw new IllegalStateException("User is not ADMIN");
 //        }
-        Wiki wiki = wikiRepository.findById(wikiDTO.getId())
+        Wiki wiki = wikiRepository.findByBreedName(breedName)
                 .orElseThrow(()->new IllegalArgumentException("Wiki not found"));
 
         List<WikiDTO> wikiDTOList = List.of(new WikiDTO(wiki));

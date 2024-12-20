@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.awt.print.Pageable;
+import java.util.Optional;
 
 public interface WikiRepository extends JpaRepository<Wiki,Long> {
     static Page<Wiki> findAll(Pageable pageable) {
         return null;
     }
+
+    Optional<Wiki> findByBreedName(String breedName);
 }
