@@ -51,8 +51,8 @@ public class ShopService {
         List<MainDTO> animal_new = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
                 .toList();
 
-        List<MainDTO> animal_hot = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new) // Item 객체를 MainDTO로 변환
-                .toList();
+        List<MainDTO> animal_hot = itemRepository.findAllBySpeciesOrderByRatingPerComment(species,pageable).stream().map(MainDTO::new).toList();
+
 
         List<MainDTO> animal_custom = new ArrayList<>();
         //로그인 하지 않은 경우
@@ -79,6 +79,7 @@ public class ShopService {
         if(pet == null){
             log.info("pet is null");
             animal_custom = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable).stream().map(MainDTO::new).toList();
+
             return MainDTOResponse.builder()
                     .animal_new(animal_new)
                     .animal_hot(animal_hot)
@@ -91,22 +92,25 @@ public class ShopService {
         //나이기준 추천
         if(randomNumber % 2 ==0){
             log.info("recommend through pet age");
-            if(pet.getSpecies().equals("DOG")){
+            if(pet.getSpecies().equals(Pet.PetSpecies.DOG)){
                 log.info("recommend age dog");
                 if(pet.getAge()<2){
                     animal_custom = searchItem("Dog","food","puppy",ItemSellStatus.SELL).getGoods();
+
                 }else if(pet.getAge() < 8){
                     animal_custom = searchItem("Dog","food","adult",ItemSellStatus.SELL).getGoods();
+
                 }else{
                     animal_custom = searchItem("Dog","food","senior",ItemSellStatus.SELL).getGoods();
                 }
             }else{
                 log.info("recommend age cat");
                 if(pet.getAge()<2){
-
                     animal_custom = searchItem("Cat","food","kitten",ItemSellStatus.SELL).getGoods();
+
                 }else if(pet.getAge() < 8){
                     animal_custom = searchItem("Cat","food","adult",ItemSellStatus.SELL).getGoods();
+
                 }else{
                     animal_custom = searchItem("Cat","treats","nutritional/functional",ItemSellStatus.SELL).getGoods();
                 }
@@ -117,13 +121,13 @@ public class ShopService {
             AnimalWeight animalWeight = animalWeightRepository.findByBreed(pet.getBreed());
             if(animalWeight == null){
                 System.out.println("animal weight is null");
-            }
-                    ;
+            };
+            System.out.println("here " + pet.getSpecies());
             //강아지일 경우
-            if(pet.getSpecies().equals("DOG")){
+            if(pet.getSpecies().equals(Pet.PetSpecies.DOG)){
                 log.info("recommend weight dog");
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = searchItem("Dog","food","nutritional/functional",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Dog","treats","nutritional/functional",ItemSellStatus.SELL).getGoods();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
                     animal_custom = searchItem("Dog","supplies","clothing/accessories",ItemSellStatus.SELL).getGoods();
                 } else {

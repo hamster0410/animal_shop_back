@@ -35,8 +35,9 @@ public class Item extends BaseTimeEntity{
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemComment> comments;
 
-    @JoinColumn(name = "detailed_category")
+    @Column
     private String detailed_category;
+
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;

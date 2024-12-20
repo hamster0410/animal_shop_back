@@ -2,6 +2,7 @@ package animal_shop.shop.item.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.shop.item.entity.Item;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ItemSpecification {
@@ -106,7 +107,5 @@ public class ItemSpecification {
             }
         };
     }
-
-
 }
 

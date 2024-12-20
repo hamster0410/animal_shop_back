@@ -20,6 +20,12 @@ public interface ItemRepository extends JpaRepository<Item,Long>, JpaSpecificati
 
     Page<Item> findByMemberId(Long memberId,Pageable pageable);
 
+    @Query("SELECT i FROM Item i " +
+            "WHERE i.species = :species " +
+            "ORDER BY (i.total_rating / CASE WHEN i.comment_count = 0 THEN 1 ELSE i.comment_count END) DESC")
+    Page<Item> findAllBySpeciesOrderByRatingPerComment(@Param("species") String species, Pageable pageable);
+
+
     // 종에 따른 아이템 찾기 - 스탑상품 제외
     @Query("SELECT i FROM Item i " +
             "LEFT JOIN FETCH i.thumbnail_url " + // thumbnail_url 컬렉션을 fetch join으로 가져옴
