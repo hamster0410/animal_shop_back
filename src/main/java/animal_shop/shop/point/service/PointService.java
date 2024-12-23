@@ -12,7 +12,6 @@ import animal_shop.shop.point.dto.*;
 import animal_shop.shop.point.entity.Point;
 import animal_shop.shop.point.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -160,8 +159,14 @@ public class PointService {
         return myItemDTOList;
     }
 
-    public List<PointEntireSellerDTO> getSellerSumEntire(String token, String time, String start, String end) {
+    public List<PointEntireSellerDTO> getSellerSumEntire(String token, String time, String start, String end,String state) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String userId = tokenProvider.extractIdByAccessToken(token);
+
+        Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
+        if(!admin.getRole().equals(Role.ADMIN)){
+            throw new IllegalArgumentException("user is not admin");
+        }
 
         if(end!=null){
             LocalDateTime endDateTime = LocalDate.parse(end, formatter).atStartOfDay().plusDays(1).minusSeconds(1);
@@ -173,7 +178,7 @@ public class PointService {
             start = startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
 
-        List<Object[]> objects = pointRepository.findEntireTotalPointsBySellerForTime(time,start,end);
+        List<Object[]> objects = pointRepository.findEntireTotalPointsBySellerForTime(time,start,end,state);
         List<PointEntireSellerDTO> pointEntireSellerDTOList= new ArrayList<>();
         for(Object[] obj : objects){
             Member member = memberRepository.findById((Long) obj[0])

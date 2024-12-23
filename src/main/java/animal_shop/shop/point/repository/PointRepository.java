@@ -160,7 +160,7 @@ public interface PointRepository extends JpaRepository<Point, Long>, JpaSpecific
                     "SUM(p.point) AS totalPoints " +
                     "FROM Point p " +
                     "JOIN Item i ON p.item_id = i.item_id " +
-                    "AND p.status = 'AVAILABLE' " +
+                    "AND p.status = :state " +
                     "AND (:start IS NULL OR p.get_date >= :start) " + // 시작일 조건 추가
                     "AND (:end IS NULL OR p.get_date <= :end) " +   // 종료일 조건 추가
                     "GROUP BY groupDate , p.seller_id " +
@@ -168,6 +168,7 @@ public interface PointRepository extends JpaRepository<Point, Long>, JpaSpecific
             nativeQuery = true)
     List<Object[]> findEntireTotalPointsBySellerForTime(@Param("time")String time,
                                                         @Param("start") String start,
-                                                        @Param("end")String end);
+                                                        @Param("end")String end,
+                                                        @Param("state")String state);
 
 }

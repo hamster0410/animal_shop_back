@@ -113,10 +113,11 @@ public class PointController {
     public ResponseEntity<?> EntireSumSeller(@RequestHeader(value = "Authorization") String token,
                                           @RequestParam(value = "time") String time,
                                           @RequestParam(value = "start", required = false) String start,
-                                          @RequestParam(value = "end", required = false)  String end){
+                                          @RequestParam(value = "end", required = false)  String end,
+                                             @RequestParam(value = "state", required = false)  String state){
         ResponseDTO responseDTO;
         try{
-            List<PointEntireSellerDTO> pointDTOList = pointService.getSellerSumEntire(token,time,start,end);
+            List<PointEntireSellerDTO> pointDTOList = pointService.getSellerSumEntire(token,time,start,end,state);
 
             return ResponseEntity.ok().body(pointDTOList);
         }catch (Exception e){
