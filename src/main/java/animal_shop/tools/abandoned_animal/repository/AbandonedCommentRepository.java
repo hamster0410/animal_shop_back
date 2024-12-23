@@ -13,4 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface AbandonedCommentRepository extends JpaRepository<AbandonedComment, Long> {
 
     Page<AbandonedCommentDTO> findByAbandonedAnimal(AbandonedAnimal abandonedAnimal, Pageable pageable);
+
+    Page<AbandonedCommentDTO> findByUserId(Long userId, Pageable pageable);
+
 }

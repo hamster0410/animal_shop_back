@@ -31,10 +31,17 @@ import animal_shop.shop.item_comment.repository.ItemCommentRepository;
 import animal_shop.shop.item_comment_like.entity.ItemCommentLike;
 import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import animal_shop.shop.pet.entity.Pet;
+import animal_shop.tools.abandoned_animal.dto.AbandonedCommentDTO;
+import animal_shop.tools.abandoned_animal.dto.AbandonedCommentDTOResponse;
+import animal_shop.tools.abandoned_animal.repository.AbandonedCommentRepository;
+import animal_shop.tools.map_service.dto.MapCommentDTO;
+import animal_shop.tools.map_service.dto.MapCommentDTOResponse;
 import animal_shop.tools.map_service.dto.MapPositionDTO;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
+import animal_shop.tools.map_service.entity.MapComment;
 import animal_shop.tools.map_service.entity.MapEntity;
 import animal_shop.tools.map_service.entity.MapLike;
+import animal_shop.tools.map_service.repository.MapCommentRespository;
 import animal_shop.tools.map_service.repository.MapLikeRepository;
 import animal_shop.tools.wiki_service.repository.WikiRepository;
 import jakarta.mail.internet.MimeMessage;
@@ -43,6 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -94,6 +102,11 @@ public class MemberService {
 
     @Autowired
     private WikiRepository wikiRepository;
+
+    @Autowired
+    private AbandonedCommentRepository abandonedCommentRepository;
+    @Autowired
+    private MapCommentRespository mapCommentRespository;
 
     @Autowired
     private JavaMailSenderImpl javaMailSenderImpl;
@@ -580,7 +593,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
         Specification<MapEntity> specification = Specification.where(null);
 
         List<MapPositionDTO> mapPositionDTOList = new ArrayList<>();
@@ -605,7 +618,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Post> posts = postRepository.findByMemberId(userId,pageable);
 
@@ -624,7 +637,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Comment> comments = commentRepository.findByMemberId(userId,pageable);
 
@@ -650,7 +663,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<ItemQuery> itemQueries = itemQueryRepository.findByCustomerId(userId,pageable);
 
@@ -676,7 +689,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<ItemComment> itemComments = itemCommentRepository.findByMemberId(userId,pageable);
 
@@ -702,7 +715,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Heart> hearts = heartRepository.findByMemberId(userId,pageable);
         List<Post> posts = new ArrayList<>();
@@ -725,7 +738,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<CommentHeart> commentHearts = commentHeartRepository.findByMemberId(userId, pageable);
         List<Comment> comments = new ArrayList<>();
@@ -750,7 +763,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<ItemCommentLike> itemCommentLikes = itemCommentLikeRepository.findByMemberId(userId,pageable);
 
@@ -768,6 +781,50 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
                 .build();
     }
 
+    public MapCommentDTOResponse myPlaceReview(String token, int page) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        if(userId == null){
+            throw new IllegalArgumentException("member is not found");
+        }
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        // 댓글 리스트 가져오기
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        Page<MapComment> comments = mapCommentRespository.findByMember(member, pageable);
+
+        // DTO 변환
+        List<MapCommentDTO> commentDTOs = new ArrayList<>();
+        for (MapComment comment : comments) {
+            MapCommentDTO dto = new MapCommentDTO(comment);
+            commentDTOs.add(dto);
+        }
+
+        // 총 댓글 수 가져오기
+        long totalCount = comments.getTotalElements();
+
+        // 응답 DTO 생성
+        MapCommentDTOResponse response = new MapCommentDTOResponse();
+        response.setComments(commentDTOs);
+        response.setTotal_count(totalCount);
+
+        return response;
+    }
+
+    public AbandonedCommentDTOResponse myAnimalComment(String token, int page) {
+        Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
+        // PageRequest 생성 (한 페이지에 20개씩 출력)
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        // 댓글 조회 및 Pagination 처리
+        Page<AbandonedCommentDTO> commentPage = abandonedCommentRepository.findByUserId(userId,pageable);
+
+        // 응답 데이터 생성
+        return AbandonedCommentDTOResponse.builder()
+                .abandonedCommentDTOList(commentPage.getContent()) // 댓글 리스트
+                .total_count(commentPage.getTotalElements()) // 전체 댓글 개수
+                .build();
+    }
 }
 
 

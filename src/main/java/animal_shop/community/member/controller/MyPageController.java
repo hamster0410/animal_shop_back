@@ -9,6 +9,8 @@ import animal_shop.community.post.dto.PostResponseDTO;
 import animal_shop.global.dto.ResponseDTO;
 import animal_shop.shop.item.dto.QueryResponse;
 import animal_shop.shop.item_comment.dto.ItemCommentDTOResponse;
+import animal_shop.tools.abandoned_animal.dto.AbandonedCommentDTOResponse;
+import animal_shop.tools.map_service.dto.MapCommentDTOResponse;
 import animal_shop.tools.map_service.dto.MapPositionDTOResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,15 +96,15 @@ public class MyPageController {
         }
     }
 
-    @GetMapping("/mycomment")
-    public ResponseEntity<?> mycomment(@RequestHeader("Authorization") String token,
+    @GetMapping("/mycomment-animal")
+    public ResponseEntity<?> mycommentAnimal(@RequestHeader("Authorization") String token,
                                     @RequestParam(name = "page", defaultValue = "1", required = false)int page){
         ResponseDTO responseDTO;
 
         try{
-            CommentResponseDTO commentResponseDTO = memberService.myComment(token,page-1);
+            AbandonedCommentDTOResponse abandonedCommentDTOResponse = memberService.myAnimalComment(token,page-1);
 
-            return ResponseEntity.ok().body(commentResponseDTO);
+            return ResponseEntity.ok().body(abandonedCommentDTOResponse);
 
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
@@ -112,6 +114,7 @@ public class MyPageController {
                     .body(responseDTO);
         }
     }
+
     @GetMapping("/myquery")
     public ResponseEntity<?> myquery(@RequestHeader("Authorization") String token,
                                        @RequestParam(name = "page", defaultValue = "1", required = false)int page) {
@@ -140,6 +143,25 @@ public class MyPageController {
             ItemCommentDTOResponse itemCommentDTOResponse = memberService.myReview(token, page - 1);
 
             return ResponseEntity.ok().body(itemCommentDTOResponse);
+
+        } catch (Exception e) {
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
+    @GetMapping("/myplace-review")
+    public ResponseEntity<?> placeMyreview(@RequestHeader("Authorization") String token,
+                                      @RequestParam(name = "page", defaultValue = "1", required = false)int page) {
+        ResponseDTO responseDTO;
+
+        try {
+            MapCommentDTOResponse mapCommentDTOResponse = memberService.myPlaceReview(token, page - 1);
+
+            return ResponseEntity.ok().body(mapCommentDTOResponse);
 
         } catch (Exception e) {
             responseDTO = ResponseDTO.builder()

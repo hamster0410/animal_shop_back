@@ -363,9 +363,6 @@ public class MapService {
             throw new IllegalStateException("User is not USER");
         }
 
-        System.out.println(mapCommentDTO.getMap_id());
-        System.out.println(mapCommentDTO.getRating());
-        System.out.println(mapCommentDTO.getMap_comment_thumbnail_url());
         // 댓글 찾기
         MapComment comment = mapCommentRespository.findById(mapCommentDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));

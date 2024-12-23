@@ -43,7 +43,7 @@ public class AbandonedCommnetService {
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
         // 회원의 username 추출
-        String username = member.getUsername();  // username (사용자 이름) 추출
+        String username = member.getNickname();  // username (사용자 이름) 추출
 
         // 동물 정보 조회
         AbandonedAnimal abandonedAnimal = abandonedAnimalRepository.findById(id)
@@ -70,7 +70,7 @@ public class AbandonedCommnetService {
         //댓글 찾기
         AbandonedComment abandonedComment = abandonedCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
-        if (!abandonedComment.getAuthor().equals(member.getUsername())) {
+        if (!abandonedComment.getAuthor().equals(member.getNickname())) {
             throw new IllegalStateException("You can only delete your own comments");
         }
         // 5. 댓글 내용 수정
@@ -88,7 +88,7 @@ public class AbandonedCommnetService {
         //댓글 찾기
         AbandonedComment abandonedComment = abandonedCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
-        if (!abandonedComment.getAuthor().equals(member.getUsername())) {
+        if (!abandonedComment.getAuthor().equals(member.getNickname())) {
             throw new IllegalStateException("You can only delete your own comments");
         }
         abandonedCommentRepository.delete(abandonedComment);
@@ -123,11 +123,7 @@ public class AbandonedCommnetService {
         AbandonedComment abandonedComment = abandonedCommentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
 
-        if(abandonedComment.getUserId().equals(Long.valueOf(userId))){
-            return true;
-        }else{
-            return false;
-        }
+        return abandonedComment.getUserId().equals(Long.valueOf(userId));
 
     }
 }

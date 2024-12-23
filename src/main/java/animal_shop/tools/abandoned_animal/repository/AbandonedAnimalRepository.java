@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AbandonedAnimalRepository extends JpaRepository<AbandonedAnimal, Long> , JpaSpecificationExecutor<AbandonedAnimal> {
-    boolean existsByDesertionNo(String desertionNo);
 
     AbandonedAnimal findByDesertionNo(String desertion_no);
+
 }
