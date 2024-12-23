@@ -1,6 +1,8 @@
 package animal_shop.community.comment.entity;
 
 
+import animal_shop.community.heart_comment.entity.CommentHeart;
+import animal_shop.community.heart_post.entity.Heart;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import animal_shop.global.dto.BaseTimeEntity;
@@ -9,6 +11,7 @@ import animal_shop.community.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,6 +42,9 @@ public class Comment extends BaseTimeEntity {
     @JsonBackReference
     @JoinColumn(name = "parent_id")
     private Comment parent; // 대댓글의 부모 댓글
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentHeart> commentHearts;
 
     @Setter
     @Column

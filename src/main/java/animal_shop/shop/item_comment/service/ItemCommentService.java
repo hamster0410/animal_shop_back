@@ -109,10 +109,16 @@ public class ItemCommentService {
         ItemComment comment = itemCommentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("comment not found"));
         Item item = comment.getItem();
         //총 평점 수정
-        item.setTotal_rating(item.getTotal_rating() - comment.getRating() + requestItemCommentDTO.getRating());
-        comment.setContents(requestItemCommentDTO.getContents());
-        comment.setRating(requestItemCommentDTO.getRating());
-        comment.setComment_thumbnail_url(requestItemCommentDTO.getThumbnailUrls());
+        if(requestItemCommentDTO.getRating() != null){
+            item.setTotal_rating(item.getTotal_rating() - comment.getRating() + requestItemCommentDTO.getRating());
+            comment.setRating(requestItemCommentDTO.getRating());
+        }
+        if(requestItemCommentDTO.getContents() != null){
+            comment.setContents(requestItemCommentDTO.getContents());
+        }
+        if(requestItemCommentDTO.getThumbnailUrls() != null){
+            comment.setComment_thumbnail_url(requestItemCommentDTO.getThumbnailUrls());
+        }
 
         itemCommentRepository.save(comment);
 

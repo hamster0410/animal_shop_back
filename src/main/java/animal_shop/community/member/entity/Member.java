@@ -6,10 +6,13 @@ import animal_shop.community.comment.entity.Comment;
 import animal_shop.community.heart_post.entity.Heart;
 import animal_shop.community.member.Role;
 import animal_shop.community.post.entity.Post;
+import animal_shop.shop.cart.entity.Cart;
 import animal_shop.shop.delivery.entity.Delivery;
 import animal_shop.shop.item_comment.entity.ItemComment;
+import animal_shop.shop.order.entity.Order;
 import animal_shop.shop.pet.entity.Pet;
 import animal_shop.tools.abandoned_animal.entity.InterestAnimal;
+import animal_shop.tools.map_service.entity.MapComment;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -78,7 +81,16 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private List<ItemComment> item_comments;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MapComment> mapComments;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Delivery> deliveries;
