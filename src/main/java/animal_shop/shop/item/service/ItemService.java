@@ -417,7 +417,7 @@
                     .orElseThrow(() -> new IllegalArgumentException("option is not found"));
 
             // 4. 할인율을 null로 설정
-            option.setDiscount_rate(null);
+            option.setDiscount_rate(0L);
             optionRepository.save(option);
         }
 
