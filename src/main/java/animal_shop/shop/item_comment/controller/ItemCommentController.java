@@ -19,11 +19,12 @@ public class ItemCommentController {
     @GetMapping("/{itemId}")
     public ResponseEntity<?> getCommentsBy(@RequestHeader(value = "Authorization", required = false) String token,
                                            @PathVariable("itemId") Long itemId,
-                                           @RequestParam(value = "page", defaultValue = "1") int page){
+                                           @RequestParam(value = "page", defaultValue = "1") int page,
+                                           @RequestParam(value = "about",required = false) String about){
 
         // 댓글 조회 로직
         try{
-            ItemCommentDTOResponse commentResponseDTO = itemCommentService.getCommentsByItemId(itemId,token, page-1);
+            ItemCommentDTOResponse commentResponseDTO = itemCommentService.getCommentsByItemId(itemId,token, page-1,about);
 
             return ResponseEntity.ok().body(commentResponseDTO);
         }catch(Exception e){

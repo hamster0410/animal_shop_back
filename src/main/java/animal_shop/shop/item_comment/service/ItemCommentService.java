@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ItemCommentService {
@@ -41,26 +42,36 @@ public class ItemCommentService {
 
 
     @Transactional
-    public ItemCommentDTOResponse getCommentsByItemId(Long itemId, String token, int page) {
+    public ItemCommentDTOResponse getCommentsByItemId(Long itemId, String token, int page,String about) {
 
         List<ItemCommentDTO> commentDTOS = new ArrayList<>();
         Pageable pageable = (Pageable) PageRequest.of(page,20);
 
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalArgumentException("item not found"));
+        //해당 상품의 댓글들 조회
+        Page<ItemComment> comments;
 
         //해당 상품의 댓글들 조회
-        Page<ItemComment> comments = itemCommentRepository.findByItem(item, pageable);
+        if(Objects.equals(about, "heart")){
+            comments = itemCommentRepository.findByMostHeartsNative(itemId, pageable);
+        }else if(Objects.equals(about,"rating")){
+            comments = itemCommentRepository.findByHighestRatingNative(itemId, pageable);
+        }else if(Objects.equals(about,"picture")){
+            comments = itemCommentRepository.findByMostPhotosAndRatingNative(itemId, pageable);
+        }else{
+            comments = itemCommentRepository.findByItemId(itemId, pageable);
+        }
+
 
         //댓글 좋아요 기능
-            if(token!=null){
-                String userId = tokenProvider.extractIdByAccessToken(token);
-                for(ItemComment comment : comments){
+        if(token!=null){
+            String userId = tokenProvider.extractIdByAccessToken(token);
+            for(ItemComment comment : comments){
                     ItemCommentDTO commentDTO = new ItemCommentDTO(comment);
                     ItemCommentLike commentLike = itemCommentLikeRepository.findByItemCommentIdAndMemberId(comment.getId(), Long.valueOf(userId));
                     commentDTO.setHeart(commentLike!=null);
                     commentDTOS.add(commentDTO);
-                }
-            }else{
+            }
+        }else{
             commentDTOS = comments.stream()
                     .map(ItemCommentDTO::new)  // Comment 객체를 CommentDTO로 변환
                     .toList();
