@@ -57,6 +57,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Setter
     private String bln;
 
+    private String sellCategory;
+
+    private String sellContents;
 
     @Enumerated(EnumType.STRING)
     @Setter

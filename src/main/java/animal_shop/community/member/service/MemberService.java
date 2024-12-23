@@ -104,7 +104,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Transactional
-    public int create(MemberDTO memberDTO) {
+    public int create(SignUpDTO memberDTO) {
         //동일 id 검사
         if (memberRepository.existsByUsername(memberDTO.getUsername())) {
             log.warn("Username already exists {}", memberDTO.getUsername());
@@ -129,10 +129,68 @@ public class MemberService {
                 .mail(memberDTO.getMail())
                 .nickname(memberDTO.getNickname())
                 .profile(memberDTO.getProfile())
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .build();
 
         memberRepository.save(member);
+
+        return 0;
+    }
+
+
+    @Transactional
+    public int createSeller(SignUpDTO signUpDTO) {
+        //동일 id 검사
+        if (memberRepository.existsByUsername(signUpDTO.getUsername())) {
+            log.warn("Username already exists {}", signUpDTO.getUsername());
+            return 1;
+        }
+
+        //동일 메일 검사
+        if (memberRepository.existsByMail(signUpDTO.getMail())) {
+            log.warn("Mail already exists {}", signUpDTO.getMail());
+            return 2;
+        }
+
+        //동일 닉네임 검사
+        if (memberRepository.existsByNickname(signUpDTO.getNickname())) {
+            log.warn("Nickname already exists {}", signUpDTO.getNickname());
+            return 3;
+        }
+        if(memberRepository.existsByPhoneNumber(signUpDTO.getPhoneNumber())){
+            log.warn("PhoneNumber already exists {}", signUpDTO.getPhoneNumber());
+            return 4;
+        }
+        if(memberRepository.existsByBln(signUpDTO.getBln())){
+            log.warn("Bln already exists {}", signUpDTO.getBln());
+            return 5;
+        }
+
+        Member member = Member.builder()
+                .username(signUpDTO.getUsername())
+                .password(passwordEncoder.encode((signUpDTO.getPassword())))
+                .mail(signUpDTO.getMail())
+                .nickname(signUpDTO.getNickname())
+                .profile(signUpDTO.getProfile())
+                .phoneNumber(signUpDTO.getPhoneNumber())
+                .bln(signUpDTO.getBln())
+                .role(Role.USER)
+                .build();
+
+        Member seller = memberRepository.save(member);
+
+        if(signUpDTO.getBln() == null || signUpDTO.getCategory() == null || signUpDTO.getContents() == null || signUpDTO.getPhoneNumber() == null){
+            throw new IllegalArgumentException("info is not full");
+        }
+
+        SellerRegisterDTO  sellerRegisterDTO = SellerRegisterDTO.builder()
+                .bln(signUpDTO.getBln())
+                .category(signUpDTO.getCategory())
+                .phone_number(signUpDTO.getPhoneNumber())
+                .contents(signUpDTO.getContents())
+                .build();
+
+        enroll_seller(seller,sellerRegisterDTO);
 
         return 0;
     }
@@ -297,6 +355,24 @@ public class MemberService {
 
         sellerCandidateRepository.save(s);
     }
+
+    @Transactional
+    public void enroll_seller(Member member, SellerRegisterDTO sellerRegisterDTO) {
+        if (!sellerCandidateRepository.findByMember(member).isEmpty()) {
+            throw new IllegalArgumentException("Member is already Seller " + member.getNickname());
+        }
+        SellerCandidate s = SellerCandidate.builder()
+                .member(member)
+                .category(sellerRegisterDTO.getCategory())
+                .contents(sellerRegisterDTO.getContents())
+                .phone_number(sellerRegisterDTO.getPhone_number())
+                .bln(sellerRegisterDTO.getBln())
+                .build();
+
+        sellerCandidateRepository.save(s);
+    }
+
+
     @Transactional
     public void createAndSendNewPassword(SendMailDTO sendMailDTO) {
         try {
@@ -441,6 +517,51 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
                 .build();
 
         memberRepository.save(member);
+    }
+
+    public void createKakaoSeller(Map<String, Object> userInfo, KakaoDTO kakaoDTO) {
+
+        String username = (String)userInfo.get("nickname") + "-" + System.currentTimeMillis();
+        //동일 id 검사
+        if (memberRepository.existsByUsername(username)) {
+            log.warn("Username already exists {}", username);
+            throw new IllegalArgumentException("user name already Exists");
+        }
+
+        //동일 메일 검사
+        if (memberRepository.existsByMail((String)userInfo.get("email"))) {
+            log.warn("Mail already exists {}", (String)userInfo.get("email"));
+            throw new IllegalArgumentException("change kakao email");
+        }
+        String nickname = "";
+        //동일 닉네임 검사
+        while(true){
+            String temp = globalService.getRandomNickname();
+            if (!memberRepository.existsByNickname(temp)) {
+                nickname =temp;
+                break;
+            }
+        }
+
+        Member member = Member.builder()
+                .username(username)
+                .password(passwordEncoder.encode(username))
+                .mail((String)userInfo.get("email"))
+                .nickname(nickname)
+                .profile((String)userInfo.get("thumbnail"))
+                .role(Role.USER)
+                .build();
+
+        memberRepository.save(member);
+
+        SellerRegisterDTO  sellerRegisterDTO = SellerRegisterDTO.builder()
+                .bln(kakaoDTO.getBln())
+                .category(kakaoDTO.getCategory())
+                .phone_number(kakaoDTO.getPhoneNumber())
+                .contents(kakaoDTO.getContents())
+                .build();
+
+        enroll_seller(member,sellerRegisterDTO);
     }
 
 
@@ -639,49 +760,6 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
                 .build();
     }
 
-    @Transactional
-    public int createSeller(SellerSignUpDTO sellerSignUpDTO) {
-            //동일 id 검사
-            if (memberRepository.existsByUsername(sellerSignUpDTO.getUsername())) {
-                log.warn("Username already exists {}", sellerSignUpDTO.getUsername());
-                return 1;
-            }
-
-            //동일 메일 검사
-            if (memberRepository.existsByMail(sellerSignUpDTO.getMail())) {
-                log.warn("Mail already exists {}", sellerSignUpDTO.getMail());
-                return 2;
-            }
-
-            //동일 닉네임 검사
-            if (memberRepository.existsByNickname(sellerSignUpDTO.getNickname())) {
-                log.warn("Nickname already exists {}", sellerSignUpDTO.getNickname());
-                return 3;
-            }
-            if(memberRepository.existsByPhoneNumber(sellerSignUpDTO.getPhoneNumber())){
-                log.warn("PhoneNumber already exists {}",sellerSignUpDTO.getPhoneNumber());
-                return 4;
-            }
-            if(memberRepository.existsByBln(sellerSignUpDTO.getBln())){
-                log.warn("Bln already exists {}",sellerSignUpDTO.getBln());
-                return 5;
-            }
-
-        Member member = Member.builder()
-                    .username(sellerSignUpDTO.getUsername())
-                    .password(passwordEncoder.encode((sellerSignUpDTO.getPassword())))
-                    .mail(sellerSignUpDTO.getMail())
-                    .nickname(sellerSignUpDTO.getNickname())
-                    .profile(sellerSignUpDTO.getProfile())
-                    .phoneNumber(sellerSignUpDTO.getPhoneNumber())
-                    .bln(sellerSignUpDTO.getBln())
-                    .role(Role.SELLER)
-                    .build();
-
-            memberRepository.save(member);
-
-            return 0;
-    }
 }
 
 

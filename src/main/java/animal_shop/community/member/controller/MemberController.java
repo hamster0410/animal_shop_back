@@ -23,11 +23,16 @@ public class MemberController {
     private TokenProvider tokenProvider;
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<ResponseDTO> registerMember(@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<ResponseDTO> registerMember(@RequestBody SignUpDTO memberDTO) {
         ResponseDTO responseDTO;
         String message;
         try {
-            int result = memberService.create(memberDTO);
+            Integer result = null;
+            if(memberDTO.getBln() == null){
+                result = memberService.create(memberDTO);
+            }else{
+                result = memberService.createSeller(memberDTO);
+            }
             // result 값을 기준으로 응답 메시지 결정
             switch (result) {
                 case 0:
@@ -196,8 +201,11 @@ public class MemberController {
 
             String email = (String)userInfo.get("email");
             String nickname = (String)userInfo.get("nickname");
-            memberService.createKakao(userInfo);
-
+            if(kakaoDTO.getBln() == null){
+                memberService.createKakao(userInfo);
+            }else{
+                memberService.createKakaoSeller(userInfo,kakaoDTO);
+            }
             responseDTO = ResponseDTO.builder()
                     .message("signup success")
                     .build();
@@ -242,51 +250,6 @@ public class MemberController {
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
-        }
-    }
-    @PostMapping("seller/signup")
-    public ResponseEntity<?>sellerSignup(@RequestBody SellerSignUpDTO sellerSignUpDTO){
-        ResponseDTO responseDTO = null;
-        String message;
-        try{
-            int result = memberService.createSeller(sellerSignUpDTO);
-            switch (result) {
-                case 0:
-                    message = "SignUp success";
-                    break;
-                case 1:
-                    message = "Username already exists";
-                    break;
-                case 2:
-                    message = "Email already exists";
-                    break;
-                case 3:
-                    message = "Nickname already exists";
-                    break;
-                case 4:
-                    message = "PhoneNumber already exists";
-                    break;
-                case 5:
-                    message = "bln already exists";
-                    break;
-                default:
-                    message = "Sign Up Failed";
-                    break;
-            }
-            responseDTO = ResponseDTO.builder()
-                    .message("Doge")
-                    .build();
-            if(result == 0){
-                return ResponseEntity.ok().body(responseDTO);
-            }else {
-                return ResponseEntity.badRequest().body(responseDTO);
-            }
-        }catch (Exception e){
-            log.error("Signup failed for user: {}, error: {}", sellerSignUpDTO.getUsername(), e.getMessage());
-            responseDTO = ResponseDTO.builder()
-                    .error("SignUp failed")
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 
