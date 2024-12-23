@@ -244,7 +244,50 @@ public class MemberController {
                     .body(responseDTO);
         }
     }
-//    @PostMapping("seller/signup")
-//    public ResponseEntity<?>sellerSignup(@RequestBody)
+    @PostMapping("seller/signup")
+    public ResponseEntity<?>sellerSignup(@RequestBody SellerSignUpDTO sellerSignUpDTO){
+        ResponseDTO responseDTO = null;
+        String message;
+        try{
+            int result = memberService.createSeller(sellerSignUpDTO);
+            switch (result) {
+                case 0:
+                    message = "SignUp success";
+                    break;
+                case 1:
+                    message = "Username already exists";
+                    break;
+                case 2:
+                    message = "Email already exists";
+                    break;
+                case 3:
+                    message = "Nickname already exists";
+                    break;
+                case 4:
+                    message = "PhoneNumber already exists";
+                    break;
+                case 5:
+                    message = "bln already exists";
+                    break;
+                default:
+                    message = "Sign Up Failed";
+                    break;
+            }
+            responseDTO = ResponseDTO.builder()
+                    .message("Doge")
+                    .build();
+            if(result == 0){
+                return ResponseEntity.ok().body(responseDTO);
+            }else {
+                return ResponseEntity.badRequest().body(responseDTO);
+            }
+        }catch (Exception e){
+            log.error("Signup failed for user: {}, error: {}", sellerSignUpDTO.getUsername(), e.getMessage());
+            responseDTO = ResponseDTO.builder()
+                    .error("SignUp failed")
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
 }

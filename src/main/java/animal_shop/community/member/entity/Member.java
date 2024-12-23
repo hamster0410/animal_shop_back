@@ -51,6 +51,12 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Setter
     private String authentication;
 
+    @Setter
+    private String phoneNumber;
+
+    @Setter
+    private String bln;
+
 
     @Enumerated(EnumType.STRING)
     @Setter
