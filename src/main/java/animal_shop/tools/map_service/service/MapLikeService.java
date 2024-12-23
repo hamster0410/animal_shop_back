@@ -47,7 +47,9 @@ public class MapLikeService {
             throw new IllegalArgumentException("You have already liked this map");
         }
         // Map의 좋아요 수 증가
+        System.out.println("before " + map.getCountLike());
         map.setCountLike(map.getCountLike() + 1);
+        System.out.println("after " + map.getCountLike());
         mapRepository.save(map);
 
         // MapLike 객체 생성 후 저장

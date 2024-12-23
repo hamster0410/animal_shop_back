@@ -221,7 +221,7 @@ public class MapService {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "countLike"));
         Specification<MapEntity> specification = Specification.where(null);
 
         if(searchRequestDTO.getKeyword()!=null){
@@ -251,11 +251,12 @@ public class MapService {
                     searchRequestDTO.getNeLatlng().getLatitude()));
         }
 
-        // 거리 정렬 추가
+        // 거리 정렬
         specification = specification.and(MapSpecification.orderByDistance(
-                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLatitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLatitude())) /2,
-                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLongitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLongitude())) /2
+                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLatitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLatitude())) / 2,
+                (Double.parseDouble(searchRequestDTO.getSwLatlng().getLongitude()) + Double.parseDouble(searchRequestDTO.getNeLatlng().getLongitude())) / 2
         ));
+
         Page<MapEntity> maps = mapRepository.findAll(specification,pageable);
         List<MapPositionDTO> mapPositionDTOList = new ArrayList<>();
         for(MapEntity mapEntity : maps){
