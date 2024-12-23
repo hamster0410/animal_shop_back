@@ -244,4 +244,7 @@ public class MemberController {
                     .body(responseDTO);
         }
     }
+//    @PostMapping("seller/signup")
+//    public ResponseEntity<?>sellerSignup(@RequestBody)
+
 }
