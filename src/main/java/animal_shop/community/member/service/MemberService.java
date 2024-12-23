@@ -715,7 +715,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(page, 15);
 
         Page<Heart> hearts = heartRepository.findByMemberId(userId,pageable);
         List<Post> posts = new ArrayList<>();
@@ -738,7 +738,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(page, 15);
 
         Page<CommentHeart> commentHearts = commentHeartRepository.findByMemberId(userId, pageable);
         List<Comment> comments = new ArrayList<>();
@@ -763,7 +763,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(page, 15);
 
         Page<ItemCommentLike> itemCommentLikes = itemCommentLikeRepository.findByMemberId(userId,pageable);
 
