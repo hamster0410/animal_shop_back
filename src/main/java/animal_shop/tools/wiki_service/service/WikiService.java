@@ -140,43 +140,9 @@ public class WikiService {
 
         wikiRepository.delete(wiki);
     }
-//    @Transactional
-//    public void update(String token, WikiDTO wikiDTO, MultipartFile file) {
-//        //토큰인증
-//        String userId = tokenProvider.extractIdByAccessToken(token);
-//        Member member = memberRepository.findById(Long.valueOf(userId))
-//                .orElseThrow(()->new IllegalArgumentException("member is not found"));
-//        //ADMIN이 아닌 경우 예외 처리
-////        if(!member.getRole().toString().equals("ADMIN")){
-////            throw new IllegalStateException("User is not ADMIN");
-////        }
-//        Wiki wiki = wikiRepository.findById(wikiDTO.getId())
-//                .orElseThrow(()->new IllegalArgumentException("Wiki not found"));
-//
-//
-//        wiki.setAttachmentUrl(wikiDTO.getAttachmentUrl());
-//        wiki.setBreedName(wikiDTO.getBreedName());
-//        wiki.setOverview(wikiDTO.getOverview());
-//        wiki.setAppearance(wikiDTO.getAppearance());
-//        wiki.setTemperament(wikiDTO.getTemperament());
-//
-//
-//        // 첨부파일 처리 (파일이 있을 경우)
-//        if (file != null && !file.isEmpty()) {
-//            try {
-//                // 파일명 중복 방지 (UUID 사용)
-//                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-//                Path filePath = Paths.get(uploadDir, fileName);
-//                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-//                wiki.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
-//            } catch (IOException e) {
-//                throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
-//            }
-//        }
-//        wikiRepository.save(wiki);
-//    }
+
 @Transactional
-public void update(String token, WikiDTO wikiDTO, MultipartFile file) {
+public void update(String token, WikiDTO wikiDTO) {
     // 토큰 인증
     String userId = tokenProvider.extractIdByAccessToken(token);
     Member member = memberRepository.findById(Long.valueOf(userId))
@@ -206,19 +172,22 @@ public void update(String token, WikiDTO wikiDTO, MultipartFile file) {
     if (wikiDTO.getTemperament() != null) {
         wiki.setTemperament(wikiDTO.getTemperament());
     }
+    if(wikiDTO.getAttachmentUrl() != null){
+        wiki.setAttachmentUrl(wikiDTO.getAttachmentUrl());
+    }
 
     // 첨부파일 처리 (파일이 있을 경우)
-    if (file != null && !file.isEmpty()) {
-        try {
-            // 파일명 중복 방지 (UUID 사용)
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            wiki.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
-        }
-    }
+//    if (file != null && !file.isEmpty()) {
+//        try {
+//            // 파일명 중복 방지 (UUID 사용)
+//            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+//            Path filePath = Paths.get(uploadDir, fileName);
+//            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//            wiki.setAttachmentUrl(filePath.toString()); // 파일 경로 저장
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
+//        }
+//    }
 
     // 저장
     wikiRepository.save(wiki);
