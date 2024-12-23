@@ -96,6 +96,25 @@ public class MyPageController {
         }
     }
 
+    @GetMapping("/mycomment")
+    public ResponseEntity<?> mycomment(@RequestHeader("Authorization") String token,
+                                       @RequestParam(name = "page", defaultValue = "1", required = false)int page){
+        ResponseDTO responseDTO;
+
+        try{
+            CommentResponseDTO commentResponseDTO = memberService.myComment(token,page-1);
+
+            return ResponseEntity.ok().body(commentResponseDTO);
+
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
     @GetMapping("/mycomment-animal")
     public ResponseEntity<?> mycommentAnimal(@RequestHeader("Authorization") String token,
                                     @RequestParam(name = "page", defaultValue = "1", required = false)int page){
