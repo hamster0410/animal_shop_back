@@ -19,7 +19,8 @@ public class CommentDTO {
     private List<String> imageUrl;
     private Long countHeart = 0L; // 기본값으로 0으로 초기화
     private boolean heart;
-
+    private Long postId;
+    private String postCategory;
 
 
     // 기본 생성자 추가
@@ -33,5 +34,7 @@ public class CommentDTO {
         this.parent = (comment.getParent() != null) ? new CommentDTO(comment.getParent()) : null;
         this.imageUrl  = comment.getImageUrl();
         this.countHeart = comment.getCountHeart();
+        this.postId = comment.getPostId();
+        this.postCategory = comment.getPostCategory();
     }
 }
