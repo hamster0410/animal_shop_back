@@ -57,14 +57,12 @@ public class MapSpecification {
     }
 
     public static Specification<MapEntity> searchByRange(String sw_x, String sw_y, String ne_x, String ne_y) {
-        System.out.println("here 2");
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (sw_x == null || sw_y == null || ne_x == null || ne_y == null) return null;
 
             predicates.add(criteriaBuilder.between(root.get("longitude"),sw_x,ne_x));
             predicates.add(criteriaBuilder.between(root.get("latitude"),sw_y,ne_y));
-            System.out.println("here 3");
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

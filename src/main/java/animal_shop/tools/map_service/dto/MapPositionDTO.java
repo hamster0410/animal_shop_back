@@ -22,10 +22,10 @@ public class MapPositionDTO {
         this.longitude = mapEntity.getLongitude();
         this.map_id = mapEntity.getId();
         this.place_description = mapEntity.getPlaceDescription();
-        if(comment_count==null || comment_count == 0 ){
+        if(mapEntity.getCommentCount() ==null || mapEntity.getCommentCount()== 0 ){
             this.total_rating = 0L;
         }else{
-            this.total_rating = mapEntity.getTotalRating() / comment_count;
+            this.total_rating = mapEntity.getTotalRating() / mapEntity.getCommentCount();
         }
         this.comment_count = mapEntity.getCommentCount();
     }

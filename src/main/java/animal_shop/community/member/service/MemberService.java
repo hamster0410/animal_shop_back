@@ -593,7 +593,7 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
             throw new IllegalArgumentException("user is not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(page, 15);
         Specification<MapEntity> specification = Specification.where(null);
 
         List<MapPositionDTO> mapPositionDTOList = new ArrayList<>();
