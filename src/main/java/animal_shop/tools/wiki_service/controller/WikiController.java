@@ -89,16 +89,14 @@ public class WikiController {
     }
     //수정
     @PatchMapping("/update/{breedId}")
-    ResponseEntity<?>wiki_update(@RequestHeader(value = "Authorization")String token,
+    public ResponseEntity<?>wiki_update(@RequestHeader(value = "Authorization")String token,
                                  @PathVariable Long breedId,
-                                 @RequestPart WikiDTO wikiDTO,
-                                 @RequestPart MultipartFile file){
+                                 @RequestBody WikiDTO wikiDTO){
+
         ResponseDTO responseDTO = null;
         try {
             wikiDTO.setId(breedId);
-
-            wikiService.update(token,wikiDTO,file);
-
+            wikiService.update(token,wikiDTO);
             responseDTO = ResponseDTO.builder()
                     .message("success update")
                     .build();
