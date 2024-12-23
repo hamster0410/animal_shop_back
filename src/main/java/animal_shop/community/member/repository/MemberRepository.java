@@ -23,6 +23,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findByNickname(String seller);
 
+    boolean existsByPhoneNumber(String phoneNumber);
+
+    boolean existsByBln(String bln);
 
     @Modifying
     @Query("UPDATE Member m SET m.authentication = :authentication WHERE m.mail = :email")
@@ -32,5 +35,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     String findAuthentication(@Param("email") String email);
 
     Optional<Member> findByMail(String email);
+
 
 }

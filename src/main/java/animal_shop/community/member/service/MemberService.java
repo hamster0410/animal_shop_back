@@ -614,29 +614,50 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
     }
 
     public ItemCommentDTOResponse likeReview(String token, int page) {
-        String temp = tokenProvider.extractIdByAccessToken(token);
-        Long userId = Long.valueOf(temp);
+        return null;
+    }
+    @Transactional
+    public int createSeller(SellerSignUpDTO sellerSignUpDTO) {
+            //동일 id 검사
+            if (memberRepository.existsByUsername(sellerSignUpDTO.getUsername())) {
+                log.warn("Username already exists {}", sellerSignUpDTO.getUsername());
+                return 1;
+            }
 
-        if(userId == null){
-            throw new IllegalArgumentException("user is not found");
-        }
+            //동일 메일 검사
+            if (memberRepository.existsByMail(sellerSignUpDTO.getMail())) {
+                log.warn("Mail already exists {}", sellerSignUpDTO.getMail());
+                return 2;
+            }
 
-        Pageable pageable = PageRequest.of(page, 15);
+            //동일 닉네임 검사
+            if (memberRepository.existsByNickname(sellerSignUpDTO.getNickname())) {
+                log.warn("Nickname already exists {}", sellerSignUpDTO.getNickname());
+                return 3;
+            }
+            if(memberRepository.existsByPhoneNumber(sellerSignUpDTO.getPhoneNumber())){
+                log.warn("PhoneNumber already exists {}",sellerSignUpDTO.getPhoneNumber());
+                return 4;
+            }
+            if(memberRepository.existsByBln(sellerSignUpDTO.getBln())){
+                log.warn("Bln already exists {}",sellerSignUpDTO.getBln());
+                return 5;
+            }
 
-        Page<ItemCommentLike> itemCommentLikes = itemCommentLikeRepository.findByMemberId(userId,pageable);
+        Member member = Member.builder()
+                    .username(sellerSignUpDTO.getUsername())
+                    .password(passwordEncoder.encode((sellerSignUpDTO.getPassword())))
+                    .mail(sellerSignUpDTO.getMail())
+                    .nickname(sellerSignUpDTO.getNickname())
+                    .profile(sellerSignUpDTO.getProfile())
+                    .phoneNumber(sellerSignUpDTO.getPhoneNumber())
+                    .bln(sellerSignUpDTO.getBln())
+                    .role(Role.SELLER)
+                    .build();
 
-        List<ItemComment> itemComments = new ArrayList<>();
-        for(ItemCommentLike commentLike : itemCommentLikes){
-            itemComments.add(commentLike.getItemComment());
-        }
+            memberRepository.save(member);
 
-        List<ItemCommentDTO> responseItemQueryDTOList = itemComments.stream().map(ItemCommentDTO::new).toList();
-
-        return ItemCommentDTOResponse
-                .builder()
-                .comments(responseItemQueryDTOList)
-                .total_count(itemCommentLikes.getTotalElements())
-                .build();
+            return 0;
     }
 }
 
