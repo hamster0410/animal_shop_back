@@ -54,7 +54,7 @@ public class CommentService {
     public CommentResponseDTO getCommentsByPostId(Long postId,String token) {
 
         List<CommentDTO> commentDTOS = new ArrayList<>();
-        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<Comment> comments = commentRepository.findByPost_Id(postId);
 
         if(token!=null){
             String userId = tokenProvider.extractIdByAccessToken(token);
@@ -78,10 +78,6 @@ public class CommentService {
                 .totalCommentCount(commentDTOS.size())
                 .build();
 
-    }
-    @Transactional
-    public Long getCommentCount(Long postId) {
-        return commentRepository.countByPostId(postId);
     }
 
     @Transactional

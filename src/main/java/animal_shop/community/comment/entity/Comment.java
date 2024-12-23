@@ -51,4 +51,12 @@ public class Comment extends BaseTimeEntity {
     @JsonManagedReference // 직렬화의 시작점에 추가
     private List<Comment> comments; // 대댓글 리스트
 
+    public Long getPostId() {
+        return post.getId();
+    }
+
+    public String getPostCategory() {
+        return post.getCategory();
+    }
+
 }

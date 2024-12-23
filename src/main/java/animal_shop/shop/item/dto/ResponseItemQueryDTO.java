@@ -1,5 +1,6 @@
 package animal_shop.shop.item.dto;
 
+import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.item.entity.ItemQuery;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ public class ResponseItemQueryDTO {
     private String option_price;
     private String reply;
     private LocalDateTime createdDate;
-
+    private Long item_id;
     //디비로부터 정보 끄집어내는 함수
     public ResponseItemQueryDTO(ItemQuery itemQuery){
         customer = itemQuery.getCustomer().getNickname();
@@ -28,5 +29,6 @@ public class ResponseItemQueryDTO {
         option_name = itemQuery.getOption_name();
         option_price = itemQuery.getOption_price();
         createdDate = itemQuery.getCreatedDate();
+        item_id = itemQuery.getItem().getId();
     }
 }

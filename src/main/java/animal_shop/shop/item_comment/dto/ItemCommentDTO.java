@@ -20,6 +20,8 @@ public class ItemCommentDTO {
     private List<String> thumbnailUrl;
     private Long countHeart = 0L; // 기본값으로 0으로 초기화
     private boolean heart;
+    private Long item_id;
+
 
 
 
@@ -34,5 +36,6 @@ public class ItemCommentDTO {
         this.rating = comment.getRating();
         this.countHeart = comment.getCountHeart();
         this.thumbnailUrl = comment.getComment_thumbnail_url();
+        this.item_id = comment.getItem().getId();
     }
 }
