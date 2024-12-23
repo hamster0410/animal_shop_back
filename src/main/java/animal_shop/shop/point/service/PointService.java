@@ -27,7 +27,6 @@ import java.util.StringTokenizer;
 
 @Service
 public class PointService {
-
     @Autowired
     private PointRepository pointRepository;
 
