@@ -614,8 +614,31 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
     }
 
     public ItemCommentDTOResponse likeReview(String token, int page) {
-        return null;
+        String temp = tokenProvider.extractIdByAccessToken(token);
+        Long userId = Long.valueOf(temp);
+
+        if(userId == null){
+            throw new IllegalArgumentException("user is not found");
+        }
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<ItemCommentLike> itemCommentLikes = itemCommentLikeRepository.findByMemberId(userId,pageable);
+
+        List<ItemComment> itemComments = new ArrayList<>();
+        for(ItemCommentLike commentLike : itemCommentLikes){
+            itemComments.add(commentLike.getItemComment());
+        }
+
+        List<ItemCommentDTO> responseItemQueryDTOList = itemComments.stream().map(ItemCommentDTO::new).toList();
+
+        return ItemCommentDTOResponse
+                .builder()
+                .comments(responseItemQueryDTOList)
+                .total_count(itemCommentLikes.getTotalElements())
+                .build();
     }
+
     @Transactional
     public int createSeller(SellerSignUpDTO sellerSignUpDTO) {
             //동일 id 검사
