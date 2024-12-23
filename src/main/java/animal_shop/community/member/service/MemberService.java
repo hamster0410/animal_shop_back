@@ -33,6 +33,7 @@ import animal_shop.shop.item_comment_like.repository.ItemCommentLikeRepository;
 import animal_shop.shop.pet.entity.Pet;
 import animal_shop.tools.abandoned_animal.dto.AbandonedCommentDTO;
 import animal_shop.tools.abandoned_animal.dto.AbandonedCommentDTOResponse;
+import animal_shop.tools.abandoned_animal.entity.AbandonedComment;
 import animal_shop.tools.abandoned_animal.repository.AbandonedCommentRepository;
 import animal_shop.tools.map_service.dto.MapCommentDTO;
 import animal_shop.tools.map_service.dto.MapCommentDTOResponse;
@@ -817,11 +818,16 @@ public void changePassword(ChangePasswordDTO changePasswordDTO) {
         Pageable pageable = PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // 댓글 조회 및 Pagination 처리
-        Page<AbandonedCommentDTO> commentPage = abandonedCommentRepository.findByUserId(userId,pageable);
+        Page<AbandonedComment> commentPage = abandonedCommentRepository.findByUserId(userId,pageable);
+        List<AbandonedCommentDTO> abandonedCommentDTOList = new ArrayList<>();
+        for(AbandonedComment abandonedComment : commentPage){
+            AbandonedCommentDTO abandonedCommentDTO = new AbandonedCommentDTO(abandonedComment);
+            abandonedCommentDTOList.add(abandonedCommentDTO);
+        }
 
         // 응답 데이터 생성
         return AbandonedCommentDTOResponse.builder()
-                .abandonedCommentDTOList(commentPage.getContent()) // 댓글 리스트
+                .abandonedCommentDTOList(abandonedCommentDTOList) // 댓글 리스트
                 .total_count(commentPage.getTotalElements()) // 전체 댓글 개수
                 .build();
     }

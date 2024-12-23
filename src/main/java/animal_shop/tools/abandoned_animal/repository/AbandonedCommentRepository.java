@@ -14,6 +14,6 @@ public interface AbandonedCommentRepository extends JpaRepository<AbandonedComme
 
     Page<AbandonedCommentDTO> findByAbandonedAnimal(AbandonedAnimal abandonedAnimal, Pageable pageable);
 
-    Page<AbandonedCommentDTO> findByUserId(Long userId, Pageable pageable);
+    Page<AbandonedComment> findByUserId(Long userId, Pageable pageable);
 
 }
