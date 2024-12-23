@@ -25,8 +25,11 @@ public class InterestAnimalDTO {
 
     private String care_nm;
 
+    private long abandoned_animal_id;
+
     public InterestAnimalDTO(InterestAnimal interestAnimal) {
         this.id = interestAnimal.getId();
+        this.abandoned_animal_id = interestAnimal.getAbandonedAnimalId();
         this.attachmentUrl = interestAnimal.getAttachment_url();
         this.kind_cd = interestAnimal.getKind_cd();
         this.neuter_yn = interestAnimal.getNeuter_yn();

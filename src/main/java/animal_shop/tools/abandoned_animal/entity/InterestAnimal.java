@@ -38,6 +38,8 @@ public class InterestAnimal {
 
     private String desertionNo;
 
+    private long abandonedAnimalId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id") // FK 설정
     private Member member;
@@ -52,6 +54,7 @@ public class InterestAnimal {
         this.age = LocalDate.now().getYear() - abandonedAnimal.getAge();
         this.member = member;
         this.desertionNo = abandonedAnimal.getDesertionNo();
+        this.abandonedAnimalId = abandonedAnimal.getId();
     }
 
 }
