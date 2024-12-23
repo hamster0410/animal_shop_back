@@ -204,6 +204,7 @@ public class MemberService {
         return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(RefreshToken).build();
     }
 
+
     @Transactional
     public void modify(MemberDTO memberDTO, String token) {
 
@@ -309,9 +310,16 @@ public class MemberService {
         return null;
     }
 
-    public MemberDTO getBymail(String email) {
+    public MemberDTO updateFromKakao(Map<String, Object> userInfo) {
+
+        String email = (String)userInfo.get("email");
+        String profile = (String)userInfo.get("thumbnail");
+
         Member member = memberRepository.findByMail(email)
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
+        member.setProfile(profile);
+        memberRepository.save(member);
+
         return new MemberDTO(member);
     }
 

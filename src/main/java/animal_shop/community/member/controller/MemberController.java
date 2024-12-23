@@ -235,9 +235,7 @@ public class MemberController {
             // 3. 사용자 정보 받기
             Map<String, Object> userInfo = tokenProvider.getUserInfoFromKakao(accessToken);
 
-            String email = (String)userInfo.get("email");
-            String nickname = (String)userInfo.get("nickname");
-            MemberDTO memberDTO = memberService.getBymail(email);
+            MemberDTO memberDTO = memberService.updateFromKakao(userInfo);
 
             TokenDTO tokenDTO = memberService.login(memberDTO);
 
