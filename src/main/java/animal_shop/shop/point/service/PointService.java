@@ -163,8 +163,8 @@ public class PointService {
         String userId = tokenProvider.extractIdByAccessToken(token);
 
         Member admin = memberRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Member does not exist with ID: "));
-        if(!admin.getRole().equals(Role.ADMIN)){
-            throw new IllegalArgumentException("user is not admin");
+        if(admin.getRole().equals(Role.USER)){
+            throw new IllegalArgumentException("user is not seller or admin");
         }
 
         if(end!=null){
