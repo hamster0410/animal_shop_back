@@ -300,13 +300,9 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(userId);
         if (member.isPresent()) {
             String petProfile = null;
-            Long petWikiId= null;
             for(Pet p : member.get().getPets()){
                 if(p.getLeader()){
                     petProfile = p.getProfileImageUrl();
-                    System.out.println(p.getBreed());
-                    petWikiId = wikiRepository.findByBreedName(p.getBreed()).get().getId();
-                    System.out.println(petWikiId);
 
                 }
             }
@@ -318,7 +314,6 @@ public class MemberService {
                     .profile(member.get().getProfile())
                     .petProfile(petProfile)
                     .role(member.get().getRole())
-                    .petWikiId(petWikiId)
                     .build();
         }
         return null;

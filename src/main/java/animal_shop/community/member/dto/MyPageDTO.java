@@ -23,7 +23,5 @@ public class MyPageDTO {
 
     private String petProfile;
 
-    private Long petWikiId;
-
     private Role role;
 }

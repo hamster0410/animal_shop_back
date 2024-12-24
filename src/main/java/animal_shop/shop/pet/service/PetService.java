@@ -11,6 +11,7 @@ import animal_shop.shop.pet.entity.AnimalWeight;
 import animal_shop.shop.pet.entity.Pet;
 import animal_shop.shop.pet.repository.AnimalWeightRepository;
 import animal_shop.shop.pet.repository.PetRepository;
+import animal_shop.tools.wiki_service.repository.WikiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,9 @@ public class PetService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private WikiRepository wikiRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -158,7 +162,12 @@ public class PetService {
         // 3. 전체 동물 조회 (회원과 연관된 동물만 조회)
         Page<Pet> pets = petRepository.findByMember(member, pageable);
 
-        List<PetProfile> petList = pets.stream().map(PetProfile::new).toList();
+        List<PetProfile> petList = new ArrayList<>();
+        for(Pet pet : pets){
+            PetProfile profile = new PetProfile(pet);
+            profile.setWikiId(wikiRepository.findByBreedName(pet.getBreed()).get().getId());
+            petList.add(profile);
+        }
 
         PetProfileList petProfileList = PetProfileList.builder()
                 .petProfileList(petList)

@@ -33,6 +33,8 @@ public class PetProfile {
 
     private String description;
 
+    public Long wikiId;
+
     public PetProfile(Pet pet) {
         this.id = pet.getId();
         this.name = pet.getName();
