@@ -141,7 +141,7 @@ public class AdminController {
                     .message("withdrawnPoint : " + totalPoint)
                     .build();
             return ResponseEntity
-                    .badRequest()
+                    .ok()
                     .body(responseDTO);
 
         } catch (Exception e) {

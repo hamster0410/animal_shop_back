@@ -196,13 +196,14 @@ public class PointService {
             throw new IllegalArgumentException("user is not admin");
         }
 
+        Member seller = memberRepository.findByNickname(withdrawDTO.getSellerNickname());
+
         StringTokenizer st = new StringTokenizer(withdrawDTO.getDate(),"-");
         ArrayList<String> date = new ArrayList<>();
         while(st.hasMoreTokens()){
             date.add(st.nextToken());
         }
 
-        System.out.println("here");
 
         Integer year = null;
         Integer month = null;
@@ -218,12 +219,13 @@ public class PointService {
         }else{
             throw new IllegalArgumentException("date error");
         }
-        System.out.println(year + " " + month + " " + day);
 
 
         Specification<Point> specification = Specification.where(null);
         // Pageable 설정 (페이지 당 10개로 제한)
         specification = specification.and(PointSpecification.hasYearAndMonthAndDay(year,month,day));
+
+        specification = specification.and(PointSpecification.findBySellerId(seller.getId()));
 
         List<Point> points = pointRepository.findAll(specification);
         long totalPoint= 0L;

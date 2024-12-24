@@ -4,6 +4,7 @@ import animal_shop.shop.cart_item.entity.CartItem;
 import animal_shop.shop.item.entity.Item;
 import animal_shop.shop.point.entity.Point;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -37,5 +38,14 @@ public class PointSpecification {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<Point> findBySellerId(Long id) {
+        return (root, query, criteriaBuilder) -> {
+            Path<Long> sellerId = root.get("sellerId");
+            // Return the single condition directly
+            return criteriaBuilder.equal(sellerId, id);
+        };
+    }
+
 
 }
