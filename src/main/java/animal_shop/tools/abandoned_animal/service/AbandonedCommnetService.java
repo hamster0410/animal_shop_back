@@ -100,7 +100,7 @@ public class AbandonedCommnetService {
     @Transactional
     public AbandonedCommentDTOResponse getAllComments(Long id, int page) {
         // PageRequest 생성 (한 페이지에 20개씩 출력)
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 21);
 
         // 동물 정보 조회
         AbandonedAnimal abandonedAnimal = abandonedAnimalRepository.findById(id)
