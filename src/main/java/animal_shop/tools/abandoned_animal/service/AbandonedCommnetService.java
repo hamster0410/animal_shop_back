@@ -16,6 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 public class AbandonedCommnetService {
@@ -104,11 +107,16 @@ public class AbandonedCommnetService {
                 .orElseThrow(() -> new RuntimeException("동물 정보가 존재하지 않습니다."));
 
         // 댓글 조회 및 Pagination 처리
-        Page<AbandonedCommentDTO> commentPage = abandonedCommentRepository.findByAbandonedAnimal(abandonedAnimal,pageable);
+        Page<AbandonedComment> commentPage = abandonedCommentRepository.findByAbandonedAnimal(abandonedAnimal,pageable);
+        List<AbandonedCommentDTO> abandonedCommentDTOList = new ArrayList<>();
+        for(AbandonedComment abandonedComment : commentPage){
+            AbandonedCommentDTO abandonedCommentDTO = new AbandonedCommentDTO(abandonedComment);
+            abandonedCommentDTOList.add(abandonedCommentDTO);
+        }
 
         // 응답 데이터 생성
         return AbandonedCommentDTOResponse.builder()
-                .abandonedCommentDTOList(commentPage.getContent()) // 댓글 리스트
+                .abandonedCommentDTOList(abandonedCommentDTOList) // 댓글 리스트
                 .total_count(commentPage.getTotalElements()) // 전체 댓글 개수
                 .build();
     }
