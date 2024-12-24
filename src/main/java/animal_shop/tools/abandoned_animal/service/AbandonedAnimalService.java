@@ -242,7 +242,7 @@ public class AbandonedAnimalService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found")  );
 
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
+        Pageable pageable = (Pageable) PageRequest.of(page,12);
         Page<InterestAnimal> interestAnimals = interestAnimalRepository.findByMember(member,pageable);
         return InterestDTOResponse.builder()
                 .interestAnimalDTOList(interestAnimals.stream().map(InterestAnimalDTO::new).toList())
