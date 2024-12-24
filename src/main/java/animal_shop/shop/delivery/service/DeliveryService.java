@@ -2,6 +2,8 @@ package animal_shop.shop.delivery.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.pay.dto.KakaoCancelRequest;
+import animal_shop.global.pay.service.KakaoPayService;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.delivery.DeliveryStatus;
 import animal_shop.shop.delivery.dto.*;
@@ -43,6 +45,9 @@ public class DeliveryService {
 
     @Autowired
     TokenProvider tokenProvider;
+
+    @Autowired
+    KakaoPayService kakaoPayService;
 
     @Autowired
     OrderRepository orderRepository;
@@ -217,6 +222,9 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryRequestDTO.getDeliveryId())
                 .orElseThrow(() -> new IllegalArgumentException("delivery is not found"));
 
+        if(!member.getId().equals(delivery.getDeliveryItems().get(0).getSellerId())){
+            throw new IllegalArgumentException("seller is not matching");
+        }
 
         Order order = orderRepository.findById(delivery.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("order not found"));
@@ -225,16 +233,23 @@ public class DeliveryService {
             d.setDelivery_revoke(true);
         }
 
-        if(!member.getId().equals(delivery.getDeliveryItems().get(0).getSellerId())){
-            throw new IllegalArgumentException("seller is not matching");
-        }
-
         for(OrderItem orderItem : order.getOrderItems()){
             if(orderItem.getItem().getMember().equals(member) ){
 
                 orderItem.setDelivery_revoke(true);
             }
         }
+        //결제 취소 로직
+        KakaoCancelRequest kakaoCancelRequest = new KakaoCancelRequest();
+        kakaoCancelRequest.setTid(order.getTid());
+        kakaoCancelRequest.setItemName(order.getOrderItems().get(0).getOrder_name() + " 외 " + order.getOrderItems().size() +"건");
+        kakaoCancelRequest.setItemQuantity(String.valueOf(order.getOrderItems().size()));
+        kakaoCancelRequest.setCancelAmount(order.getTotalPrice());
+        kakaoCancelRequest.setCancelTaxFreeAmount(0);
+        kakaoCancelRequest.setCancelVatAmount(0);
+
+        kakaoPayService.kakaoCancel(kakaoCancelRequest);
+
         // optionPrice 값을 추출
 
         return DeliveryRevokeResponse.builder()
@@ -260,11 +275,9 @@ public class DeliveryService {
 
         int itemQuantity = 0;
         int cancelAmount = 0;
-
         for(Long orderItemId : deliveryRevokeDTO.getOrderItemIds()){
             orderItem = orderItemRepository.findById(orderItemId)
                     .orElseThrow(() -> new IllegalArgumentException("order item not found"));
-
             itemQuantity++;
             cancelAmount += orderItem.getOrder_price() * orderItem.getCount();
 
@@ -283,6 +296,17 @@ public class DeliveryService {
         if(!(itemQuantity==1)){
             item_name += "외 " + (itemQuantity -1) + "건";
         }
+
+        //결제 취소 로직
+        KakaoCancelRequest kakaoCancelRequest = new KakaoCancelRequest();
+        kakaoCancelRequest.setTid(orderItem.getOrder().getTid());
+        kakaoCancelRequest.setItemName(item_name);
+        kakaoCancelRequest.setItemQuantity(String.valueOf(itemQuantity));
+        kakaoCancelRequest.setCancelAmount(cancelAmount);
+        kakaoCancelRequest.setCancelTaxFreeAmount(0);
+        kakaoCancelRequest.setCancelVatAmount(0);
+
+        kakaoPayService.kakaoCancel(kakaoCancelRequest);
 
         return DeliveryRevokeResponse.builder()
                 .tid(orderItem.getOrder().getTid())

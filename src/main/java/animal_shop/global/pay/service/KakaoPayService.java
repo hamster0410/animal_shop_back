@@ -3,7 +3,9 @@ package animal_shop.global.pay.service;
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
 import animal_shop.global.pay.dto.*;
+import animal_shop.global.pay.entity.KakaoCancelPay;
 import animal_shop.global.pay.entity.KakaoPay;
+import animal_shop.global.pay.repository.KakaoCancelPayRepository;
 import animal_shop.global.pay.repository.KakaoPayRepository;
 import animal_shop.global.security.TokenProvider;
 import animal_shop.shop.order.entity.Order;
@@ -39,6 +41,9 @@ public class KakaoPayService {
 
     @Autowired
     KakaoPayRepository kakaoPayRepository;
+
+    @Autowired
+    KakaoCancelPayRepository kakaoCancelPayRepository;
 
     @Autowired
     MemberRepository memberRepository;
@@ -168,6 +173,8 @@ public class KakaoPayService {
             );
             Objects.requireNonNull(responseEntity.getBody()).setItem_name(kakaoCancelRequest.getItemName());
             responseEntity.getBody().setQuantity(kakaoCancelRequest.getCancelAmount());
+            KakaoCancelPay kakaoCancelPay = new KakaoCancelPay(responseEntity.getBody());
+            kakaoCancelPayRepository.save(kakaoCancelPay);
         } catch (Exception e) {
             throw new RuntimeException("Kakao API 호출 실패: " + e.getMessage(), e);
         }
