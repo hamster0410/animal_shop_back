@@ -11,6 +11,7 @@ public class AnimalListDTO {
     private Long age;  // 나이 (예: 2019년생)
     private String sex;
     private String location;
+    private String org_nm;
     private String species;
     private String status;
     private String popfile;
@@ -27,6 +28,7 @@ public class AnimalListDTO {
         this.status = animal.getProcessState();
         this.popfile = animal.getPopfile();
         this.neuterYn = animal.getNeuterYn();
+        this.org_nm = animal.getOrgNm();
         this.desertion_no = animal.getDesertionNo();
     }
 }
