@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,17 +43,40 @@ public class PostService {
 
 
     //인기게시글 읽기
-    @Transactional(readOnly = true)
-    public List<PostListDTO> getBestPost(int page) {
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
-        Page<Post> postPage = this.postRepository.findAllByOrderByHitsDesc(pageable);  // Post 페이지 가져오기
-        // Post를 PostListDTO 변환
-        List<PostListDTO> postListDTOList = new ArrayList<>();
+//    @Transactional(readOnly = true)
+//    public List<PostListDTO> getBestPost(int page) {
+//        Pageable pageable = (Pageable) PageRequest.of(page,10);
+//        Page<Post> postPage = this.postRepository.findAllByOrderByHitsDesc(pageable);  // Post 페이지 가져오기
+//        // Post를 PostListDTO 변환
+//        List<PostListDTO> postListDTOList = new ArrayList<>();
+//        return postPage.getContent().stream()
+//                .map(PostListDTO::new)
+//                .collect(Collectors.toList());
+//
+//    }
+    public List<PostListDTO> getBestPost(int page, String sortBy) {
+        Pageable pageable;
+
+        switch (sortBy) {
+            case "heart":
+                pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "countHeart"));
+                break;
+            case "comment":
+                pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "countComment"));
+                break;
+            case "hit":
+            default:
+                pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "hits"));
+                break;
+        }
+
+        Page<Post> postPage = postRepository.findAll(pageable);
+
         return postPage.getContent().stream()
                 .map(PostListDTO::new)
                 .collect(Collectors.toList());
-
     }
+
 
     @Transactional(readOnly = true)
     public List<PostListDTO> getNewPosts(int page) {

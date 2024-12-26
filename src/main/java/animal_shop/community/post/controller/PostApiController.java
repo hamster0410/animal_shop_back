@@ -28,25 +28,46 @@ public class PostApiController {
     private TokenProvider tokenProvider;
 
 
-    @GetMapping({"/", "/best"})
-    public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
-        try {
-            List<PostListDTO> paging = postService.getBestPost(pageId - 1);
-            Long postCount = postService.getPostCount();
-            PostResponseDTO postResponseDTO = PostResponseDTO
-                    .builder()
-                    .posts(paging)
-                    .totalCount(postCount)
-                    .build();
-            return ResponseEntity.ok().body(postResponseDTO);
-        } catch (Exception e) {
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("best_list fail").build();
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDTO);
-        }
+//    @GetMapping({"/", "/best"})
+//    public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
+//        try {
+//            List<PostListDTO> paging = postService.getBestPost(pageId - 1);
+//            Long postCount = postService.getPostCount();
+//            PostResponseDTO postResponseDTO = PostResponseDTO
+//                    .builder()
+//                    .posts(paging)
+//                    .totalCount(postCount)
+//                    .build();
+//            return ResponseEntity.ok().body(postResponseDTO);
+//        } catch (Exception e) {
+//            ResponseDTO responseDTO = ResponseDTO.builder()
+//                    .error("best_list fail").build();
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(responseDTO);
+//        }
+//    }
+@GetMapping({"/", "/best"})
+public ResponseEntity<?> bestList(
+        @RequestParam(value = "page", defaultValue = "1") int pageId,
+        @RequestParam(value = "sortBy") String sortBy) {
+    try {
+        List<PostListDTO> posts = postService.getBestPost(pageId - 1, sortBy);
+
+        PostResponseDTO postResponseDTO = PostResponseDTO
+                .builder()
+                .posts(posts)
+                .totalCount(postService.getPostCount())
+                .build();
+        return ResponseEntity.ok().body(postResponseDTO);
+    } catch (Exception e) {
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .error("best_list fail")
+                .build();
+        return ResponseEntity.badRequest().body(responseDTO);
     }
+}
+
 
 
     @GetMapping("/new")
