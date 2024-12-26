@@ -174,7 +174,7 @@ public class  TokenProvider {
             br.close();
             bw.close();
         }catch (Exception e){
-            e.printStackTrace();
+            throw new IllegalArgumentException("can't get kakao access token");
         }
         return accessToken;
     }
@@ -225,7 +225,7 @@ public class  TokenProvider {
             br.close();
 
         }catch (Exception e){
-            e.printStackTrace();
+            throw new IllegalArgumentException("can't get kakao info");
         }
         return userInfo;
     }

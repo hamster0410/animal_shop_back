@@ -1,5 +1,6 @@
 package animal_shop.community.member.entity;
 
+import animal_shop.community.heart_comment.entity.CommentHeart;
 import animal_shop.global.dto.BaseTimeEntity;
 
 import animal_shop.community.comment.entity.Comment;
@@ -100,6 +101,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InterestAnimal> interestAnimals;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentHeart> commentHearts;
 
 
     @Setter
