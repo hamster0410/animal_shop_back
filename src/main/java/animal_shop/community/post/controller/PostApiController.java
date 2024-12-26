@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostApiController {
 
@@ -28,25 +28,7 @@ public class PostApiController {
     private TokenProvider tokenProvider;
 
 
-//    @GetMapping({"/", "/best"})
-//    public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
-//        try {
-//            List<PostListDTO> paging = postService.getBestPost(pageId - 1);
-//            Long postCount = postService.getPostCount();
-//            PostResponseDTO postResponseDTO = PostResponseDTO
-//                    .builder()
-//                    .posts(paging)
-//                    .totalCount(postCount)
-//                    .build();
-//            return ResponseEntity.ok().body(postResponseDTO);
-//        } catch (Exception e) {
-//            ResponseDTO responseDTO = ResponseDTO.builder()
-//                    .error("best_list fail").build();
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(responseDTO);
-//        }
-//    }
+
 @GetMapping({"/", "/best"})
 public ResponseEntity<?> bestList(
         @RequestParam(value = "page", defaultValue = "1") int pageId,
@@ -65,7 +47,7 @@ public ResponseEntity<?> bestList(
                 .error("best_list fail")
                 .build();
         return ResponseEntity.badRequest().body(responseDTO);
-    }
+
 }
 
 
@@ -90,7 +72,7 @@ public ResponseEntity<?> bestList(
         }
     }
 
-    @GetMapping("/post/{category}")
+    @GetMapping("/{category}")
     public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
             PostResponseDTO postResponseDTO = postService.getCategoryPosts(pageid-1, category);
@@ -108,11 +90,10 @@ public ResponseEntity<?> bestList(
     //게시글 검색
     @GetMapping("/search/{about}")
     public ResponseEntity<?> postSearch(@PathVariable("about") String about,
-                                        @RequestParam("keyword") String keyword,
+                                        @RequestParam(value = "keyword", required = false) String keyword,
                                         @RequestParam(value = "page", defaultValue = "1") int pageid){
         ResponseDTO responseDTO;
         try{
-            System.out.println(about + " " + keyword + " " + pageid + " here ");
             PostResponseDTO postResponseDTO = postService.getSearchPost(about, keyword, pageid-1);
             return ResponseEntity.ok().body(postResponseDTO);
         }catch(Exception e){
@@ -124,12 +105,11 @@ public ResponseEntity<?> bestList(
         }
     }
     //게시글 상세정보 조회
-    @GetMapping("/post/{category}/{post_id}")
+    @GetMapping("/{category}/{post_id}")
     public ResponseEntity<?> getPostById(@RequestHeader(value = "Authorization", required = false) String token,
             @PathVariable("category") String category,
             @PathVariable("post_id") Long postId,
             @RequestParam(value = "page", defaultValue = "1") int page) {
-        System.out.println("check");
         try{
             // 포스트 조회 서비스 호출
             PostDetailDTO postDetailDTO = postService.checkByPostId(postId);
@@ -151,7 +131,7 @@ public ResponseEntity<?> bestList(
     }
 
     // 게시글 저장
-    @PostMapping("/post/write")
+    @PostMapping("/write")
     public ResponseEntity<?> savePost( @RequestHeader("Authorization") String token,
                                        @RequestBody final PostRequest params) {
 

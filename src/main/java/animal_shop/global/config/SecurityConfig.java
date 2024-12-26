@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
 //                        .requestMatchers("/auth/signup", "/auth/signin","/auth/token","/auth/mypage").permitAll()
 //                        .anyRequest().authenticated()
-                            .requestMatchers("/post/write","/*/*/edit","/*/*/delete","/auth/mypage","/mypage/*",
+                            .requestMatchers("/post/write","/post/*/*/edit","/post/*/*/delete","/auth/mypage","/mypage/*",
                                             "seller/*",
                                             "/heart/*","/comment/create/*","/comment/update/*","/comment/delete/*").authenticated()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")

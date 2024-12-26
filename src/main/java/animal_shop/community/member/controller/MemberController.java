@@ -215,7 +215,7 @@ public class MemberController {
         } catch (Exception e) {
 
             responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage())
+                    .error("internal server error")
                     .build();
 
             return ResponseEntity.badRequest().body(responseDTO);

@@ -103,14 +103,30 @@
                     .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
             // 3. 아이템 속성 수정
-            item.setName(itemDTOList.getName());
-            item.setItemDetail(itemDTOList.getItem_detail());
-            item.setCategory(itemDTOList.getCategory());
-            item.setStock_number(itemDTOList.getStock_number());
-            item.setSpecies(itemDTOList.getSpecies());
-            item.setThumbnail_url(itemDTOList.getThumbnailUrls());
-            item.setImage_url(itemDTOList.getImageUrl());
-            item.setDetailed_category(itemDTOList.getDetailed_category());
+            if (itemDTOList.getName() != null) {
+                item.setName(itemDTOList.getName());
+            }
+            if (itemDTOList.getItem_detail() != null) {
+                item.setItemDetail(itemDTOList.getItem_detail());
+            }
+            if (itemDTOList.getCategory() != null) {
+                item.setCategory(itemDTOList.getCategory());
+            }
+            if (itemDTOList.getStock_number() != null) {
+                item.setStock_number(itemDTOList.getStock_number());
+            }
+            if (itemDTOList.getSpecies() != null) {
+                item.setSpecies(itemDTOList.getSpecies());
+            }
+            if (itemDTOList.getThumbnailUrls() != null) {
+                item.setThumbnail_url(itemDTOList.getThumbnailUrls());
+            }
+            if (itemDTOList.getImageUrl() != null) {
+                item.setImage_url(itemDTOList.getImageUrl());
+            }
+            if (itemDTOList.getDetailed_category() != null) {
+                item.setDetailed_category(itemDTOList.getDetailed_category());
+            }
 
             item.getOptions().clear(); // 기존 옵션 제거
 

@@ -423,7 +423,7 @@ public class DeliveryService {
 
     public OrderHistDTOResponse get_deliveryList(String token, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
+        Pageable pageable = (Pageable) PageRequest.of(page,10, Sort.by("deliveredDate").descending());
 
         Page<DeliveryProgress> deliveryProgresses = deliveryProgressRepository.findByBuyerId(Long.valueOf(userId),pageable);
 
@@ -469,7 +469,7 @@ public class DeliveryService {
 
     public OrderHistDTOResponse get_deliveryCompltedList(String token, int page) {
         String userId = tokenProvider.extractIdByAccessToken(token);
-        Pageable pageable = (Pageable) PageRequest.of(page,10, Sort.by("orderDate").descending());
+        Pageable pageable = (Pageable) PageRequest.of(page,10, Sort.by("deliveredDate").descending());
 
         Page<DeliveryCompleted> deliveryCompleteds = deliveryCompletedRepository.findByBuyerId(Long.valueOf(userId),pageable);
         List<DeliveryCustomerDTO> deliveryCustomerDTOList = new ArrayList<>();
