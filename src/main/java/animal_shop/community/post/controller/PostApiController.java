@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostApiController {
 
@@ -28,7 +28,7 @@ public class PostApiController {
     private TokenProvider tokenProvider;
 
 
-    @GetMapping({"/", "/best"})
+    @GetMapping("/best")
     public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
         try {
             List<PostListDTO> paging = postService.getBestPost(pageId - 1);
@@ -69,7 +69,7 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/post/{category}")
+    @GetMapping("/{category}")
     public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
             PostResponseDTO postResponseDTO = postService.getCategoryPosts(pageid-1, category);
@@ -103,7 +103,7 @@ public class PostApiController {
         }
     }
     //게시글 상세정보 조회
-    @GetMapping("/post/{category}/{post_id}")
+    @GetMapping("/{category}/{post_id}")
     public ResponseEntity<?> getPostById(@RequestHeader(value = "Authorization", required = false) String token,
             @PathVariable("category") String category,
             @PathVariable("post_id") Long postId,
@@ -130,7 +130,7 @@ public class PostApiController {
     }
 
     // 게시글 저장
-    @PostMapping("/post/write")
+    @PostMapping("/write")
     public ResponseEntity<?> savePost( @RequestHeader("Authorization") String token,
                                        @RequestBody final PostRequest params) {
 
