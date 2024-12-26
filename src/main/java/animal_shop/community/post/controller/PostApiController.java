@@ -87,11 +87,10 @@ public class PostApiController {
     //게시글 검색
     @GetMapping("/search/{about}")
     public ResponseEntity<?> postSearch(@PathVariable("about") String about,
-                                        @RequestParam("keyword") String keyword,
+                                        @RequestParam(value = "keyword", required = false) String keyword,
                                         @RequestParam(value = "page", defaultValue = "1") int pageid){
         ResponseDTO responseDTO;
         try{
-            System.out.println(about + " " + keyword + " " + pageid + " here ");
             PostResponseDTO postResponseDTO = postService.getSearchPost(about, keyword, pageid-1);
             return ResponseEntity.ok().body(postResponseDTO);
         }catch(Exception e){
@@ -108,7 +107,6 @@ public class PostApiController {
             @PathVariable("category") String category,
             @PathVariable("post_id") Long postId,
             @RequestParam(value = "page", defaultValue = "1") int page) {
-        System.out.println("check");
         try{
             // 포스트 조회 서비스 호출
             PostDetailDTO postDetailDTO = postService.checkByPostId(postId);
