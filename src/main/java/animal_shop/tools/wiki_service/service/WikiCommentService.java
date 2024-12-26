@@ -62,7 +62,7 @@ public class WikiCommentService {
         WikiComment comment = wikiCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
-        if (!comment.getAuthor().equals(member.getUsername())) {
+        if (!comment.getAuthor().equals(member.getNickname())) {
             throw new IllegalStateException("You can only delete your own comments");
         }
 
