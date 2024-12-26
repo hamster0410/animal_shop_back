@@ -5,6 +5,9 @@ import animal_shop.shop.delivery.entity.DeliveryCompleted;
 import animal_shop.shop.delivery.entity.DeliveryItem;
 import animal_shop.shop.delivery.entity.DeliveryProgress;
 import animal_shop.shop.order_item.entity.OrderItem;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 

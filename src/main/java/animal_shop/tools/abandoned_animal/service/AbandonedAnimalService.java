@@ -308,40 +308,7 @@ public class AbandonedAnimalService {
             throw new IllegalArgumentException("Animal is not in 보호중 state, cannot be updated");
         }
     }
-
-    /**
-     * 이메일 본문 생성 메서드
-     */
-//    private String generateEmailBody(String desertionNo, String newState, String careNm, String kindCd) {
-//        return String.format("""
-//                <h1>유기 동물 상태 변경 알림</h1>
-//                <p>안녕하세요</p>
-//                <p>관심을 표현해 주셨던 동물의 상태가 업데이트되었습니다.</p>
-//                <ul>
-//                    <li><b>보호소 이름:</b> %s</li>
-//                    <li><b>유기 번호:</b> %s</li>
-//                    <li><b>품종:</b> %s</li>
-//                    <li><b>상태:</b> %s</li>
-//                </ul>
-//
-//                <p>앞으로도 많은 관심 부탁드립니다. 감사합니다!</p>
-//                """, careNm, desertionNo, kindCd, newState);
-//    }
-//    private String generateEmailBody(String desertionNo, String newState, String careNm, String kindCd, String popfile) {
-//        return String.format("""
-//        <h1 style="color: #2c3e50; font-size: 24px; text-align: center; margin-bottom: 20px;">유기 동물 상태 변경 알림</h1>
-//        <p style="font-size: 18px; font-weight: bold; color: #34495e;">안녕하세요</p>
-//        <p style="font-size: 16px; color: #7f8c8d; margin-bottom: 20px;">관심을 표현해 주셨던 동물의 상태가 업데이트되었습니다.</p>
-//        <ul style="list-style-type: none; padding: 0; font-size: 16px;">
-//            <li style="margin-bottom: 10px;"><b style="color: #2980b9;">보호소 이름:</b> %s</li>
-//            <li style="margin-bottom: 10px;"><b style="color: #2980b9;">유기 번호:</b> %s</li>
-//            <li style="margin-bottom: 10px;"><b style="color: #2980b9;">품종:</b> %s</li>
-//            <li style="margin-bottom: 10px;"><b style="color: #2980b9;">상태:</b> %s</li>
-//        </ul>
-//        <img src='%s' alt='Animal Image' style="width: 300px; height: auto; display: block; margin: 20px auto;">
-//        <p style="font-size: 14px; color: #7f8c8d; text-align: center; margin-top: 20px;">앞으로도 많은 관심 부탁드립니다. 감사합니다!</p>
-//    """, careNm, desertionNo, kindCd, newState, popfile);
-    private String generateEmailBody(String desertionNo, String newState, String careNm, String kindCd, String popfile) {
+  private String generateEmailBody(String desertionNo, String newState, String careNm, String kindCd, String popfile) {
         return String.format("""
         <h1 style="color: #f39c12; font-size: 32px; text-align: center; margin-bottom: 20px; font-family: 'Arial', sans-serif;">🎉 유기 동물 입양 성공 알림 🎉</h1>
         <p style="font-size: 20px; font-weight: bold; color: #27ae60; text-align: center;">안녕하세요! 😊</p>
