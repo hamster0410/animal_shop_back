@@ -47,7 +47,7 @@ public ResponseEntity<?> bestList(
                 .error("best_list fail")
                 .build();
         return ResponseEntity.badRequest().body(responseDTO);
-
+    }
 }
 
 
