@@ -154,10 +154,10 @@ public class PetService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member is not found"));
 
-        Sort sort = Sort.by(Sort.Order.desc("leader")); // leader 1 -> 0
+//        Sort sort = Sort.by(Sort.Order.desc("leader")); // leader 1 -> 0
 
         // 2. 페이징 설정
-        Pageable pageable = PageRequest.of(page, 5,sort); // 한 페이지당 5개 조회
+        Pageable pageable = PageRequest.of(page, 5); // 한 페이지당 5개 조회
 
         // 3. 전체 동물 조회 (회원과 연관된 동물만 조회)
         Page<Pet> pets = petRepository.findByMember(member, pageable);
