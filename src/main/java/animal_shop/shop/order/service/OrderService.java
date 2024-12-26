@@ -373,6 +373,8 @@ public class OrderService {
         String name = "";
         if(!(quantity==1)){
             name = order.getOrderItems().get(0).getItem().getName() + "외 " + (quantity -1) + "건";
+        }else{
+            name = order.getOrderItems().get(0).getItem().getName();
         }
         KakaoReadyRequest kakaoReadyRequest =
                 new KakaoReadyRequest(orderCode, member.getNickname(), name, String.valueOf(quantity), String.valueOf(total_amount));

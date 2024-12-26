@@ -238,7 +238,7 @@ public class SellerController {
             return ResponseEntity.ok().body(deliveryDTOResponse);
         }catch (Exception e){
             responseDTO = ResponseDTO.builder()
-                    .message(e.getMessage())
+                    .error(e.getMessage())
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
