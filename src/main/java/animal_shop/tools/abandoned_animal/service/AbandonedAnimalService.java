@@ -175,7 +175,7 @@ public class AbandonedAnimalService {
         if(animalSearchDTO.getLocation()!=null){
             specification = specification.and(AbandonedAnimalSpecification.locationFilter(animalSearchDTO.getLocation()));
         }
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 21);
         Page<AbandonedAnimal> abandonedAnimals = abandonedAnimalRepository.findAll(specification, pageable);
 
         List<AnimalListDTO> animals = abandonedAnimals.map(AnimalListDTO::new).getContent();
