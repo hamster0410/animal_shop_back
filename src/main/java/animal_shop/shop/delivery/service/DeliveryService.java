@@ -2,6 +2,7 @@ package animal_shop.shop.delivery.service;
 
 import animal_shop.community.member.entity.Member;
 import animal_shop.community.member.repository.MemberRepository;
+import animal_shop.global.admin.entity.StopItem;
 import animal_shop.global.pay.dto.KakaoCancelRequest;
 import animal_shop.global.pay.service.KakaoPayService;
 import animal_shop.global.security.TokenProvider;
@@ -26,11 +27,16 @@ import animal_shop.shop.order_item.repository.OrderItemRepository;
 import animal_shop.shop.point.PointStatus;
 import animal_shop.shop.point.entity.Point;
 import animal_shop.shop.point.repository.PointRepository;
+import animal_shop.tools.abandoned_animal.service.EmailService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +78,12 @@ public class DeliveryService {
 
     @Autowired
     PointRepository pointRepository;
+
+    @Autowired
+    EmailService emailService;
+
+    @Autowired
+    private  JavaMailSender javaMailSender;
 
     @Transactional(readOnly = true)
     public DeliveryDTOResponse get_list(String token, int page) {
@@ -239,6 +251,8 @@ public class DeliveryService {
                 orderItem.setDelivery_revoke(true);
             }
         }
+
+
         //결제 취소 로직
         KakaoCancelRequest kakaoCancelRequest = new KakaoCancelRequest();
         kakaoCancelRequest.setTid(order.getTid());
@@ -250,19 +264,24 @@ public class DeliveryService {
 
         kakaoPayService.kakaoCancel(kakaoCancelRequest);
 
-        // optionPrice 값을 추출
+
+        // 이메일 정보 준비
+        String itemName = delivery.getDeliveryItems().get(0).getItemName() + "외 " + (delivery.getDeliveryItems().size() - 1) + "건";
+        String buyerName = order.getMember().getUsername();
+        String sellerName = delivery.getMember().getNickname();
+        int itemQuantity = delivery.getDeliveryItems().size();
+        long cancelAmount = delivery.getDeliveryItems().stream()
+                .mapToLong(deliveryItem -> deliveryItem.getQuantity() * deliveryItem.getOptionPrice())
+                .sum();
+
+        sendCancellationEmail(order.getMember().getMail(), itemName, itemQuantity, (int) cancelAmount, sellerName, buyerName);
 
         return DeliveryRevokeResponse.builder()
                 .tid(order.getTid())
-                .itemName(delivery.getDeliveryItems().get(0).getItemName() + "외 " + (delivery.getDeliveryItems().size() -1) + "건")
-                .itemQuantity(String.valueOf(delivery.getDeliveryItems().size()))
-                .cancelAmount(
-                        delivery.getDeliveryItems().stream()
-                                .mapToLong(deliveryItem -> deliveryItem.getQuantity() * deliveryItem.getOptionPrice()) // optionPrice 값을 추출
-                                .sum()
-                )
+                .itemName(itemName)
+                .itemQuantity(String.valueOf(itemQuantity))
+                .cancelAmount(cancelAmount)
                 .build();
-
     }
 
     @Transactional
@@ -271,7 +290,7 @@ public class DeliveryService {
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
 
-        OrderItem orderItem=null;
+        OrderItem orderItem = null;
 
         int itemQuantity = 0;
         int cancelAmount = 0;
@@ -291,11 +310,15 @@ public class DeliveryService {
 
             deliveryItem.setDelivery_revoke(true);
         }
-        String item_name = Objects.requireNonNull(orderItem).getOrder_name();
 
-        if(!(itemQuantity==1)){
-            item_name += "외 " + (itemQuantity -1) + "건";
+        String item_name = orderItem.getItem().getName();
+        String sellerName = orderItem.getItem().getMember().getNickname();
+//        String buyer_name = orderItem.getUsername();
+        if(itemQuantity != 1){
+            item_name += "외 " + (itemQuantity - 1) + "건";
         }
+
+
 
         //결제 취소 로직
         KakaoCancelRequest kakaoCancelRequest = new KakaoCancelRequest();
@@ -308,6 +331,9 @@ public class DeliveryService {
 
         kakaoPayService.kakaoCancel(kakaoCancelRequest);
 
+        // 구매자에게 주문 취소 알림 메일 전송
+        sendCancellationEmail(orderItem.getOrder().getMember().getMail(), item_name, itemQuantity, cancelAmount, sellerName,orderItem.getOrder().getMember().getUsername());
+
         return DeliveryRevokeResponse.builder()
                 .tid(orderItem.getOrder().getTid())
                 .itemQuantity(String.valueOf(itemQuantity))
@@ -315,6 +341,36 @@ public class DeliveryService {
                 .itemName(item_name)
                 .build();
     }
+
+    private void sendCancellationEmail(String email, String itemName, int itemQuantity, int cancelAmount, String sellerName,String userName) {
+        String subject = "주문 취소 알림";
+        String message = String.format(
+                "<h1>안녕하세요, %s님</h1>" +
+                        "<p>구매하신 상품이 판매자(%s)에 의해 취소되었습니다.</p>" +
+                        "<ul>" +
+                        "<li><b>상품명:</b> %s</li>" +
+                        "<li><b>취소 수량:</b> %d</li>" +
+                        "<li><b>취소 금액:</b> %d원</li>" +
+                        "</ul>" +
+                        "<p>추가 문의사항은 고객센터로 연락 부탁드립니다.</p>",
+                userName, sellerName, itemName, itemQuantity, cancelAmount
+        );
+
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(message, true);  // true = HTML 형식
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
+
     public void createDelivery(Member m, List<OrderItem> orderItems, Order order) {
         Delivery delivery = new Delivery(m, orderItems, order);
         deliveryRepository.save(delivery);
