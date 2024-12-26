@@ -152,11 +152,21 @@ public class ShopService {
                 .build();
     }
 
+    public MainDTOBestResponse new_contents(String species, int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        Page<Item> best = itemRepository.findBySpecies(species,ItemSellStatus.STOP,pageable);
+        return MainDTOBestResponse.builder()
+                .goods(best.stream().map(MainDTO::new).toList())
+                .total_count(best.getTotalElements())
+                .build();
+    }
+
     @Transactional(readOnly = true)
-    public MainDTOBestResponse best_contents(int page) {
+    public MainDTOBestResponse best_contents(String species, int page) {
         Pageable pageable = (Pageable) PageRequest.of(page,20);
 
-        Page<Item> best = itemRepository.findAll(pageable);
+        Page<Item> best = itemRepository.findAllBySpeciesOrderByRatingPerComment(species,pageable);
         return MainDTOBestResponse.builder()
                 .goods(best.stream().map(MainDTO::new).toList())
                 .total_count(best.getTotalElements())
@@ -241,6 +251,7 @@ public class ShopService {
                 .total_count(total_count)
                 .build();
     }
+
 }
 
 

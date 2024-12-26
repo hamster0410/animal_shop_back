@@ -22,6 +22,7 @@ public interface ItemRepository extends JpaRepository<Item,Long>, JpaSpecificati
 
     @Query("SELECT i FROM Item i " +
             "WHERE i.species = :species " +
+            "AND i.itemSellStatus != ItemSellStatus.STOP " +
             "ORDER BY (i.total_rating / CASE WHEN i.comment_count = 0 THEN 1 ELSE i.comment_count END) DESC")
     Page<Item> findAllBySpeciesOrderByRatingPerComment(@Param("species") String species, Pageable pageable);
 

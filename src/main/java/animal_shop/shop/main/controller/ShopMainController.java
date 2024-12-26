@@ -34,11 +34,30 @@ public class ShopMainController {
         }
     }
 
-    @GetMapping("/best")
-    public ResponseEntity<?> shop_best(@RequestParam(value = "page", defaultValue = "1")int page){
+    @GetMapping("/new")
+    public ResponseEntity<?> shop_new(@RequestParam(value = "page", defaultValue = "1")int page,
+                                      @RequestParam(value = "species", defaultValue = "dog")String species){
         ResponseDTO responseDTO;
         try{
-            MainDTOBestResponse mainDTOBestResponse = shopService.best_contents(page -1);
+            MainDTOBestResponse mainDTOBestResponse = shopService.new_contents(species,page -1);
+
+            return ResponseEntity.ok().body(mainDTOBestResponse);
+
+        }catch (Exception e){
+
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<?> shop_best(@RequestParam(value = "page", defaultValue = "1")int page,
+                                       @RequestParam(value = "species", defaultValue = "dog")String species){
+        ResponseDTO responseDTO;
+        try{
+            MainDTOBestResponse mainDTOBestResponse = shopService.best_contents(species,page -1);
 
             return ResponseEntity.ok().body(mainDTOBestResponse);
 
