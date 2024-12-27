@@ -23,5 +23,7 @@ public class MyPageDTO {
 
     private String petProfile;
 
+    private String petName;
+
     private Role role;
 }

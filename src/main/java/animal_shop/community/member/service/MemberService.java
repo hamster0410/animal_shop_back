@@ -300,9 +300,11 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(userId);
         if (member.isPresent()) {
             String petProfile = null;
+            String petName = null;
             for(Pet p : member.get().getPets()){
                 if(p.getLeader()){
                     petProfile = p.getProfileImageUrl();
+                    petName = p.getName();
 
                 }
             }
@@ -313,6 +315,7 @@ public class MemberService {
                     .nickname(member.get().getNickname())
                     .profile(member.get().getProfile())
                     .petProfile(petProfile)
+                    .petName(petName)
                     .role(member.get().getRole())
                     .build();
         }
