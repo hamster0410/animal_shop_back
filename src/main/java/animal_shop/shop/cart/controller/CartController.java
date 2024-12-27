@@ -58,6 +58,7 @@ public class CartController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
     @PostMapping("/detail/{cartItemId}")
     public ResponseEntity<?> cartItemDetail(@RequestHeader(value = "Authorization")String token,
                                             @PathVariable(value = "cartItemId") Long cartItemId,
