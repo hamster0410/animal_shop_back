@@ -252,6 +252,11 @@ public class DeliveryService {
             }
         }
 
+        // itemQuantity 계산: 배송 아이템들의 전체 수량 합산
+        int itemQuantity = delivery.getDeliveryItems().stream()
+                .mapToInt(DeliveryItem::getQuantity)
+                .sum();
+
 
         //결제 취소 로직
         KakaoCancelRequest kakaoCancelRequest = new KakaoCancelRequest();
@@ -269,7 +274,7 @@ public class DeliveryService {
         String itemName = delivery.getDeliveryItems().get(0).getItemName() + "외 " + (delivery.getDeliveryItems().size() - 1) + "건";
         String buyerName = order.getMember().getUsername();
         String sellerName = delivery.getMember().getNickname();
-        int itemQuantity = delivery.getDeliveryItems().size();
+//        int itemQuantity = delivery.getDeliveryItems().size();
         long cancelAmount = delivery.getDeliveryItems().stream()
                 .mapToLong(deliveryItem -> deliveryItem.getQuantity() * deliveryItem.getOptionPrice())
                 .sum();
@@ -294,10 +299,12 @@ public class DeliveryService {
 
         int itemQuantity = 0;
         int cancelAmount = 0;
+        int totalItemCount = 0;
         for(Long orderItemId : deliveryRevokeDTO.getOrderItemIds()){
             orderItem = orderItemRepository.findById(orderItemId)
                     .orElseThrow(() -> new IllegalArgumentException("order item not found"));
             itemQuantity++;
+            totalItemCount = orderItem.getCount();
             cancelAmount += orderItem.getOrder_price() * orderItem.getCount();
 
             orderItem.setDelivery_revoke(true);
@@ -318,9 +325,7 @@ public class DeliveryService {
             item_name += "외 " + (itemQuantity - 1) + "건";
         }
 
-
-
-        //결제 취소 로직
+        // 결제 취소 로직
         KakaoCancelRequest kakaoCancelRequest = new KakaoCancelRequest();
         kakaoCancelRequest.setTid(orderItem.getOrder().getTid());
         kakaoCancelRequest.setItemName(item_name);
@@ -332,7 +337,7 @@ public class DeliveryService {
         kakaoPayService.kakaoCancel(kakaoCancelRequest);
 
         // 구매자에게 주문 취소 알림 메일 전송
-        sendCancellationEmail(orderItem.getOrder().getMember().getMail(), item_name, itemQuantity, cancelAmount, sellerName,orderItem.getOrder().getMember().getUsername());
+        sendCancellationEmail(orderItem.getOrder().getMember().getMail(), item_name, totalItemCount, cancelAmount, sellerName, orderItem.getOrder().getMember().getUsername());
 
         return DeliveryRevokeResponse.builder()
                 .tid(orderItem.getOrder().getTid())
@@ -342,18 +347,18 @@ public class DeliveryService {
                 .build();
     }
 
-    private void sendCancellationEmail(String email, String itemName, int itemQuantity, int cancelAmount, String sellerName,String userName) {
+    private void sendCancellationEmail(String email, String itemName, int itemCount, int cancelAmount, String sellerName, String userName) {
         String subject = "주문 취소 알림";
         String message = String.format(
                 "<h1>안녕하세요, %s님</h1>" +
                         "<p>구매하신 상품이 판매자(%s)에 의해 취소되었습니다.</p>" +
                         "<ul>" +
                         "<li><b>상품명:</b> %s</li>" +
-                        "<li><b>취소 수량:</b> %d</li>" +
+                        "<li><b>취소 수량:</b> %d</li>" + // itemQuantity 수정
                         "<li><b>취소 금액:</b> %d원</li>" +
                         "</ul>" +
                         "<p>추가 문의사항은 고객센터로 연락 부탁드립니다.</p>",
-                userName, sellerName, itemName, itemQuantity, cancelAmount
+                userName, sellerName, itemName, itemCount, cancelAmount // 여기에서 itemQuantity를 사용
         );
 
         try {
