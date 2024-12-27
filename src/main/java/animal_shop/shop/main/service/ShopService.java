@@ -112,7 +112,7 @@ public class ShopService {
                     animal_custom = searchItem("Cat","food","adult",ItemSellStatus.SELL).getGoods();
 
                 }else{
-                    animal_custom = searchItem("Cat","treats","nutritional/functional",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Cat","treats","nutritional-functional",ItemSellStatus.SELL).getGoods();
                 }
             }
         }else {
@@ -127,9 +127,9 @@ public class ShopService {
             if(pet.getSpecies().equals(Pet.PetSpecies.DOG)){
                 log.info("recommend weight dog");
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = searchItem("Dog","treats","nutritional/functional",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Dog","treats","nutritional-functional",ItemSellStatus.SELL).getGoods();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = searchItem("Dog","supplies","clothing/accessories",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Dog","supplies","clothing-accessories",ItemSellStatus.SELL).getGoods();
                 } else {
                     animal_custom = searchItem("Dog","supplies","walking_supplies",ItemSellStatus.SELL).getGoods();
                 }
@@ -137,11 +137,11 @@ public class ShopService {
                 //고양이일 경우
                 log.info("recommend weight cat");
                 if (pet.getWeight() < animalWeight.getLow_weight()) {
-                    animal_custom = searchItem("Cat","treats","nutritional/functional",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Cat","treats","nutritional-functional",ItemSellStatus.SELL).getGoods();
                 } else if (pet.getWeight() > animalWeight.getHigh_weight()) {
-                    animal_custom = searchItem("Cat","supplies","tunnels/hunting_instinct",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Cat","supplies","tunnels-hunting_instinct",ItemSellStatus.SELL).getGoods();
                 } else {
-                    animal_custom = searchItem("Cat","supplies","fishing_rods/lasers",ItemSellStatus.SELL).getGoods();
+                    animal_custom = searchItem("Cat","supplies","fishing_rods-lasers",ItemSellStatus.SELL).getGoods();
                 }
             }
         }
