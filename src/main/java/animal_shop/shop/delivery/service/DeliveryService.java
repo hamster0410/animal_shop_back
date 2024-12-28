@@ -94,6 +94,7 @@ public class DeliveryService {
 
         Page<Delivery> deliveries = deliveryRepository.findByMember(member, pageable);
         List<DeliveryDTO> deliveryDTOList = new ArrayList<>();
+        //이 사람 에게 온 배달리스트 검색
         for(Delivery delivery : deliveries){
             DeliveryDTO dto = new DeliveryDTO();
             Member customer = memberRepository.findById(delivery.getDeliveryItems().get(0).getBuyerId())
@@ -446,7 +447,7 @@ public class DeliveryService {
 
             if (!hashMap.containsKey(deliveryProgress.getOrderId())) {
                 hashMap.put(deliveryProgress.getOrderId(), new ArrayList<OrderItemDTO>());
-                hashMap.get(deliveryProgress.getOrderId()).add(new OrderItemDTO(deliveryProgress,deliveryItem, orderItem));
+                hashMap.get(deliveryProgress.getOrderId()).add(new OrderItemDTO(deliveryProgress, deliveryItem, orderItem));
             } else {
                 hashMap.get(deliveryProgress.getOrderId()).add(new OrderItemDTO(deliveryProgress,deliveryItem, orderItem));
             }

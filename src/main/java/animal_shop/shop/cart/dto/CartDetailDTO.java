@@ -19,6 +19,8 @@ public class CartDetailDTO {
 
     private Long option_price;
 
+    private Long discount_rate;
+
     private String imgUrl;
 
     public CartDetailDTO() {}
@@ -27,6 +29,7 @@ public class CartDetailDTO {
         this.cartItemId = cartItem.getId();
         this.itemId = cartItem.getItem().getId();
         this.itemNm = cartItem.getItem().getName();
+        this.discount_rate = cartItem.getOption().getDiscount_rate();
         this.count = cartItem.getCount();
         this.option_name = cartItem.getOption().getName();
         this.option_price = cartItem.getOption().getPrice();
