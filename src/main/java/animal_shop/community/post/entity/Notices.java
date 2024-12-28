@@ -20,7 +20,8 @@ public class Notices extends BaseTimeEntity {
     @Column(nullable = false, length = 255)
     private String title; // 공지사항 제목
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 3000)
+
     private String content; // 공지사항 내용
 
     @Column(name = "sender_id", nullable = false)
