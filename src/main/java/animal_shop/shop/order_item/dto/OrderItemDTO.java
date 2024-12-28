@@ -49,7 +49,7 @@ public class OrderItemDTO {
 
     public OrderItemDTO(DeliveryProgress deliveryProgress,DeliveryItem deliveryItem, OrderItem orderItem) {
         this.itemId = orderItem.getItem().getId();
-        this.delivery_item_id = deliveryProgress.getDeliveryItemId();
+        this.delivery_item_id = deliveryProgress.getId();
         this.itemNm = deliveryItem.getItemName();
         this.count = deliveryItem.getQuantity();
         this.orderPrice = Math.toIntExact(deliveryItem.getOptionPrice());
@@ -59,7 +59,7 @@ public class OrderItemDTO {
 
     public OrderItemDTO(DeliveryCompleted deliveryCompleted, DeliveryItem deliveryItem, OrderItem orderItem) {
         this.itemId = orderItem.getItem().getId();
-        this.delivery_item_id = deliveryCompleted.getDeliveryItemId();
+        this.delivery_item_id = deliveryCompleted.getId();
         this.itemNm = deliveryItem.getItemName();
         this.count = deliveryItem.getQuantity();
         this.orderPrice = Math.toIntExact(deliveryItem.getOptionPrice());

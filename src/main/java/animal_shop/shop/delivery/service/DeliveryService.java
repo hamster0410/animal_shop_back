@@ -521,6 +521,7 @@ public class DeliveryService {
 
         String userId = tokenProvider.extractIdByAccessToken(token);
         for(Long id : deliveryCheckDTO.getDeliveryProgressId()){
+            System.out.println("here " + id);
             DeliveryProgress deliveryProgress = deliveryProgressRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("deliveryProgress is not found"));
 
