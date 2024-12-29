@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,7 @@ public class ItemCommentService {
     public ItemCommentDTOResponse getCommentsByItemId(Long itemId, String token, int page,String about) {
 
         List<ItemCommentDTO> commentDTOS = new ArrayList<>();
-        Pageable pageable = (Pageable) PageRequest.of(page,20);
+        Pageable pageable = (Pageable) PageRequest.of(page,20, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         //해당 상품의 댓글들 조회
         Page<ItemComment> comments;
