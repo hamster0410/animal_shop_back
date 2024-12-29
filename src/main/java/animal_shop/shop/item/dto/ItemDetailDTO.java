@@ -28,7 +28,9 @@ public class ItemDetailDTO {
 
    private Long comment_count;
 
-   private List<String> thumbnail_url;
+    private Long rating;
+
+    private List<String> thumbnail_url;
 
    private String image_url;
 
@@ -52,6 +54,11 @@ public class ItemDetailDTO {
        this.stock_number = item.getStock_number();
        this.item_detail = item.getItemDetail();
        this.options = list;
+       long ar = 0L;
+       if(item.getComment_count() != 0){
+           ar = item.getTotal_rating()/item.getComment_count();
+       }
+       this.rating = ar;
        this.category = item.getCategory();
        this.detailed_category = item.getDetailed_category();
        this.seller = item.getMember().getNickname();
@@ -75,6 +82,11 @@ public class ItemDetailDTO {
             OptionDTO optionDTO = new OptionDTO(option);
             list.add(optionDTO);
         }
+        long ar = 0L;
+        if(item.getComment_count() != 0){
+            ar = item.getTotal_rating()/item.getComment_count();
+        }
+        this.rating = ar;
         this.sell_status = item.getItemSellStatus();
         this.stock_number = item.getStock_number();
         this.item_detail = item.getItemDetail();
