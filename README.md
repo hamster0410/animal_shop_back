@@ -6,6 +6,7 @@
 - 개요
     - 프로젝트 목적
     - 아이디어 및 배경
+    - 프로젝트 플랜
 - 팀원
     - 소개 및 역할 분담
 - 설계
@@ -14,6 +15,7 @@
     - 프로젝트 구조
     - REST API 설계
     - ERD 설계
+    - 흐름도
 - 동작 화면
 - issue 사항
 <br/>
@@ -21,40 +23,49 @@
 
 # 📌 프로젝트 목적
 
-- 게시판 CRUD를 기반으로한 웹 게시판 구축
-- REST API를 기반으로 프레임워크간 통신 구현
+- 반려동물 정보를 기반으로한 내 반려동물 맞춤 플랫폼 
+- 위치기반 정보, 공공 API를 기반으로한 서비스 제공 
 <br/>
 
 
 # 💡 아이디어 및 배경
 
-- 인기 유튜버 **침착맨**의 팬카페인 **침하하**를 모티브로 하여 우리를 가르치느라 수고하시는 강사님에 대한 웹 게시판을 구축하고자 하였습니다.
-- 참여형 게시판을 통해 학생들이 서로 코딩 지식을 공유하거나 강사님 명대사나 질문란 등 학생과 강사님간에 소통의 공간을 마련하고자 하였습니다.
+- 반려동물을 키우는 사람들이 내가 키우는 반려동물에 대해 더 잘 알고 다양한 생각을 공유하는게 좋다는 생각이 들었습니다. (커뮤니티, 동물백과, 펫 정보 계산기)
+- 반려동물을 키우는 사람들이 더 잘 키울 수 있기를 바랍니다. (쇼핑몰 운영 & 관리자와 채팅)
+- 반려동물과 함께 가볼만한 곳을 알려주고 싶었습니다. (펫 동반시설 지도 검색)
+- 반려동물에게 새 가족을 만들어 주고 싶었습니다. (유기동물 관심상태 등록 및 상태 메일 전송)
+  
 <br/>
 
+# 📅 프로젝트 플랜
+![image](https://github.com/user-attachments/assets/01d58b8b-4d09-4617-a349-842844335a8d)
+
+<br/>
 
 # 🤼 팀 멤버 소개
 
 | **항목**     | **선우**                                                                                      | **소진**                                                                                      | **정아**                                                                                      | **혁주**                                                                                      |
 |:------------|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|
 | **사진**     | ![한선우](https://avatars.githubusercontent.com/u/120350053?v=4)                              | ![최소진](https://github.com/user-attachments/assets/646fbee6-a1b8-402e-9b91-93dd2c31a778)   | ![최정아](https://github.com/user-attachments/assets/20aab45b-c93b-4166-9c77-acb1288f47fe)   | ![석혁주](https://avatars.githubusercontent.com/u/140710676?v=4)   |
-| **역할**     | BackEnd                                                                                     | FrontEnd                                                                                     | FrontEnd                                                                                     | BackEnd                                                                                     |
+| **역할**     | BackEnd(팀장)                                                                                     | FrontEnd(부팀장)                                                                                     | FrontEnd                                                                                     | BackEnd                                                                                     |
 | **GitHub**   | [한선우 GitHub](https://github.com/hamster0410)                                               | [최소진 GitHub](https://github.com/sosojean)                                                 | [최정아 GitHub](https://github.com/berryicebox)                                              | [석혁주 GitHub](https://github.com/cocoboll0)                                              |
-| **주 작업**  | 1. 팀 일정 관리<br>2. 프로젝트 계획 및 관리<br>3. REST API 명세 작성 및 구현<br>4. ERD 설계<br>5. JWT 토큰 인증 구현<br>6. 게시판 CRUD, 좋아요, 댓글 구현 | 1. 회원 관련 기능<br>2. 글 목록 조회 및 수정 삭제<br>3. 이미지 업로드<br>4. 댓글 및 대댓글 로직 구현<br>5. 검색 기능<br>6. 게시글 삭제 및 수정 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 |
+| **주 작업**  | 1. 팀 전체 관리 <br>2. REST API 설계<br>3. ERD 설계 <br>4. 소셜 로그인, 페이, 소켓 채팅 구현<br>5. 쇼핑몰 CRUD 구현 <br>6. 발표 | 1. 프로젝트 기획 <br>2. 백엔드 통신 설계 <br>3. 지도, 채팅 구현 <br>4. 댓글 및 대댓글 로직 구현<br>5. 판매 데이터 분석 툴 구현<br>6. React 프로젝트 관리 | 1. 팀 회의 서기 <br>2. 내 반려동물 정보 기반 계산기 구현 <br>3. 동물 백과 구현<br>4. 유기동물 검색 구현 <br>5. 커스텀 훅 생성 및 적용 | 1. 팀 일정 관리<br> 2. 오픈 API 전처리 <br>3. 쇼핑몰 CRUD 구현 <br>4. API 명세서 작성 <br>5. 코드 리팩토링 & QA <br>6. 발표 자료 작성 |
 <br/>
 
 
 # 🔑 주요 기능
 
-- **회원 관리**
-    - JWT 토큰 기반 인증 방식을 활용하여 회원가입, 로그인 유지, 회원 전용 기능을 구현했습니다.
-- **강사님과의 소통 기능 강화**
-    - 조회수 및 좋아요 수를 기반으로 인기글과 전체글을 제공하며, 페이징 처리를 포함한 게시판 CRUD 기능을 구축했습니다.
-    - 토스트 에디터를 활용해 이미지 업로드 기능을 지원하고, 카테고리별 게시글 분류 및 게시 가능하도록 설계했습니다.
-    - 댓글 및 좋아요 기능을 통해 사용자 간 상호작용을 촉진했습니다.
-- **게시글 검색 기능**
-    - 카테고리별 검색 기능을 통해 특정 게시글을 빠르고 효율적으로 찾을 수 있도록 구현했습니다.
+- **커뮤니티**
+    - 다양한 카테고리를 가진 게시판을 통해 반려동물을 키우는 사람들이 원하는 주제로 소통합니다. 
+- **쇼핑몰**
+    - 반려동물을 키우는데 필요한 물건들을 사용자가 직접 사고 판매합니다. 
+- **유틸리티**
+    - 반려동물을 키우는데 도움이 될만한 기능들을 추가했습니다. 
 
+
+![image](https://github.com/user-attachments/assets/63dcb502-59a0-4260-86c6-4602f4ed6461)
+
+    
 # <img src="https://github.com/user-attachments/assets/c358e165-b991-4930-85b1-cddc0433a5d9" width="50"> 사용된 기술 스택
 
 ![제목을-입력해주세요_-001 (1)](https://github.com/user-attachments/assets/18c49e68-3f1c-4d78-9563-f814e80bacf4)
@@ -89,142 +100,142 @@ Front End (React)
 Back End (Spring Boot)
 
 project/
-├── community
-│   ├── comment
+├── community                 //애니멀핑 커뮤니티 도메인
+│   ├── comment               //댓글 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── heart_comment
+│   ├── heart_comment         //댓글 좋아요 CRUD
 │   │   ├── controller
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── heart_post
+│   ├── heart_post            //게시글 좋아요 CRUD
 │   │   ├── controller
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── member
+│   ├── member                //회원 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   └── post
+│   └── post                   //게시글 CRUD
 │       ├── controller
 │       ├── dto
 │       ├── entity
 │       ├── repository
 │       └── service
-├── global
-│   ├── admin
+├── global                    // 전체 프로젝트에서 공통적으로 쓰이는 서비스 모음
+│   ├── admin                 // 관리자 기능 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── config
-│   ├── controller
-│   ├── dto
-│   ├── init
-│   ├── pay
+│   ├── config                // 내부 보안 설정, 소켓 통신 
+│   ├── controller            // 파일 입출력 Controller
+│   ├── dto    
+│   ├── init                  // 프로젝트 실행 시 초기 세팅(디렉토리 생성 등)
+│   ├── pay                   // 결제 구현 CRUD
 │   │   ├── config
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── security
+│   ├── security              // spring security, jwt token provider
 │   └── service
-├── shop
-│   ├── cart
+├── shop                      // 애니멀핑 쇼핑몰 도메인
+│   ├── cart                  // 장바구니 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── cart_item
+│   ├── cart_item             // 장바구니 상품 CRUD
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── delivery
+│   ├── delivery              // 배송 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── item
+│   ├── item                  // 상품 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── item_comment
+│   ├── item_comment          // 상품 리뷰 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── item_comment_like
+│   ├── item_comment_like     // 상품 리뷰 좋아요 CRUD
 │   │   ├── controller
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── main
+│   ├── main                  // 메인페이지 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   └── service
-│   ├── order
+│   ├── order                 // 주문 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── order_item
+│   ├── order_item             // 주문 상품 CRUD
 │   │   ├── dto
 │   │   ├── entity
 │   │   └── repository
-│   ├── pet
+│   ├── pet                    // 반려동물 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   ├── point
+│   ├── point                  // 상품 결제 포인트 CRUD
 │   │   ├── controller
 │   │   ├── dto
 │   │   ├── entity
 │   │   ├── repository
 │   │   └── service
-│   └── seller
+│   └── seller                 // 판매자 기능 CRUD
 │       └── controller
-└── tools
-    ├── abandoned_animal
+└── tools                      // 유틸리티(지도 검색, 유기동물, 동물 백과, 펫 계산기)
+    ├── abandoned_animal       // 유기동물 CRUD
     │   ├── controller
     │   ├── dto
     │   ├── entity
     │   ├── repository
     │   └── service
-    ├── calculate
+    ├── calculate              // 계산기 CRUD
     │   ├── controller
     │   ├── dto
     │   └── service
-    ├── chat
-    │   ├── controller
-    │   ├── dto
-    │   ├── entity
-    │   ├── repository
-    │   └── service
-    ├── map_service
+    ├── chat                   // 채팅 CRUD
     │   ├── controller
     │   ├── dto
     │   ├── entity
     │   ├── repository
     │   └── service
-    └── wiki_service
+    ├── map_service            // 지도 CRUD
+    │   ├── controller
+    │   ├── dto
+    │   ├── entity
+    │   ├── repository
+    │   └── service
+    └── wiki_service            // 동물 백과 CRUD 
         ├── controller
         ├── dto
         ├── entity
@@ -240,8 +251,13 @@ project/
 
 
 # 🧱  ERD 설계
+![image](https://github.com/user-attachments/assets/a4397905-9aed-4d24-98bd-a0f2a90fd18e)
 
-![image](https://github.com/user-attachments/assets/21368172-5e77-4df5-890b-b0e89556abee)
+<br/>
+
+# 🔄  흐름도
+![image](https://github.com/user-attachments/assets/1c9fef65-06da-4069-a697-d29406a87bdd)
+
 <br/>
 
 
