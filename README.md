@@ -89,421 +89,152 @@ Front End (React)
 Back End (Spring Boot)
 
 project/
-├── domain/
-│   ├── comment/           # 댓글 도메인 (아래 동일)
-│   │      ├── controller           
-│   │      ├── dto                  
-│   │      ├── entity               
-│   │      ├── repository           
-│   │      └── service 
-│   │
-│   ├── heart/             # 좋아요 도메인
-│   ├── member/            # 회원 도메인
-│   └── post/              # 게시글 도메인
-│   
-│   
-└── global/
-    ├── config/              # 보안 및 허용 경로 설정
-    ├── controller/          # 이미지 파일 업로드 
-    ├── dto/                 # 기본 시간 및 응답 형식
-    ├── init/                # 시작 시 초기 디렉토리 설정
-    └── security/            # jwt 인증 필터 및 토큰 생성자
+├─community
+│  ├─comment
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─heart_comment
+│  │  ├─controller
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─heart_post
+│  │  ├─controller
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─member
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  └─post
+│      ├─controller
+│      ├─dto
+│      ├─entity
+│      ├─repository
+│      └─service
+├─global
+│  ├─admin
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─config
+│  ├─controller
+│  ├─dto
+│  ├─init
+│  ├─pay
+│  │  ├─config
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─security
+│  └─service
+├─shop
+│  ├─cart
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─cart_item
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─delivery
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─item
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─item_comment
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─item_comment_like
+│  │  ├─controller
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─main
+│  │  ├─controller
+│  │  ├─dto
+│  │  └─service
+│  ├─order
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─order_item
+│  │  ├─dto
+│  │  ├─entity
+│  │  └─repository
+│  ├─pet
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  ├─point
+│  │  ├─controller
+│  │  ├─dto
+│  │  ├─entity
+│  │  ├─repository
+│  │  └─service
+│  └─seller
+│      └─controller
+└─tools
+    ├─abandoned_animal
+    │  ├─controller
+    │  ├─dto
+    │  ├─entity
+    │  ├─repository
+    │  └─service
+    ├─calculate
+    │  ├─contrtoller
+    │  ├─dto
+    │  └─service
+    ├─chat
+    │  ├─controller
+    │  ├─dto
+    │  ├─entity
+    │  ├─repository
+    │  └─service
+    ├─map_service
+    │  ├─controller
+    │  ├─dto
+    │  ├─entity
+    │  ├─repository
+    │  └─service
+    └─wiki_service
+        ├─controller
+        ├─dto
+        ├─entity
+        ├─repository
+        └─service
 ```
 <br/>
 
 
 # ✉️ REST API 명세서
-
-<details>
-<summary>1. 메인페이지 (인기글)</summary>
-
-- **Method**: GET  
-- **URL**: `/`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 인기글 목록과 전체 글 수  
-    ```json
-    {
-        "posts": [
-            {
-                "id": 7,
-                "title": "Sample Title 7",
-                "hits": 400,
-                "nickname": "nick7",
-                "category": "Category7",
-                "count_comment": 7,
-                "count_heart": 5,
-                "createdDate": "2024-11-01T16:57:03"
-            }
-        ],
-        "totalCount": 31
-    }
-    ```
-
-</details>
-
-<details>
-<summary>2. 인기글</summary>
-
-- **Method**: GET  
-- **URL**: `/best?page=1`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 해당 페이지의 인기글 리스트
-
-</details>
-
-<details>
-<summary>3. 전체글</summary>
-
-- **Method**: GET  
-- **URL**: `/new?page=1`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 해당 페이지의 전체글 리스트
-
-</details>
-
-<details>
-<summary>4. 카테고리 페이지 리스트</summary>
-
-- **Method**: GET  
-- **URL**: `/{category}?page=0`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 해당 카테고리의 글 리스트
-
-</details>
-
-<details>
-<summary>5. 회원가입</summary>
-
-- **Method**: POST  
-- **URL**: `/auth/signup`  
-- **입력 데이터**: 
-    ```json
-    {
-        "username": "abc",
-        "password": "pw",
-        "nickname": "tiny",
-        "mail": "tldfk@naver.com"
-    }
-    ```
-- **반환 데이터**: 
-    ```json
-    {
-        "error": null,
-        "data": null,
-        "message": "SignUp success"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>6. 로그인</summary>
-
-- **Method**: POST  
-- **URL**: `/auth/signin`  
-- **입력 데이터**:
-    ```json
-    {
-        "username": "abc",
-        "password": "pw"
-    }
-    ```
-- **반환 데이터**:
-    ```json
-    {
-        "accessToken": "",
-        "refreshToken": ""
-    }
-    ```
-
-</details>
-
-<details>
-<summary>7. 회원정보 변경</summary>
-
-- **Method**: POST  
-- **URL**: `/mypage/update`  
-- **입력 데이터**:
-    ```json
-    {
-        "nickname": "test",
-        "mail": "test@test.com"
-    }
-    ```
-- **반환 데이터**:
-    ```json
-    {
-        "username": "test",
-        "nickname": "test"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>8. 회원 탈퇴</summary>
-
-- **Method**: DELETE  
-- **URL**: `/auth/delete`  
-- **입력 데이터**: 토큰 삭제  
-- **반환 데이터**:
-    ```json
-    {
-        "error": null,
-        "message": "delete success",
-        "data": null
-    }
-    ```
-
-</details>
-
-<details>
-<summary>9. 액세스 토큰 재발급</summary>
-
-- **Method**: POST  
-- **URL**: `/auth/token`  
-- **입력 데이터**:
-    ```json
-    {
-        "accessToken": "",
-        "refreshToken": ""
-    }
-    ```
-- **반환 데이터**:
-    ```json
-    {
-        "accessToken": "",
-        "refreshToken": ""
-    }
-    ```
-
-</details>
-
-<details>
-<summary>10. 글 작성</summary>
-
-- **Method**: POST  
-- **URL**: `/post/write`  
-- **입력 데이터**:
-    ```json
-    {
-        "title": "test",
-        "contents": "contents",
-        "category": "categoryA"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>11. 글 조회</summary>
-
-- **Method**: GET  
-- **URL**: `/category/post_id?group=humor&page=1`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 해당 글 정보 및 조회수 증가
-
-</details>
-
-<details>
-<summary>12. 작성자 확인</summary>
-
-- **Method**: GET  
-- **URL**: `/category/postid/edit`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 작성자 정보 확인 (Frontend에서 수정 제어)
-
-</details>
-
-<details>
-<summary>13. 글 수정</summary>
-
-- **Method**: PUT  
-- **URL**: `/category/postid/edit`  
-- **입력 데이터**:
-    ```json
-    {
-        "title": "test",
-        "contents": "contents",
-        "category": "categoryA"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>14. 글 삭제</summary>
-
-- **Method**: DELETE  
-- **URL**: `/category/postid/delete`  
-- **입력 데이터**: 없음  
-- **반환 데이터**:
-    ```json
-    {
-        "error": null,
-        "data": null,
-        "message": "delete success"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>15. 글 검색</summary>
-
-- **Method**: GET  
-- **URL**: `/search/about?keyword&page=1`  
-- **입력 데이터**: `keyword` (필수)  
-- **반환 데이터**:
-    ```json
-    {
-        "posts": [
-            {
-                "id": 62,
-                "title": "heart",
-                "hits": 27,
-                "nickname": "tamer",
-                "category": "Category1",
-                "count_comment": 0,
-                "count_heart": 0,
-                "createdDate": "2024-11-06T09:53:12.2257"
-            }
-        ],
-        "totalCount": 1
-    }
-    ```
-
-</details>
-
-<details>
-<summary>16. 게시글 추천</summary>
-
-- **Method**: GET  
-- **URL**: `/heart/add/postId`  
-- **입력 데이터**: 없음  
-- **반환 데이터**:
-    ```json
-    {
-        "error": null,
-        "data": null,
-        "message": "heart success"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>17. 게시글 추천 취소</summary>
-
-- **Method**: GET  
-- **URL**: `/heart/delete/postId`  
-- **입력 데이터**: 없음  
-- **반환 데이터**:
-    ```json
-    {
-        "error": null,
-        "data": null,
-        "message": "delete success"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>18. 댓글 리스트 출력</summary>
-
-- **Method**: GET  
-- **URL**: `/comment/postId?page=1`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 댓글 목록 (페이징 처리)
-
-</details>
-
-<details>
-<summary>19. 댓글 생성</summary>
-
-- **Method**: POST  
-- **URL**: `/comment/create/postId`  
-- **입력 데이터**:
-    form-data에 commentData로 입력 
-    ```json
-    {
-        "parentId": "testParent",
-        "content": "testcontent"
-    }
-    ```
-- **반환 데이터**:
-    ```json
-    {
-        "error": null,
-        "data": null,
-        "message": "comment success"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>20. 댓글 작성자 확인</summary>
-
-- **Method**: GET  
-- **URL**: `/comment/update/commentId`  
-- **입력 데이터**: 없음  
-- **반환 데이터**: 댓글 작성자 여부 확인 (true/false)
-
-</details>
-
-<details>
-<summary>21. 댓글 수정</summary>
-
-- **Method**: PUT  
-- **URL**: `/comment/update/commentId`  
-- **입력 데이터**:
-    ```json
-    {
-        "content": "i am contents"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>22. 댓글 삭제</summary>
-
-- **Method**: DELETE  
-- **URL**: `/comment/delete/commentId`  
-- **입력 데이터**: 없음  
-- **반환 데이터**:
-    ```json
-    {
-        "error": null,
-        "data": null,
-        "message": "delete success"
-    }
-    ```
-
-</details>
-
-<details>
-<summary>23. 파일 이미지</summary>
-
-- **Method**: GET  
-- **URL**: `/file/comment?filename=abc.png`  
-- **입력 데이터**: 파일명 (`filename`)  
-- **반환 데이터**: 해당 파일 이미지
-
-</details>
-
-<details>
-<summary>24. 파일 이미지 저장</summary>
-
-- **Method**: POST  
-- **URL**: `/file/image-upload`  
-- **입력 데이터**: 이미지 파일 (`image`)
-
-</details>
-
-<br/>
 
 
 
