@@ -37,9 +37,9 @@
 
 | **항목**     | **선우**                                                                                      | **소진**                                                                                      | **정아**                                                                                      | **혁주**                                                                                      |
 |:------------|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|
-| **사진**     | ![한선우](https://avatars.githubusercontent.com/u/120350053?v=4)                              | ![최소진](https://github.com/user-attachments/assets/646fbee6-a1b8-402e-9b91-93dd2c31a778)   | ![최정아](https://github.com/user-attachments/assets/20aab45b-c93b-4166-9c77-acb1288f47fe)   | ![석혁주](https://github.com/user-attachments/assets/20aab45b-c93b-4166-9c77-acb1288f47fe)   |
+| **사진**     | ![한선우](https://avatars.githubusercontent.com/u/120350053?v=4)                              | ![최소진](https://github.com/user-attachments/assets/646fbee6-a1b8-402e-9b91-93dd2c31a778)   | ![최정아](https://github.com/user-attachments/assets/20aab45b-c93b-4166-9c77-acb1288f47fe)   | ![석혁주](https://avatars.githubusercontent.com/u/140710676?v=4)   |
 | **역할**     | BackEnd                                                                                     | FrontEnd                                                                                     | FrontEnd                                                                                     | BackEnd                                                                                     |
-| **GitHub**   | [한선우 GitHub](https://github.com/hamster0410)                                               | [최소진 GitHub](https://github.com/sosojean)                                                 | [최정아 GitHub](https://github.com/berryicebox)                                              | [석혁주 GitHub](https://github.com/berryicebox)                                              |
+| **GitHub**   | [한선우 GitHub](https://github.com/hamster0410)                                               | [최소진 GitHub](https://github.com/sosojean)                                                 | [최정아 GitHub](https://github.com/berryicebox)                                              | [석혁주 GitHub](https://github.com/cocoboll0)                                              |
 | **주 작업**  | 1. 팀 일정 관리<br>2. 프로젝트 계획 및 관리<br>3. REST API 명세 작성 및 구현<br>4. ERD 설계<br>5. JWT 토큰 인증 구현<br>6. 게시판 CRUD, 좋아요, 댓글 구현 | 1. 회원 관련 기능<br>2. 글 목록 조회 및 수정 삭제<br>3. 이미지 업로드<br>4. 댓글 및 대댓글 로직 구현<br>5. 검색 기능<br>6. 게시글 삭제 및 수정 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 |
 <br/>
 
@@ -57,7 +57,7 @@
 
 # <img src="https://github.com/user-attachments/assets/c358e165-b991-4930-85b1-cddc0433a5d9" width="50"> 사용된 기술 스택
 
-![%EC%A0%9C%EB%AA%A9%EC%9D%84-%EC%9E%85%EB%A0%A5%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94_-001](https://github.com/user-attachments/assets/344ce12c-601b-42d2-b48a-53b9440cda87)
+![제목을-입력해주세요_-001 (1)](https://github.com/user-attachments/assets/18c49e68-3f1c-4d78-9563-f814e80bacf4)
 
 <br/>
 
@@ -89,147 +89,148 @@ Front End (React)
 Back End (Spring Boot)
 
 project/
-├─community
-│  ├─comment
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─heart_comment
-│  │  ├─controller
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─heart_post
-│  │  ├─controller
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─member
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  └─post
-│      ├─controller
-│      ├─dto
-│      ├─entity
-│      ├─repository
-│      └─service
-├─global
-│  ├─admin
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─config
-│  ├─controller
-│  ├─dto
-│  ├─init
-│  ├─pay
-│  │  ├─config
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─security
-│  └─service
-├─shop
-│  ├─cart
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─cart_item
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─delivery
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─item
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─item_comment
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─item_comment_like
-│  │  ├─controller
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─main
-│  │  ├─controller
-│  │  ├─dto
-│  │  └─service
-│  ├─order
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─order_item
-│  │  ├─dto
-│  │  ├─entity
-│  │  └─repository
-│  ├─pet
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  ├─point
-│  │  ├─controller
-│  │  ├─dto
-│  │  ├─entity
-│  │  ├─repository
-│  │  └─service
-│  └─seller
-│      └─controller
-└─tools
-    ├─abandoned_animal
-    │  ├─controller
-    │  ├─dto
-    │  ├─entity
-    │  ├─repository
-    │  └─service
-    ├─calculate
-    │  ├─contrtoller
-    │  ├─dto
-    │  └─service
-    ├─chat
-    │  ├─controller
-    │  ├─dto
-    │  ├─entity
-    │  ├─repository
-    │  └─service
-    ├─map_service
-    │  ├─controller
-    │  ├─dto
-    │  ├─entity
-    │  ├─repository
-    │  └─service
-    └─wiki_service
-        ├─controller
-        ├─dto
-        ├─entity
-        ├─repository
-        └─service
+├── community
+│   ├── comment
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── heart_comment
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── heart_post
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── member
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   └── post
+│       ├── controller
+│       ├── dto
+│       ├── entity
+│       ├── repository
+│       └── service
+├── global
+│   ├── admin
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── config
+│   ├── controller
+│   ├── dto
+│   ├── init
+│   ├── pay
+│   │   ├── config
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── security
+│   └── service
+├── shop
+│   ├── cart
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── cart_item
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── delivery
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── item
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── item_comment
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── item_comment_like
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── main
+│   │   ├── controller
+│   │   ├── dto
+│   │   └── service
+│   ├── order
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── order_item
+│   │   ├── dto
+│   │   ├── entity
+│   │   └── repository
+│   ├── pet
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   ├── point
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── entity
+│   │   ├── repository
+│   │   └── service
+│   └── seller
+│       └── controller
+└── tools
+    ├── abandoned_animal
+    │   ├── controller
+    │   ├── dto
+    │   ├── entity
+    │   ├── repository
+    │   └── service
+    ├── calculate
+    │   ├── controller
+    │   ├── dto
+    │   └── service
+    ├── chat
+    │   ├── controller
+    │   ├── dto
+    │   ├── entity
+    │   ├── repository
+    │   └── service
+    ├── map_service
+    │   ├── controller
+    │   ├── dto
+    │   ├── entity
+    │   ├── repository
+    │   └── service
+    └── wiki_service
+        ├── controller
+        ├── dto
+        ├── entity
+        ├── repository
+        └── service
+
 ```
 <br/>
 
