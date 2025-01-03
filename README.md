@@ -78,22 +78,58 @@
 ```agda
 Front End (React)
 
-├─assets //스타일링 요소
-│  ├─fonts // 폰트
-│  ├─img // 이미지
-│  └─styles // scss 파일
-│      ├─board
-│      ├─comment
-│      └─layout
-│
-├─components // 모듈 컴포넌트
-│  ├─board //게시판 관련
-│  ├─comment //댓글 관련
-│  └─layout //화면 레이아웃 관련
-│
-├─pages // 페이지 컴포넌트
-│
-└─utils // 커스텀훅, 전역 함수
+├── App.jsx
+├── App.test.js
+├── index.css
+├── index.jsx
+├── assets
+│   ├── fonts
+│   ├── img
+│   └── styles
+├── components
+│   ├── additional
+│   │   ├── adopt
+│   │   ├── calc
+│   │   └── wiki
+│   ├── board
+│   ├── chatting
+│   ├── comment
+│   ├── common
+│   ├── layout
+│   ├── map
+│   ├── member
+│   │   ├── myPage
+│   │   │   └── items
+│   │   ├── password
+│   │   └── pet
+│   │       └── register
+│   └── shop
+│       ├── admin
+│       │   └── notice
+│       ├── order
+│       │   ├── delivery
+│       ├── product
+│       │   ├── QnA
+│       │   ├── detail
+│       │   ├── option
+│       │   └── review
+│       └── seller
+│           ├── itemList
+│           ├── itemRegister
+│           └── sellerQna
+├── pages
+│   ├── additional
+│   ├── board
+│   ├── chatting
+│   ├── map
+│   ├── member
+│   └── shop
+│       ├── admin
+│       ├── order
+│       ├── product
+│       └── seller
+└── utils
+
 
 ----------------------------------------------------------------------------------------
 
@@ -263,30 +299,95 @@ project/
 
 # 🔥 동작 화면
 
-### 회원가입
+### 소셜 회원가입 & 로그인
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/0674787e-5e62-4c01-9f85-d1e624afc868" style="display: block; margin: auto; border: 2px solid #000;">
+  <img src="https://github.com/user-attachments/assets/76822a4d-b9d3-4c25-934e-1d607ff7b229" style="display: block; margin: auto; border: 2px solid #000;">
 </p>
 <br/>
 
-### 게시글 작성
+### 비밀번호 수정
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/8eb5fdf5-8b10-483c-ae50-384ff7e3d4ad" style="display: block; margin: auto; border: 2px solid #000;">
+  <img src="https://github.com/user-attachments/assets/7abe7109-5bb3-4c5d-aec5-b5164e310026" style="display: block; margin: auto; border: 2px solid #000;">
 </p>
 <br/>
 
-### 게시글 추천
+
+### 댓글 대댓글
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ee1b9dcb-f4bd-41fd-8011-b2c276f399fd" style="display: block; margin: auto; border: 2px solid #000;">
+  <img src="https://github.com/user-attachments/assets/ff44b9b0-73ff-48b2-bbfd-953ed6a14600" style="display: block; margin: auto; border: 2px solid #000;">
 </p>
 <br/>
 
-### 댓글 작성 
-
+### 배너
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ecc2d770-b6ed-47cd-9eaf-51b0fc8987b5" style="display: block; margin: auto; border: 2px solid #000;">
+  <img src="https://github.com/user-attachments/assets/dd5195ff-739a-404a-a55e-f48572821e75" style="display: block; margin: auto; border: 2px solid #000;">
 </p>
 <br/>
+
+### 펫 등록
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f37d54ff-6b17-4b40-88b7-56ef19819af7" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 펫 맞춤 상품 추천
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1b60c7d8-3bc0-4b7c-b947-e6b740485914" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 장바구니 구매
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f79cd5c5-c76a-469b-b841-af75cc162163" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+
+<br/>
+
+### 계산기
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9fc17880-08b3-440a-a5c4-2698a88a33ae" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 동물백과
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/abb956bb-d736-4ca1-8720-96af0bcd2d63" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 위치 기반 지도 검색
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/592b184c-081a-4444-88a4-903a2cabc92d" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 반려동물 등록
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7c4c7325-7c37-49e5-a946-22e48b7c4575" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 판매자 대시보드
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/28215e52-a457-446b-9c8e-4a7fa091cae8" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+
+<br/>
+
+### 관리자 대시보드
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8e016750-576f-4f16-afc9-11f714444c18" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+
+<br/>
+
+### 관리자 채팅
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/564d294f-4dbc-4c1b-997f-7862ff5ae69f" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+
+<br/>
+
 
 <br/>
 
